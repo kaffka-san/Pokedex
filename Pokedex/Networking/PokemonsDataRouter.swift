@@ -8,7 +8,7 @@
 import Foundation
 
 enum PokemonsRoute {
-    case pokemons
+    case pokemons(offset: Int)
     case pokemonDetail(name: String)
 }
 
@@ -18,10 +18,10 @@ final class PokemonsRouter: Router, APIRouter {
 
     func urlRequest(for route: PokemonsRoute) -> URLRequestConvertible {
         switch route {
-        case .pokemons:
+        case let .pokemons(offset):
             return buildRequest(
                 method: .get,
-                url: "\(baseURL)/pokemon?limit=248&offset=0",
+                url: "\(baseURL)/pokemon?limit=10&offset=\(offset)",
                 headers: [
                     "Content-Type": "application/json",
                     "accept": "application/json"

@@ -46,6 +46,9 @@ struct PokemonCell: View {
         .onTapGesture {
             viewModel.selectedAction()
         }
+        .onDisappear {
+            viewModel.onDissapear()
+        }
         .frame(height: 110)
     }
 }

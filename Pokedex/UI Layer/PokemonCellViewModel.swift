@@ -32,6 +32,7 @@ final class PokemonCellViewModel: ObservableObject {
     @Published var selectedAction: () -> Void
     @Published var alertConfig: AlertConfig?
     @Published private(set) var progressHudState: ProgressHudState = .hide
+    var task: Task<Void, Never>?
 
     init(
         id: Int,
@@ -51,14 +52,8 @@ final class PokemonCellViewModel: ObservableObject {
     }
 
     func loadPokemon() {
-        Task { [weak self] in
+        task = Task { [weak self] in
             guard let self else { return }
-            await MainActor.run {
-                defer {
-                    self.progressHudState = .hide
-                }
-                self.progressHudState = .showProgress
-            }
             do {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: name)
                 await self.update(pokemonDetail: pokemonDetail)
@@ -69,6 +64,10 @@ final class PokemonCellViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    func onDissapear() {
+        task?.cancel()
     }
 
     @MainActor

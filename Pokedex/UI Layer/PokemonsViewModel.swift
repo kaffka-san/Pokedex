@@ -13,6 +13,7 @@ final class PokemonsViewModel: ObservableObject {
     @Published var pokemons = [Pokemon]()
     @Published var alertConfig: AlertConfig?
     @Published private(set) var progressHudState: ProgressHudState = .hide
+    @Published var isLoading = false
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -30,18 +31,46 @@ final class PokemonsViewModel: ObservableObject {
     func loadPokemons() {
         Task { [weak self] in
             guard let self else { return }
-            await MainActor.run {
-                defer {
-                    self.progressHudState = .hide
-                }
-                self.progressHudState = .showProgress
-            }
+            //            await MainActor.run {
+            //                defer {
+            //                    self.progressHudState = .hide
+            //                }
+            //                self.progressHudState = .showProgress
+            //            }
             do {
-                let pokemonsList = try await pokemonsAPI.getPokemons()
+                let pokemonsList = try await pokemonsAPI.getPokemons(offset: 0)
                 await self.update(pokemonsList: pokemonsList)
             } catch {
                 await MainActor.run {
                     self.showAlert()
+                }
+            }
+        }
+    }
+
+    func loadNextPage(for pokemon: Pokemon) {
+        guard !isLoading else { return }
+        let isLastPost = pokemons.last?.id == pokemon.id
+        if isLastPost {
+            isLoading = true
+            Task { [weak self] in
+                guard let self else { return }
+                //            await MainActor.run {
+                //                defer {
+                //                    self.progressHudState = .hide
+                //                }
+                //                self.progressHudState = .showProgress
+                //            }
+                do {
+                    let pokemons = try await pokemonsAPI.getPokemons(offset: self.pokemons.count)
+                    await MainActor.run {
+                        self.pokemons.append(contentsOf: pokemons.results)
+                        self.isLoading = false
+                    }
+                } catch {
+                    await MainActor.run {
+                        self.showAlert()
+                    }
                 }
             }
         }

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol PokemonsAPIProtocol {
-    func getPokemons() async throws -> Pokemons
+    func getPokemons(offset: Int) async throws -> Pokemons
     func getPokemonDetail(name: String) async throws -> PokemonDetail
 }
 
@@ -26,8 +26,8 @@ class PokemonsAPI: PokemonsAPIProtocol, Service {
         self.router = router
     }
 
-    func getPokemons() async throws -> Pokemons {
-        let route = PokemonsRoute.pokemons
+    func getPokemons(offset: Int) async throws -> Pokemons {
+        let route = PokemonsRoute.pokemons(offset: offset)
         return try await apiClient.requestDecodable(
             for: urlConvertible(for: route)
         )

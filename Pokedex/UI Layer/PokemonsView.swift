@@ -45,7 +45,13 @@ struct PokemonsView: View {
                                     pokemonsAPI: viewModel.pokemonsAPI
                                 )
                             )
+                            .onAppear {
+                                viewModel.loadNextPage(for: pokemon)
+                            }
                         }
+                    }
+                    if viewModel.isLoading {
+                        ProgressView()
                     }
                 }
                 .navigationTitle(L.Pokemons.pokemonsTitle)
