@@ -13,7 +13,6 @@ class HostingController<Content: View>: UIHostingController<Content> {
 
     init(navigationPropagation: NavigationPropagation = NavigationPropagation(), @ViewBuilder _ view: () -> Content) {
         super.init(rootView: view())
-
         navigationPropagation.screenTitleSubject
             .sink { [weak self] screenTitle in
                 self?.navigationItem.title = screenTitle

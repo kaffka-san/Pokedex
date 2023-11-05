@@ -7,6 +7,11 @@
 
 import SwiftUI
 
-enum Images {
+enum AssetsImages {
     static let pokeballCard = Image("pokeballCard")
+}
+
+enum AssetsUIImages {
+    static let backIcon = UIImage(named: "back")!
+    static let loveIcon = UIImage(named: "love")!
 }

@@ -8,5 +8,6 @@
 import Foundation
 
 protocol PokemonsCoordinator: AnyObject {
-    func goToDetailView()
+    func goToDetailView(name: String)
+    func goBack()
 }

@@ -21,30 +21,39 @@ struct PokemonsView: View {
         )
         _viewModel = StateObject(wrappedValue: viewModel)
         self.navigationPropagation = navigationPropagation
-        navigationPropagation.screenTitleSubject.send(L.Pokemons.pokemonsTitle)
+        // navigationPropagation.screenTitleSubject.send(L.Pokemons.pokemonsTitle)
     }
 
     var body: some View {
-        ScrollView {
-            VStack {
-                LazyVGrid(
-                    columns: [
-                        GridItem(.adaptive(minimum: 155))
-                    ],
-                    spacing: 10
-                ) {
-                    ForEach(viewModel.pokemons, id: \.id) { pokemon in
-                        PokemonCell(
-                            viewModel: PokemonCellViewModel(
-                                name: pokemon.name,
-                                pokemonsAPI: viewModel.pokemonsAPI
+        NavigationView {
+            ScrollView {
+                VStack {
+                    LazyVGrid(
+                        columns: [
+                            GridItem(.adaptive(minimum: 155))
+                        ],
+                        spacing: 10
+                    ) {
+                        ForEach(viewModel.pokemons, id: \.id) { pokemon in
+                            PokemonCell(
+                                viewModel: PokemonCellViewModel(
+                                    id: 0,
+                                    name: pokemon.name,
+                                    types: [],
+                                    imgUrl: "",
+                                    selectedAction: { viewModel.goToDetailView(name: pokemon.name) },
+                                    pokemonsAPI: viewModel.pokemonsAPI
+                                )
                             )
-                        )
+                        }
                     }
                 }
+                .navigationTitle(L.Pokemons.pokemonsTitle)
+                .navigationBarTitleDisplayMode(.large)
+                .padding(.horizontal, 26)
             }
-            .padding(.horizontal, 26)
         }
+        .navigationBarHidden(true)
     }
 }
 

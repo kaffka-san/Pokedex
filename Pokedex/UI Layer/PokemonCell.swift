@@ -31,7 +31,7 @@ struct PokemonCell: View {
                 ) {
                     pokemonName
                     VStack(spacing: 0) {
-                        ForEach(viewModel.pokemon.types, id: \.self) { type in
+                        ForEach(viewModel.types, id: \.self) { type in
                             CapsuleText(text: type)
                                 .padding(.leading, 16)
                                 .padding(.bottom, 6)
@@ -43,13 +43,16 @@ struct PokemonCell: View {
             }
             .frame(maxWidth: .infinity)
         }
+        .onTapGesture {
+            viewModel.selectedAction()
+        }
         .frame(height: 110)
     }
 }
 
 private extension PokemonCell {
     var pokemonName: some View {
-        Text(viewModel.pokemon.name.capitalized)
+        Text(viewModel.name.capitalized)
             .font(PokedexFonts.headline1)
             .frame(
                 width: 85,
@@ -66,7 +69,7 @@ private extension PokemonCell {
             .foregroundColor(Color(viewModel.colorBackground))
             .overlay {
                 ZStack(alignment: .trailing) {
-                    Images.pokeballCard
+                    AssetsImages.pokeballCard
                         .opacity(0.3)
                         .frame(alignment: .trailing)
                     HStack {
@@ -81,7 +84,7 @@ private extension PokemonCell {
     }
 
     var pokemonImage: some View {
-        LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
+        LazyImage(url: URL(string: viewModel.imgUrl)) { state in
             if let image = state.image {
                 image
                     .resizable()
@@ -93,7 +96,7 @@ private extension PokemonCell {
     }
 
     var idLabel: some View {
-        Text(viewModel.id)
+        Text(viewModel.idFormatted)
             .font(PokedexFonts.headline1)
             .foregroundStyle(
                 .black
@@ -111,7 +114,12 @@ private extension PokemonCell {
 #Preview {
     PokemonCell(
         viewModel: PokemonCellViewModel(
-            name: "Charmeleon",
+            id: 0,
+            name: "",
+            types: [],
+            imgUrl: "",
+            selectedAction: {},
+
             // TODO: Create Mock
             pokemonsAPI: PokemonsAPI(
                 apiClient: APIClient(),

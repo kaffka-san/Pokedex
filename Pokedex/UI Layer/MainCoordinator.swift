@@ -35,8 +35,6 @@ class MainCoordinator: UINavigationController {
             navigationPropagation: view.navigationPropagation
         ) { view }
         setViewControllers([viewController], animated: false)
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//        navigationItem.largeTitleDisplayMode = .always
     }
 
     @available(*, unavailable)
@@ -46,5 +44,19 @@ class MainCoordinator: UINavigationController {
 }
 
 extension MainCoordinator: PokemonsCoordinator {
-    func goToDetailView() {}
+    func goBack() {
+        popViewController(animated: true)
+    }
+
+    func goToDetailView(name: String) {
+        let viewController = HostingController {
+            PokemonDetailView(
+                viewModel: PokemonDetailViewModel(
+                    coordinator: self,
+                    name: name
+                )
+            )
+        }
+        pushViewController(viewController, animated: true)
+    }
 }

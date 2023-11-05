@@ -7,27 +7,45 @@
 
 import SwiftUI
 
+struct PokemonCellConfig {
+    let id: Int
+    let name: String
+    let types: [String]
+    let imgUrl: String
+    let selectedAction: () -> Void
+}
+
 final class PokemonCellViewModel: ObservableObject {
-    private let name: String
     private let pokemonsAPI: PokemonsAPIProtocol
-    var id: String {
-        String(format: "#%03d", pokemon.id)
+    var idFormatted: String {
+        String(format: "#%03d", id)
     }
 
     var colorBackground: String {
-        pokemon.types.first!.capitalized
+        types.first?.capitalized ?? "white"
     }
 
-    // TODO: create empty mock
-    @Published var pokemon = PokemonCellConfig(id: 0, name: "", types: ["", ""], imgUrl: "")
+    @Published var id: Int
+    @Published var name: String
+    @Published var types: [String]
+    @Published var imgUrl: String
+    @Published var selectedAction: () -> Void
     @Published var alertConfig: AlertConfig?
     @Published private(set) var progressHudState: ProgressHudState = .hide
 
     init(
+        id: Int,
         name: String,
+        types: [String],
+        imgUrl: String,
+        selectedAction: @escaping () -> Void,
         pokemonsAPI: PokemonsAPIProtocol
     ) {
+        self.id = id
         self.name = name
+        self.types = types
+        self.imgUrl = imgUrl
+        self.selectedAction = selectedAction
         self.pokemonsAPI = pokemonsAPI
         loadPokemon()
     }
@@ -55,12 +73,10 @@ final class PokemonCellViewModel: ObservableObject {
 
     @MainActor
     private func update(pokemonDetail: PokemonDetail) {
-        pokemon = PokemonCellConfig(
-            id: pokemonDetail.id,
-            name: name,
-            types: pokemonDetail.types.map { $0.type.name },
-            imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
-        )
+        id = pokemonDetail.id
+        name = name
+        types = pokemonDetail.types.map { $0.type.name }
+        imgUrl = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
     }
 
     func showAlert() {

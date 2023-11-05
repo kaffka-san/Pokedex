@@ -7,13 +7,6 @@
 
 import Foundation
 
-struct PokemonCellConfig {
-    let id: Int
-    let name: String
-    let types: [String]
-    let imgUrl: String
-}
-
 final class PokemonsViewModel: ObservableObject {
     private weak var coordinator: PokemonsCoordinator?
     let pokemonsAPI: PokemonsAPIProtocol
@@ -30,8 +23,8 @@ final class PokemonsViewModel: ObservableObject {
         loadPokemons()
     }
 
-    func goToDetailView() {
-        coordinator?.goToDetailView()
+    func goToDetailView(name: String) {
+        coordinator?.goToDetailView(name: name)
     }
 
     func loadPokemons() {
