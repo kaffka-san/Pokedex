@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  Pokedex
+
+  Created by Anastasia Lenina on 04.11.2023.
+  
+*/
+
+// MARK: - Pokemons
+"pokemons_title" = "Pokedex";
+
+// MARK: - Errors
+"error_generic_title" = "Error";
+"error_generic_message" = "Something went wrong";
