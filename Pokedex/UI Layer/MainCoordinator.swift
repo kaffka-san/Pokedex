@@ -47,12 +47,13 @@ extension MainCoordinator: PokemonsCoordinator {
         popViewController(animated: true)
     }
 
-    func goToDetailView(name: String) {
+    func goToDetailView(pokemon: PokemonDetailConfig) {
         let viewController = HostingController {
             PokemonDetailView(
                 viewModel: PokemonDetailViewModel(
                     coordinator: self,
-                    name: name
+                    pokemonsAPI: pokemonsAPI,
+                    pokemon: pokemon
                 )
             )
         }

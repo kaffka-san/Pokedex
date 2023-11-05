@@ -9,16 +9,24 @@ import SwiftUI
 
 struct CapsuleText: View {
     private let text: String
+    private let font: Font
+    private let width: CGFloat
 
-    init(text: String) {
+    init(
+        text: String,
+        font: Font,
+        width: CGFloat
+    ) {
         self.text = text
+        self.font = font
+        self.width = width
     }
 
     var body: some View {
         Text(text)
-            .font(PokedexFonts.body1)
+            .font(font)
             .foregroundStyle(.white)
-            .frame(width: 34)
+            .frame(width: width)
             .padding(6)
             .background {
                 Color
@@ -30,5 +38,9 @@ struct CapsuleText: View {
 }
 
 #Preview {
-    CapsuleText(text: "Electric")
+    CapsuleText(
+        text: "Electric",
+        font: PokedexFonts.body2,
+        width: 70
+    )
 }

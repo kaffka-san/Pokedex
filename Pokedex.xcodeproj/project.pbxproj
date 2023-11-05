@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3042A8912AF8491600D65D54 /* GrayImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042A8902AF8491600D65D54 /* GrayImage.swift */; };
 		3086F0FF2AF567BF0089FA33 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F0FE2AF567BF0089FA33 /* APIClient.swift */; };
 		3086F1012AF567E00089FA33 /* APIRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1002AF567E00089FA33 /* APIRouter.swift */; };
 		3086F1032AF567F70089FA33 /* NetworkingLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1022AF567F70089FA33 /* NetworkingLogger.swift */; };
@@ -47,9 +48,16 @@
 		30C552052AF6BE76005D1DB8 /* CapsuleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C552042AF6BE76005D1DB8 /* CapsuleText.swift */; };
 		30C552082AF7984D005D1DB8 /* PokemonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C552072AF7984D005D1DB8 /* PokemonDetailView.swift */; };
 		30C5520A2AF7A0BC005D1DB8 /* PokemonDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C552092AF7A0BC005D1DB8 /* PokemonDetailViewModel.swift */; };
+		30C5520D2AF818BE005D1DB8 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 30C5520C2AF818BE005D1DB8 /* SwiftUIIntrospect */; };
+		30C5520F2AF818BE005D1DB8 /* SwiftUIIntrospect-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 30C5520E2AF818BE005D1DB8 /* SwiftUIIntrospect-Dynamic */; };
+		30C552112AF818BE005D1DB8 /* SwiftUIIntrospect-Static in Frameworks */ = {isa = PBXBuildFile; productRef = 30C552102AF818BE005D1DB8 /* SwiftUIIntrospect-Static */; };
+		30DBD81B2AF82B810069F25A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD81A2AF82B810069F25A /* Colors.swift */; };
+		30DBD81D2AF83A720069F25A /* VerticalLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD81C2AF83A720069F25A /* VerticalLabel.swift */; };
+		30DBD81F2AF83DD20069F25A /* HorizontalLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD81E2AF83DD20069F25A /* HorizontalLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3042A8902AF8491600D65D54 /* GrayImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayImage.swift; sourceTree = "<group>"; };
 		3086F0FE2AF567BF0089FA33 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		3086F1002AF567E00089FA33 /* APIRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRouter.swift; sourceTree = "<group>"; };
 		3086F1022AF567F70089FA33 /* NetworkingLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingLogger.swift; sourceTree = "<group>"; };
@@ -87,6 +95,9 @@
 		30C552042AF6BE76005D1DB8 /* CapsuleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleText.swift; sourceTree = "<group>"; };
 		30C552072AF7984D005D1DB8 /* PokemonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetailView.swift; sourceTree = "<group>"; };
 		30C552092AF7A0BC005D1DB8 /* PokemonDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetailViewModel.swift; sourceTree = "<group>"; };
+		30DBD81A2AF82B810069F25A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		30DBD81C2AF83A720069F25A /* VerticalLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalLabel.swift; sourceTree = "<group>"; };
+		30DBD81E2AF83DD20069F25A /* HorizontalLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +108,10 @@
 				30B2FA192AF63DB400B9D94D /* ProgressHUD in Frameworks */,
 				30B2FA2E2AF6508500B9D94D /* Nuke in Frameworks */,
 				30B2FA342AF6508500B9D94D /* NukeVideo in Frameworks */,
+				30C552112AF818BE005D1DB8 /* SwiftUIIntrospect-Static in Frameworks */,
+				30C5520D2AF818BE005D1DB8 /* SwiftUIIntrospect in Frameworks */,
 				30B2FA302AF6508500B9D94D /* NukeExtensions in Frameworks */,
+				30C5520F2AF818BE005D1DB8 /* SwiftUIIntrospect-Dynamic in Frameworks */,
 				30B2FA322AF6508500B9D94D /* NukeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,6 +209,7 @@
 				3086F1262AF56D290089FA33 /* Helpers */,
 				309659B92AF55DEF00B2BE78 /* Assets.xcassets */,
 				30B2FA3B2AF6B3CD00B9D94D /* Assets.swift */,
+				30DBD81A2AF82B810069F25A /* Colors.swift */,
 				30B2FA202AF64A2D00B9D94D /* Localizable.strings */,
 				30B2FA222AF64A4D00B9D94D /* Localization.swift */,
 				309659BB2AF55DEF00B2BE78 /* LaunchScreen.storyboard */,
@@ -224,6 +239,9 @@
 			isa = PBXGroup;
 			children = (
 				30C552042AF6BE76005D1DB8 /* CapsuleText.swift */,
+				30DBD81C2AF83A720069F25A /* VerticalLabel.swift */,
+				30DBD81E2AF83DD20069F25A /* HorizontalLabel.swift */,
+				3042A8902AF8491600D65D54 /* GrayImage.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -252,6 +270,9 @@
 				30B2FA2F2AF6508500B9D94D /* NukeExtensions */,
 				30B2FA312AF6508500B9D94D /* NukeUI */,
 				30B2FA332AF6508500B9D94D /* NukeVideo */,
+				30C5520C2AF818BE005D1DB8 /* SwiftUIIntrospect */,
+				30C5520E2AF818BE005D1DB8 /* SwiftUIIntrospect-Dynamic */,
+				30C552102AF818BE005D1DB8 /* SwiftUIIntrospect-Static */,
 			);
 			productName = Pokedex;
 			productReference = 309659AD2AF55DEE00B2BE78 /* Pokedex.app */;
@@ -284,6 +305,7 @@
 			packageReferences = (
 				30B2FA172AF63DB400B9D94D /* XCRemoteSwiftPackageReference "ProgressHUD" */,
 				30B2FA2C2AF6508500B9D94D /* XCRemoteSwiftPackageReference "Nuke" */,
+				30C5520B2AF818BE005D1DB8 /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
 			);
 			productRefGroup = 309659AE2AF55DEE00B2BE78 /* Products */;
 			projectDirPath = "";
@@ -353,7 +375,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3042A8912AF8491600D65D54 /* GrayImage.swift in Sources */,
 				30B2FA382AF692CB00B9D94D /* Fonts.swift in Sources */,
+				30DBD81F2AF83DD20069F25A /* HorizontalLabel.swift in Sources */,
+				30DBD81B2AF82B810069F25A /* Colors.swift in Sources */,
 				3086F11B2AF56C250089FA33 /* PokemonsView.swift in Sources */,
 				3086F1162AF56AA30089FA33 /* MainCoordinator.swift in Sources */,
 				3086F1032AF567F70089FA33 /* NetworkingLogger.swift in Sources */,
@@ -374,6 +399,7 @@
 				309659B12AF55DEE00B2BE78 /* AppDelegate.swift in Sources */,
 				3086F1132AF5692B0089FA33 /* URLRequestBuilding.swift in Sources */,
 				30B2FA1D2AF644BC00B9D94D /* PokemonsAPI.swift in Sources */,
+				30DBD81D2AF83A720069F25A /* VerticalLabel.swift in Sources */,
 				3086F1082AF568620089FA33 /* APIError.swift in Sources */,
 				3086F1242AF56D1C0089FA33 /* NavigationPropagation.swift in Sources */,
 				3086F10A2AF568760089FA33 /* APIErrorCode.swift in Sources */,
@@ -617,6 +643,14 @@
 				minimumVersion = 12.1.6;
 			};
 		};
+		30C5520B2AF818BE005D1DB8 /* XCRemoteSwiftPackageReference "swiftui-introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/swiftui-introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -644,6 +678,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 30B2FA2C2AF6508500B9D94D /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeVideo;
+		};
+		30C5520C2AF818BE005D1DB8 /* SwiftUIIntrospect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30C5520B2AF818BE005D1DB8 /* XCRemoteSwiftPackageReference "swiftui-introspect" */;
+			productName = SwiftUIIntrospect;
+		};
+		30C5520E2AF818BE005D1DB8 /* SwiftUIIntrospect-Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30C5520B2AF818BE005D1DB8 /* XCRemoteSwiftPackageReference "swiftui-introspect" */;
+			productName = "SwiftUIIntrospect-Dynamic";
+		};
+		30C552102AF818BE005D1DB8 /* SwiftUIIntrospect-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30C5520B2AF818BE005D1DB8 /* XCRemoteSwiftPackageReference "swiftui-introspect" */;
+			productName = "SwiftUIIntrospect-Static";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

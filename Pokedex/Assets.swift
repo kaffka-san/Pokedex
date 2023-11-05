@@ -9,6 +9,7 @@ import SwiftUI
 
 enum AssetsImages {
     static let pokeballCard = Image("pokeballCard")
+    static let pokeball = Image("pokeball")
 }
 
 enum AssetsUIImages {

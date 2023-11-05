@@ -27,7 +27,7 @@ struct PokemonCell: View {
             contentInfo
         }
         .onTapGesture {
-            viewModel.selectedAction()
+            viewModel.goToDetailView()
         }
         .onDisappear {
             viewModel.onDisappear()
@@ -45,10 +45,14 @@ private extension PokemonCell {
             ) {
                 pokemonName
                 VStack(spacing: 0) {
-                    ForEach(viewModel.types, id: \.self) { type in
-                        CapsuleText(text: type)
-                            .padding(.leading, 16)
-                            .padding(.bottom, 6)
+                    ForEach(viewModel.pokemon.types, id: \.self) { type in
+                        CapsuleText(
+                            text: type,
+                            font: PokedexFonts.body1,
+                            width: 43
+                        )
+                        .padding(.leading, 16)
+                        .padding(.bottom, 6)
                     }
                 }
                 Spacer()
@@ -59,8 +63,8 @@ private extension PokemonCell {
     }
 
     var pokemonName: some View {
-        Text(viewModel.name.capitalized)
-            .font(PokedexFonts.headline1)
+        Text(viewModel.pokemon.name.capitalized)
+            .font(PokedexFonts.label1)
             .frame(
                 width: 85,
                 alignment: .leading
@@ -91,7 +95,7 @@ private extension PokemonCell {
     }
 
     var pokemonImage: some View {
-        LazyImage(url: URL(string: viewModel.imgUrl)) { state in
+        LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
             if let image = state.image {
                 image
                     .resizable()
@@ -104,7 +108,7 @@ private extension PokemonCell {
 
     var idLabel: some View {
         Text(viewModel.idFormatted)
-            .font(PokedexFonts.headline1)
+            .font(PokedexFonts.label1)
             .foregroundStyle(
                 .black
                     .opacity(0.2)
@@ -121,17 +125,14 @@ private extension PokemonCell {
 #Preview {
     PokemonCell(
         viewModel: PokemonCellViewModel(
-            id: 0,
             name: "",
-            types: [],
-            imgUrl: "",
-            selectedAction: {},
 
             // TODO: Create Mock
             pokemonsAPI: PokemonsAPI(
                 apiClient: APIClient(),
                 router: PokemonsRouter()
-            )
+            ),
+            coordinator: nil
         )
     )
 }

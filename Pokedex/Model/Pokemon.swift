@@ -31,11 +31,20 @@ struct PokemonDetail: Codable {
     let id: Int
     let height: Int
     let weight: Int
+    let baseExperience: Int
     let stats: [PokemonStats]
     let types: [PokemonTypes]
     let sprites: Sprites
 
-//    static var samplePokemonDetails = PokemonDetail(id: 0, height: 0, weight: 0, stats: [PokemonStats(base_stat: 0, effort: 0, stat: SpecificStat(name: "charzard", url: "https://pokeapi.co/api/v2/pokemon/4/"))], types: [PokemonTypes(slot: 0, type: SpecificType(name: "charzard", url: "https://pokeapi.co/api/v2/pokemon/4/"))])
+    enum CodingKeys: String, CodingKey {
+        case id
+        case height
+        case weight
+        case baseExperience = "base_experience"
+        case stats
+        case types
+        case sprites
+    }
 }
 
 struct PokemonStats: Codable {
@@ -84,5 +93,24 @@ struct OfficialArtwork: Codable {
 
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
+    }
+}
+
+struct PokemonSpecies: Codable {
+    let eggGroups: [SpecificType]
+    let flavorTextEntries: [FlavorTextEntry]
+
+    enum CodingKeys: String, CodingKey {
+        case eggGroups = "egg_groups"
+        case flavorTextEntries = "flavor_text_entries"
+    }
+}
+
+// MARK: - FlavorTextEntry
+struct FlavorTextEntry: Codable {
+    let flavorText: String
+
+    enum CodingKeys: String, CodingKey {
+        case flavorText = "flavor_text"
     }
 }
