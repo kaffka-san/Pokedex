@@ -66,7 +66,7 @@ final class PokemonCellViewModel: ObservableObject {
         }
     }
 
-    func onDissapear() {
+    func onDisappear() {
         task?.cancel()
     }
 

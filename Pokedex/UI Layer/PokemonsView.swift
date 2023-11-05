@@ -21,45 +21,50 @@ struct PokemonsView: View {
         )
         _viewModel = StateObject(wrappedValue: viewModel)
         self.navigationPropagation = navigationPropagation
-        // navigationPropagation.screenTitleSubject.send(L.Pokemons.pokemonsTitle)
     }
 
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack {
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.adaptive(minimum: 155))
-                        ],
-                        spacing: 10
-                    ) {
-                        ForEach(viewModel.pokemons, id: \.id) { pokemon in
-                            PokemonCell(
-                                viewModel: PokemonCellViewModel(
-                                    id: 0,
-                                    name: pokemon.name,
-                                    types: [],
-                                    imgUrl: "",
-                                    selectedAction: { viewModel.goToDetailView(name: pokemon.name) },
-                                    pokemonsAPI: viewModel.pokemonsAPI
-                                )
-                            )
-                            .onAppear {
-                                viewModel.loadNextPage(for: pokemon)
-                            }
-                        }
-                    }
-                    if viewModel.isLoading {
-                        ProgressView()
-                    }
-                }
-                .navigationTitle(L.Pokemons.pokemonsTitle)
-                .navigationBarTitleDisplayMode(.large)
-                .padding(.horizontal, 26)
+                pokemonList
+                    .navigationTitle(L.Pokemons.pokemonsTitle)
+                    .navigationBarTitleDisplayMode(.large)
+                    .padding(.horizontal, 26)
             }
         }
         .navigationBarHidden(true)
+    }
+}
+
+private extension PokemonsView {
+    var pokemonList: some View {
+        VStack {
+            LazyVGrid(
+                columns: [
+                    GridItem(.adaptive(minimum: 155))
+                ],
+                spacing: 10
+            ) {
+                ForEach(viewModel.pokemons, id: \.id) { pokemon in
+                    PokemonCell(
+                        viewModel: PokemonCellViewModel(
+                            id: 0,
+                            name: pokemon.name,
+                            types: [],
+                            imgUrl: "",
+                            selectedAction: { viewModel.goToDetailView(name: pokemon.name) },
+                            pokemonsAPI: viewModel.pokemonsAPI
+                        )
+                    )
+                    .onAppear {
+                        viewModel.loadNextPage(for: pokemon)
+                    }
+                }
+            }
+            if viewModel.isLoading {
+                ProgressView()
+            }
+        }
     }
 }
 

@@ -24,36 +24,40 @@ struct PokemonCell: View {
     var body: some View {
         ZStack {
             backgroundCard
-            HStack {
-                VStack(
-                    alignment: .leading,
-                    spacing: 0
-                ) {
-                    pokemonName
-                    VStack(spacing: 0) {
-                        ForEach(viewModel.types, id: \.self) { type in
-                            CapsuleText(text: type)
-                                .padding(.leading, 16)
-                                .padding(.bottom, 6)
-                        }
-                    }
-                    Spacer()
-                }
-                Spacer()
-            }
-            .frame(maxWidth: .infinity)
+            contentInfo
         }
         .onTapGesture {
             viewModel.selectedAction()
         }
         .onDisappear {
-            viewModel.onDissapear()
+            viewModel.onDisappear()
         }
         .frame(height: 110)
     }
 }
 
 private extension PokemonCell {
+    var contentInfo: some View {
+        HStack {
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                pokemonName
+                VStack(spacing: 0) {
+                    ForEach(viewModel.types, id: \.self) { type in
+                        CapsuleText(text: type)
+                            .padding(.leading, 16)
+                            .padding(.bottom, 6)
+                    }
+                }
+                Spacer()
+            }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+
     var pokemonName: some View {
         Text(viewModel.name.capitalized)
             .font(PokedexFonts.headline1)

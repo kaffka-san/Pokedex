@@ -31,12 +31,6 @@ final class PokemonsViewModel: ObservableObject {
     func loadPokemons() {
         Task { [weak self] in
             guard let self else { return }
-            //            await MainActor.run {
-            //                defer {
-            //                    self.progressHudState = .hide
-            //                }
-            //                self.progressHudState = .showProgress
-            //            }
             do {
                 let pokemonsList = try await pokemonsAPI.getPokemons(offset: 0)
                 await self.update(pokemonsList: pokemonsList)
@@ -55,12 +49,6 @@ final class PokemonsViewModel: ObservableObject {
             isLoading = true
             Task { [weak self] in
                 guard let self else { return }
-                //            await MainActor.run {
-                //                defer {
-                //                    self.progressHudState = .hide
-                //                }
-                //                self.progressHudState = .showProgress
-                //            }
                 do {
                     let pokemons = try await pokemonsAPI.getPokemons(offset: self.pokemons.count)
                     await MainActor.run {
