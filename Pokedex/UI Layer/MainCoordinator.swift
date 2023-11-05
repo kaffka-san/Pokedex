@@ -24,16 +24,15 @@ class MainCoordinator: UINavigationController {
         )
 
         super.init(nibName: nil, bundle: nil)
-        let view = PokemonsView(
-            viewModel: PokemonsViewModel(
-                coordinator: self,
-                pokemonsAPI: pokemonsAPI
-            ),
-            navigationPropagation: NavigationPropagation()
-        )
-        let viewController = HostingController(
-            navigationPropagation: view.navigationPropagation
-        ) { view }
+
+        let viewController = HostingController {
+            PokemonsView(
+                viewModel: PokemonsViewModel(
+                    coordinator: self,
+                    pokemonsAPI: pokemonsAPI
+                )
+            )
+        }
         setViewControllers([viewController], animated: false)
     }
 

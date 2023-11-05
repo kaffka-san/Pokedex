@@ -9,18 +9,17 @@ import SwiftUI
 
 struct PokemonsView: View {
     private let progressHudBinding: ProgressHudBinding
-    let navigationPropagation: NavigationPropagation
+
     @StateObject var viewModel: PokemonsViewModel
 
     init(
-        viewModel: PokemonsViewModel,
-        navigationPropagation: NavigationPropagation
+        viewModel: PokemonsViewModel
+
     ) {
         progressHudBinding = ProgressHudBinding(
             state: viewModel.$progressHudState
         )
         _viewModel = StateObject(wrappedValue: viewModel)
-        self.navigationPropagation = navigationPropagation
     }
 
     var body: some View {
@@ -77,7 +76,6 @@ private extension PokemonsView {
                 apiClient: APIClient(),
                 router: PokemonsRouter()
             )
-        ),
-        navigationPropagation: NavigationPropagation()
+        )
     )
 }
