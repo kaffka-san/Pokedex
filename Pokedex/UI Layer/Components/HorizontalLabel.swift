@@ -16,9 +16,11 @@ struct HorizontalLabel: View {
             Text(descriptionText)
                 .font(PokedexFonts.label1)
                 .foregroundColor(PokedexColors.lightGray)
+                .frame(width: 88, alignment: .leading)
             Text(text.capitalized)
                 .font(PokedexFonts.body3)
                 .foregroundColor(PokedexColors.dark)
+                .frame(alignment: .leading)
         }
     }
 }

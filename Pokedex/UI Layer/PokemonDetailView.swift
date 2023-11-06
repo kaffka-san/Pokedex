@@ -90,11 +90,44 @@ struct PokemonDetailView: View {
 
 private extension PokemonDetailView {
     var verticalStatistics: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 18) {
             HorizontalLabel(
                 text: viewModel.pokemonSpecies.eggGroups.first ?? "",
                 descriptionText: L.PokemonDetail.eggGroups
             )
+            .background(.red)
+            HorizontalLabel(
+                text: "Test",
+                descriptionText: L.PokemonDetail.eggCylce
+            )
+            .background(.cyan)
+            HStack(spacing: 12) {
+                Text(L.PokemonDetail.gender)
+                    .font(PokedexFonts.label1)
+                    .foregroundColor(PokedexColors.lightGray)
+                    .frame(width: 88, alignment: .leading)
+                switch viewModel.pokemon.gender.genderCase {
+                case .genderless:
+                    Text(viewModel.pokemon.gender.genderless)
+                        .font(PokedexFonts.body3)
+                        .foregroundColor(PokedexColors.dark)
+                        .frame(alignment: .leading)
+                case .male:
+                    Label(viewModel.pokemon.gender.male, image: "male")
+                        .font(PokedexFonts.body3)
+                case .female:
+                    Label(viewModel.pokemon.gender.female, image: "female")
+                        .font(PokedexFonts.body3)
+                        .foregroundColor(PokedexColors.dark)
+                case .maleFemale:
+                    Label(viewModel.pokemon.gender.male, image: "male")
+                        .font(PokedexFonts.body3)
+                        .foregroundColor(PokedexColors.dark)
+                    Label(viewModel.pokemon.gender.female, image: "female")
+                        .font(PokedexFonts.body3)
+                        .foregroundColor(PokedexColors.dark)
+                }
+            }
         }
         .padding(.horizontal, 26)
         .padding(.top, 24)
@@ -196,13 +229,18 @@ private extension PokemonDetailView {
                 router: PokemonsRouter()
             ),
             pokemon: PokemonDetailConfig(
-                id: 0,
-                name: "",
-                types: [],
-                imgUrl: "",
-                weight: "",
-                height: "",
-                baseExperience: ""
+                id: 4,
+                name: "Charmander",
+                types: ["Fire"],
+                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+                weight: "13.2 lbs (6.9 kg)",
+                height: "1' 04 (0.70 cm)",
+                baseExperience: "65",
+                gender: Gender(
+                    male: "45%",
+                    female: "55%",
+                    genderCase: .genderless
+                )
             )
         )
     )

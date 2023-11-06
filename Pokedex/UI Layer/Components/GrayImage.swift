@@ -19,7 +19,7 @@ struct GrayImage: View {
                     .saturation(0.3)
                     .contrast(0.0)
                     .scaledToFill()
-                    .overlay(Color.black) 
+                    .overlay(Color.black)
                     .mask(image.resizable())
                     .opacity(0.2)
             }

@@ -35,6 +35,7 @@ struct PokemonDetail: Codable {
     let stats: [PokemonStats]
     let types: [PokemonTypes]
     let sprites: Sprites
+    let genderRate: Int
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -44,6 +45,7 @@ struct PokemonDetail: Codable {
         case stats
         case types
         case sprites
+        case genderRate = "gender_rate"
     }
 }
 

@@ -15,6 +15,7 @@ struct PokemonDetailConfig {
     let weight: String
     let height: String
     let baseExperience: String
+    let gender: Gender
 
     init(name: String) {
         id = 0
@@ -24,6 +25,11 @@ struct PokemonDetailConfig {
         weight = ""
         height = ""
         baseExperience = ""
+        gender = Gender(
+            male: "",
+            female: "",
+            genderCase: .maleFemale
+        )
     }
 
     init(
@@ -33,7 +39,8 @@ struct PokemonDetailConfig {
         imgUrl: String,
         weight: String,
         height: String,
-        baseExperience: String
+        baseExperience: String,
+        gender: Gender
     ) {
         self.id = id
         self.name = name
@@ -42,6 +49,7 @@ struct PokemonDetailConfig {
         self.weight = weight
         self.height = height
         self.baseExperience = baseExperience
+        self.gender = gender
     }
 }
 
@@ -104,7 +112,8 @@ final class PokemonCellViewModel: ObservableObject {
             imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault,
             weight: convertToPoundsAndKilograms(pokemonDetail.weight),
             height: convertToFeetInchesAndCentimeters(pokemonDetail.height),
-            baseExperience: "\(pokemonDetail.baseExperience)"
+            baseExperience: "\(pokemonDetail.baseExperience)",
+            gender: getPokemonGenderChance(femaleEighths: pokemonDetail.genderRate)
         )
     }
 
@@ -124,6 +133,21 @@ final class PokemonCellViewModel: ObservableObject {
         let formattedWeightInPounds = String(format: "%.1f lbs", weightInPounds)
 
         return "\(formattedWeightInPounds) (\(formattedWeightInKilograms))"
+    }
+
+    func getPokemonGenderChance(femaleEighths: Int) -> Gender {
+        switch femaleEighths {
+        case -1:
+            return Gender(male: "", female: "", genderCase: .genderless)
+        case 0:
+            return Gender(male: "100%", female: "", genderCase: .male)
+        case 8:
+            return Gender(male: "", female: "100%", genderCase: .female)
+        default:
+            let femalePercentage = (femaleEighths * 100) / 8
+            let malePercentage = 100 - femalePercentage
+            return Gender(male: "\(malePercentage)%", female: "\(femalePercentage)%", genderCase: .maleFemale)
+        }
     }
 
     func convertToFeetInchesAndCentimeters(_ decimeters: Int) -> String {
@@ -149,4 +173,18 @@ final class PokemonCellViewModel: ObservableObject {
 
         return "\(formattedHeightInFeetAndInches) (\(formattedHeightInCentimeters))"
     }
+}
+
+struct Gender {
+    let male: String
+    let female: String
+    let genderless = "Genderless"
+    let genderCase: GenderCase
+}
+
+enum GenderCase {
+    case genderless
+    case male
+    case female
+    case maleFemale
 }

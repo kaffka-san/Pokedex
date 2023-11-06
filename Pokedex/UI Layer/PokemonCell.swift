@@ -102,6 +102,7 @@ private extension PokemonCell {
                     .scaledToFit()
             } else {
                 Color.gray.opacity(0.2)
+                    .cornerRadius(15)
             }
         }
     }
