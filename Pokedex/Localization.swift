@@ -47,6 +47,7 @@ enum LocalizedString {
         static let eggCylce = "pokemon_detail_egg_cycle".tr
         static let location = "pokemon_detail_location".tr
         static let training = "pokemon_detail_training".tr
+        static let experience = "pokemon_detail_base_experience".tr
     }
 
     enum Errors {

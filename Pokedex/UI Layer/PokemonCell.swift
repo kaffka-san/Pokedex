@@ -85,7 +85,7 @@ private extension PokemonCell {
                         .frame(alignment: .trailing)
                     HStack {
                         Spacer()
-                        VStack(alignment: .trailing) {
+                        ZStack(alignment: .topTrailing) {
                             idLabel
                             pokemonImage
                         }
@@ -100,9 +100,12 @@ private extension PokemonCell {
                 image
                     .resizable()
                     .scaledToFit()
+                    .frame(height: 90)
+                    .padding(.top, 20)
             } else {
                 Color.gray.opacity(0.2)
                     .cornerRadius(15)
+                    .frame(height: 110)
             }
         }
     }

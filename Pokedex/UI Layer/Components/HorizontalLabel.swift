@@ -8,15 +8,23 @@
 import SwiftUI
 
 struct HorizontalLabel: View {
-    let text: String
-    let descriptionText: String
+    private let text: String
+    private let descriptionText: String
+
+    init(
+        text: String,
+        descriptionText: String
+    ) {
+        self.text = text
+        self.descriptionText = descriptionText
+    }
 
     var body: some View {
         HStack(spacing: 12) {
             Text(descriptionText)
                 .font(PokedexFonts.label1)
                 .foregroundColor(PokedexColors.lightGray)
-                .frame(width: 88, alignment: .leading)
+                .frame(width: 100, alignment: .leading)
             Text(text.capitalized)
                 .font(PokedexFonts.body3)
                 .foregroundColor(PokedexColors.dark)

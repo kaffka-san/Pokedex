@@ -12,6 +12,7 @@ import UIKit
 
 struct PokemonDetailView: View {
     @StateObject private var viewModel: PokemonDetailViewModel
+    
 
     init(
         viewModel: PokemonDetailViewModel
@@ -55,14 +56,12 @@ struct PokemonDetailView: View {
                                 VStack(alignment: .leading) {
                                     description
                                     sizeCard
-                                    headingLabel
                                     verticalStatistics
                                 }
                             }
                         }
                     }
                 }
-
                 .navigationTitle(viewModel.pokemon.name.capitalized)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -91,54 +90,57 @@ struct PokemonDetailView: View {
 private extension PokemonDetailView {
     var verticalStatistics: some View {
         VStack(alignment: .leading, spacing: 18) {
+            HeadLineLabel(text: L.PokemonDetail.breeding)
+                .padding(.vertical, 6)
+            genderStatistic
             HorizontalLabel(
                 text: viewModel.pokemonSpecies.eggGroups.first ?? "",
                 descriptionText: L.PokemonDetail.eggGroups
             )
-            .background(.red)
             HorizontalLabel(
-                text: "Test",
+                text: viewModel.pokemonSpecies.hatchCounter,
                 descriptionText: L.PokemonDetail.eggCylce
             )
-            .background(.cyan)
-            HStack(spacing: 12) {
-                Text(L.PokemonDetail.gender)
-                    .font(PokedexFonts.label1)
-                    .foregroundColor(PokedexColors.lightGray)
-                    .frame(width: 88, alignment: .leading)
-                switch viewModel.pokemon.gender.genderCase {
-                case .genderless:
-                    Text(viewModel.pokemon.gender.genderless)
-                        .font(PokedexFonts.body3)
-                        .foregroundColor(PokedexColors.dark)
-                        .frame(alignment: .leading)
-                case .male:
-                    Label(viewModel.pokemon.gender.male, image: "male")
-                        .font(PokedexFonts.body3)
-                case .female:
-                    Label(viewModel.pokemon.gender.female, image: "female")
-                        .font(PokedexFonts.body3)
-                        .foregroundColor(PokedexColors.dark)
-                case .maleFemale:
-                    Label(viewModel.pokemon.gender.male, image: "male")
-                        .font(PokedexFonts.body3)
-                        .foregroundColor(PokedexColors.dark)
-                    Label(viewModel.pokemon.gender.female, image: "female")
-                        .font(PokedexFonts.body3)
-                        .foregroundColor(PokedexColors.dark)
-                }
-            }
+            HeadLineLabel(text: L.PokemonDetail.training)
+                .padding(.vertical, 6)
+            HorizontalLabel(
+                text: viewModel.pokemon.baseExperience,
+                descriptionText: L.PokemonDetail.experience
+            )
         }
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 26)
         .padding(.top, 24)
     }
 
-    var headingLabel: some View {
-        Text(L.PokemonDetail.breeding)
-            .font(PokedexFonts.headline2)
-            .foregroundColor(PokedexColors.dark)
-            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
-            .padding(.leading, 26)
+    var genderStatistic: some View {
+        HStack(spacing: 12) {
+            Text(L.PokemonDetail.gender)
+                .font(PokedexFonts.label1)
+                .foregroundColor(PokedexColors.lightGray)
+                .frame(width: 100, alignment: .leading)
+            switch viewModel.pokemonSpecies.gender.genderCase {
+            case .genderless:
+                Text(viewModel.pokemonSpecies.gender.genderless)
+                    .font(PokedexFonts.body3)
+                    .foregroundColor(PokedexColors.dark)
+                    .frame(alignment: .leading)
+            case .male:
+                Label(viewModel.pokemonSpecies.gender.male, image: "male")
+                    .font(PokedexFonts.body3)
+            case .female:
+                Label(viewModel.pokemonSpecies.gender.female, image: "female")
+                    .font(PokedexFonts.body3)
+                    .foregroundColor(PokedexColors.dark)
+            case .maleFemale:
+                Label(viewModel.pokemonSpecies.gender.male, image: "male")
+                    .font(PokedexFonts.body3)
+                    .foregroundColor(PokedexColors.dark)
+                Label(viewModel.pokemonSpecies.gender.female, image: "female")
+                    .font(PokedexFonts.body3)
+                    .foregroundColor(PokedexColors.dark)
+            }
+        }
     }
 
     var description: some View {
@@ -204,7 +206,8 @@ private extension PokemonDetailView {
                 .cornerRadius(20)
         }
         .shadow(radius: 10)
-        .padding(26)
+        .padding(.top, 26)
+        .padding(.horizontal, 26)
     }
 
     func configNavigationBar() {
@@ -235,12 +238,7 @@ private extension PokemonDetailView {
                 imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
                 weight: "13.2 lbs (6.9 kg)",
                 height: "1' 04 (0.70 cm)",
-                baseExperience: "65",
-                gender: Gender(
-                    male: "45%",
-                    female: "55%",
-                    genderCase: .genderless
-                )
+                baseExperience: "65"
             )
         )
     )

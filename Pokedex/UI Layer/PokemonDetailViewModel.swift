@@ -10,6 +10,22 @@ import Foundation
 struct PokemonSpeciesConfig {
     let description: String
     let eggGroups: [String]
+    let gender: Gender
+    let hatchCounter: String
+}
+
+struct Gender {
+    let male: String
+    let female: String
+    let genderless = "Genderless"
+    let genderCase: GenderCase
+}
+
+enum GenderCase {
+    case genderless
+    case male
+    case female
+    case maleFemale
 }
 
 final class PokemonDetailViewModel: ObservableObject {
@@ -20,7 +36,16 @@ final class PokemonDetailViewModel: ObservableObject {
         pokemon.types.first?.capitalized ?? "White"
     }
 
-    @Published var pokemonSpecies = PokemonSpeciesConfig(description: "", eggGroups: [])
+    @Published var pokemonSpecies = PokemonSpeciesConfig(
+        description: "",
+        eggGroups: [],
+        gender: Gender(
+            male: "",
+            female: "",
+            genderCase: .genderless
+        ),
+        hatchCounter: ""
+    )
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
@@ -108,8 +133,25 @@ final class PokemonDetailViewModel: ObservableObject {
                 of: pokemon.name,
                 in: pokemonDetail.flavorTextEntries.map { $0.flavorText }
             ) ?? "",
-            eggGroups: pokemonDetail.eggGroups.map { $0.name }
+            eggGroups: pokemonDetail.eggGroups.map { $0.name },
+            gender: getPokemonGenderChance(femaleEighths: pokemonDetail.genderRate),
+            hatchCounter: calculateHatchingSteps(initialHatchCounter: pokemonDetail.hatchCounter)
         )
+    }
+
+    func getPokemonGenderChance(femaleEighths: Int) -> Gender {
+        switch femaleEighths {
+        case -1:
+            return Gender(male: "", female: "", genderCase: .genderless)
+        case 0:
+            return Gender(male: "100%", female: "", genderCase: .male)
+        case 8:
+            return Gender(male: "", female: "100%", genderCase: .female)
+        default:
+            let femalePercentage = (femaleEighths * 100) / 8
+            let malePercentage = 100 - femalePercentage
+            return Gender(male: "\(malePercentage)%", female: "\(femalePercentage)%", genderCase: .maleFemale)
+        }
     }
 
     func findLastOccurrence(of name: String, in array: [String]) -> String? {
@@ -120,6 +162,11 @@ final class PokemonDetailViewModel: ObservableObject {
 
     func removeNewLines(from string: String) -> String {
         string.replacingOccurrences(of: "\n", with: "")
+    }
+
+    func calculateHatchingSteps(initialHatchCounter: Int) -> String {
+        let baseSteps = 255
+        return "\(baseSteps * (initialHatchCounter + 1)) steps"
     }
 
     func showAlert() {

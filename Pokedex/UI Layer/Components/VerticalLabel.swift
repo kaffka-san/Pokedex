@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct VerticalLabel: View {
-    let text: String
-    let descriptionText: String
+    private let text: String
+    private let descriptionText: String
+
+    init(
+        text: String,
+        descriptionText: String
+    ) {
+        self.text = text
+        self.descriptionText = descriptionText
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
