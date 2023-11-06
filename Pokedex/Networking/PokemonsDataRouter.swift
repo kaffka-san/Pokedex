@@ -10,6 +10,7 @@ import Foundation
 enum PokemonsRoute {
     case pokemons(offset: Int)
     case pokemonDetail(name: String)
+    case pokemonSpecies(name: String)
 }
 
 final class PokemonsRouter: Router, APIRouter {
@@ -32,6 +33,16 @@ final class PokemonsRouter: Router, APIRouter {
             return buildRequest(
                 method: .get,
                 url: "\(baseURL)/pokemon/\(name)",
+                headers: [
+                    "Content-Type": "application/json",
+                    "accept": "application/json"
+                ],
+                body: { nil }
+            )
+        case let .pokemonSpecies(name):
+            return buildRequest(
+                method: .get,
+                url: "\(baseURL)/pokemon-species/\(name)",
                 headers: [
                     "Content-Type": "application/json",
                     "accept": "application/json"

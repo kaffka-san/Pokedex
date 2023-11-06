@@ -8,7 +8,7 @@
 import Foundation
 
 final class PokemonsViewModel: ObservableObject {
-    private weak var coordinator: PokemonsCoordinator?
+    weak var coordinator: PokemonsCoordinator?
     let pokemonsAPI: PokemonsAPIProtocol
     @Published var pokemons = [Pokemon]()
     @Published var alertConfig: AlertConfig?
@@ -22,10 +22,6 @@ final class PokemonsViewModel: ObservableObject {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         loadPokemons()
-    }
-
-    func goToDetailView(name: String) {
-        coordinator?.goToDetailView(name: name)
     }
 
     func loadPokemons() {

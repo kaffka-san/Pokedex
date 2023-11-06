@@ -25,9 +25,11 @@ struct PokemonsView: View {
     var body: some View {
         NavigationView {
             ScrollView {
+                Text(L.Pokemons.pokemonsTitle)
+                    .font(.system(size: 30).weight(.black))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 26)
                 pokemonList
-                    .navigationTitle(L.Pokemons.pokemonsTitle)
-                    .navigationBarTitleDisplayMode(.large)
                     .padding(.horizontal, 26)
             }
         }
@@ -47,12 +49,9 @@ private extension PokemonsView {
                 ForEach(viewModel.pokemons, id: \.id) { pokemon in
                     PokemonCell(
                         viewModel: PokemonCellViewModel(
-                            id: 0,
                             name: pokemon.name,
-                            types: [],
-                            imgUrl: "",
-                            selectedAction: { viewModel.goToDetailView(name: pokemon.name) },
-                            pokemonsAPI: viewModel.pokemonsAPI
+                            pokemonsAPI: viewModel.pokemonsAPI,
+                            coordinator: viewModel.coordinator
                         )
                     )
                     .onAppear {

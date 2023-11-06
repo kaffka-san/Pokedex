@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 typealias L = LocalizedString
 
 extension String {
@@ -38,6 +36,19 @@ extension String {
 enum LocalizedString {
     enum Pokemons {
         static let pokemonsTitle = "pokemons_title".tr
+    }
+
+    enum PokemonDetail {
+        static let height = "pokemon_detail_height".tr
+        static let weight = "pokemon_detail_weight".tr
+        static let breeding = "pokemon_detail_breeding".tr
+        static let gender = "pokemon_detail_gender".tr
+        static let eggGroups = "pokemon_detail_egg_groups".tr
+        static let eggCylce = "pokemon_detail_egg_cycle".tr
+        static let location = "pokemon_detail_location".tr
+        static let training = "pokemon_detail_training".tr
+        static let experience = "pokemon_detail_base_experience".tr
+        static let steps = "pokemon_detail_steps".tr
     }
 
     enum Errors {
