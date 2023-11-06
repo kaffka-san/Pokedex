@@ -19,6 +19,8 @@
 "pokemon_detail_location" = "Location";
 "pokemon_detail_training" = "Training";
 "pokemon_detail_base_experience" = "Base EXP";
+"pokemon_detail_steps" = "steps";
+
 
 // MARK: - Errors
 "error_generic_title" = "Error";

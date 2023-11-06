@@ -18,13 +18,15 @@ struct Pokemon: Codable, Identifiable, Equatable {
     let name: String
     let url: String
 
-    static var samplePokemon = Pokemon(
-        name: "charmander",
-        url: "https://pokeapi.co/api/v2/pokemon/4/"
-    )
     static func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
         lhs.id == rhs.id
     }
+
+//    init(name: String, url: String) {
+//        id = UUID()
+//        self.name = name
+//        self.url = url
+//    }
 }
 
 struct PokemonDetail: Codable {

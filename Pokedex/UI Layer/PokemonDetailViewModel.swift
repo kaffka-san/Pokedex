@@ -7,33 +7,12 @@
 
 import Foundation
 
-struct PokemonSpeciesConfig {
-    let description: String
-    let eggGroups: [String]
-    let gender: Gender
-    let hatchCounter: String
-}
-
-struct Gender {
-    let male: String
-    let female: String
-    let genderless = "Genderless"
-    let genderCase: GenderCase
-}
-
-enum GenderCase {
-    case genderless
-    case male
-    case female
-    case maleFemale
-}
-
 final class PokemonDetailViewModel: ObservableObject {
     private weak var coordinator: PokemonsCoordinator?
     private let pokemonsAPI: PokemonsAPIProtocol
     let pokemon: PokemonDetailConfig
     var colorBackground: String {
-        pokemon.types.first?.capitalized ?? "White"
+        pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
 
     @Published var pokemonSpecies = PokemonSpeciesConfig(
@@ -49,6 +28,7 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
+    @Published var scrollPosition: CGPoint = .zero
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -139,6 +119,7 @@ final class PokemonDetailViewModel: ObservableObject {
         )
     }
 
+    // The chance of this Pokémon being female, in eighths; or -1 for genderless
     func getPokemonGenderChance(femaleEighths: Int) -> Gender {
         switch femaleEighths {
         case -1:
@@ -164,9 +145,10 @@ final class PokemonDetailViewModel: ObservableObject {
         string.replacingOccurrences(of: "\n", with: "")
     }
 
+    // Initial hatch counter: one must walk 255 × (hatch_counter + 1) steps before this Pokémon's egg hatches
     func calculateHatchingSteps(initialHatchCounter: Int) -> String {
         let baseSteps = 255
-        return "\(baseSteps * (initialHatchCounter + 1)) steps"
+        return "\(baseSteps * (initialHatchCounter + 1)) \(L.PokemonDetail.steps)"
     }
 
     func showAlert() {

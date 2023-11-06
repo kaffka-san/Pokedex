@@ -7,12 +7,10 @@
 
 import NukeUI
 import SwiftUI
-import SwiftUIIntrospect
 import UIKit
 
 struct PokemonDetailView: View {
     @StateObject private var viewModel: PokemonDetailViewModel
-    
 
     init(
         viewModel: PokemonDetailViewModel
@@ -23,63 +21,7 @@ struct PokemonDetailView: View {
 
     var body: some View {
         NavigationStack {
-            GeometryReader { geometry in
-                ZStack {
-                    Color(viewModel.colorBackground)
-                        .edgesIgnoringSafeArea(.all)
-                }
-                ScrollView {
-                    VStack {
-                        // Gap at the top
-                        ZStack(alignment: .top) {
-                            Color.clear.frame(height: geometry.size.height * 0.32)
-                            HStack {
-                                ForEach(viewModel.pokemon.types, id: \.self) { type in
-                                    CapsuleText(
-                                        text: type,
-                                        font: PokedexFonts.body2,
-                                        width: 70
-                                    )
-                                }
-                                Spacer()
-                            }
-                            .padding(.leading, 26)
-                        }
-                        // Card-like view
-                        VStack {
-                            ZStack(alignment: .top) {
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color.white)
-                                    .frame(width: geometry.size.width, height: geometry.size.height * 2.75)
-                                    .shadow(radius: 10)
-                                pokemonImage
-                                VStack(alignment: .leading) {
-                                    description
-                                    sizeCard
-                                    verticalStatistics
-                                }
-                            }
-                        }
-                    }
-                }
-                .navigationTitle(viewModel.pokemon.name.capitalized)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {} label: {
-                            Label("fav", systemImage: "heart")
-                        }
-                        .tint(.white)
-                    }
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            viewModel.goBack()
-                        } label: {
-                            Label("back", systemImage: "arrow.backward")
-                        }
-                        .tint(.white)
-                    }
-                }
-            }
+            scrollView
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .navigationBarBackButtonHidden(true)
@@ -88,6 +30,92 @@ struct PokemonDetailView: View {
 }
 
 private extension PokemonDetailView {
+    var scrollView: some View {
+        GeometryReader { geometry in
+            ZStack {
+                Color(viewModel.colorBackground)
+                    .edgesIgnoringSafeArea(.all)
+            }
+            ScrollView {
+                VStack {
+                    ZStack(alignment: .top) {
+                        Color.clear.frame(height: geometry.size.height * 0.32)
+                        pokemonTypes
+                    }
+                    VStack {
+                        ZStack(alignment: .top) {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.white)
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                                .shadow(radius: 10)
+                            horizontalPokemonImages
+                            VStack(alignment: .leading) {
+                                description
+                                sizeCard
+                                verticalStatistics
+                            }
+                        }
+                    }
+                }
+                // Detect scroll position
+                .background(GeometryReader { geometry in
+                    Color.clear
+                        .preference(
+                            key: ScrollOffsetPreferenceKey.self,
+                            value: geometry.frame(
+                                in: .named(Constants.scrollName)
+                            )
+                            .origin
+                        )
+                })
+                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                    viewModel.scrollPosition = value
+                }
+            }
+            .edgesIgnoringSafeArea(.bottom)
+            .coordinateSpace(name: Constants.scrollName)
+            .navigationTitle(viewModel.pokemon.name.capitalized)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    backButton
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    loveButton
+                }
+            }
+        }
+    }
+
+    var loveButton: some View {
+        Button {} label: {
+            Image(AssetsImagesString.loveIcon)
+        }
+        .tint(.white)
+    }
+
+    var backButton: some View {
+        Button {
+            viewModel.goBack()
+        } label: {
+            Image(AssetsImagesString.backIcon)
+        }
+        .tint(.white)
+    }
+
+    var pokemonTypes: some View {
+        HStack {
+            ForEach(viewModel.pokemon.types, id: \.self) { type in
+                CapsuleText(
+                    text: type,
+                    font: PokedexFonts.body2,
+                    width: 70
+                )
+            }
+            Spacer()
+        }
+        .padding(.leading, 26)
+    }
+
     var verticalStatistics: some View {
         VStack(alignment: .leading, spacing: 18) {
             HeadLineLabel(text: L.PokemonDetail.breeding)
@@ -126,17 +154,17 @@ private extension PokemonDetailView {
                     .foregroundColor(PokedexColors.dark)
                     .frame(alignment: .leading)
             case .male:
-                Label(viewModel.pokemonSpecies.gender.male, image: "male")
+                Label(viewModel.pokemonSpecies.gender.male, image: AssetsImagesString.male)
                     .font(PokedexFonts.body3)
             case .female:
-                Label(viewModel.pokemonSpecies.gender.female, image: "female")
+                Label(viewModel.pokemonSpecies.gender.female, image: AssetsImagesString.female)
                     .font(PokedexFonts.body3)
                     .foregroundColor(PokedexColors.dark)
             case .maleFemale:
-                Label(viewModel.pokemonSpecies.gender.male, image: "male")
+                Label(viewModel.pokemonSpecies.gender.male, image: AssetsImagesString.male)
                     .font(PokedexFonts.body3)
                     .foregroundColor(PokedexColors.dark)
-                Label(viewModel.pokemonSpecies.gender.female, image: "female")
+                Label(viewModel.pokemonSpecies.gender.female, image: AssetsImagesString.female)
                     .font(PokedexFonts.body3)
                     .foregroundColor(PokedexColors.dark)
             }
@@ -156,36 +184,41 @@ private extension PokemonDetailView {
             )
     }
 
-    var pokemonImage: some View {
+    var horizontalPokemonImages: some View {
         HStack {
             GrayImage(url: viewModel.previousImageUrl)
                 .offset(x: 0, y: -190)
                 .frame(width: 80, height: 100)
 
-            ZStack {
-                AssetsImages.pokeball
-                    .resizable()
-                    .scaledToFill()
-                    .opacity(0.3)
-                    .frame(width: 150)
-                LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
-                    if let image = state.image {
-                        image
-                            .resizable()
-                            .scaledToFit()
-                    } else {
-                        Color.gray.opacity(0.4)
-                    }
-                }
-            }
-            .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
-            .offset(y: -190)
-
+            pokemonImage
             GrayImage(url: viewModel.nextImageUrl)
                 .offset(x: 0, y: -190)
                 .frame(width: 80, height: 100)
         }
         .frame(width: UIScreen.main.bounds.width)
+        .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -90.0) ? 1 : 0)
+        .animation(.easeInOut, value: viewModel.scrollPosition)
+    }
+
+    var pokemonImage: some View {
+        ZStack {
+            AssetsImages.pokeball
+                .resizable()
+                .scaledToFill()
+                .opacity(0.3)
+                .frame(width: 150)
+            LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    Color.gray.opacity(0.4)
+                }
+            }
+        }
+        .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
+        .offset(y: -190)
     }
 
     var sizeCard: some View {
@@ -215,11 +248,13 @@ private extension PokemonDetailView {
         appearance.configureWithTransparentBackground()
         appearance.titleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 22, weight: .black)]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 36, weight: .black)]
-        // appearance.backgroundColor = UIColor(named: viewModel.colorBackground) // Choose the background color you want
         UINavigationBar.appearance().standardAppearance = appearance
-        // UINavigationBar.appearance().compactAppearance = appearance
-        // UINavigationBar.appearance().scrollEdgeAppearance = appearance
         UINavigationBar.appearance().layoutMargins.left = 26
+    }
+
+    struct ScrollOffsetPreferenceKey: PreferenceKey {
+        static var defaultValue: CGPoint = .zero
+        static func reduce(value _: inout CGPoint, nextValue _: () -> CGPoint) {}
     }
 }
 

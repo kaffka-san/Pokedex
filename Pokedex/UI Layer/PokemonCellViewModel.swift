@@ -7,44 +7,6 @@
 
 import SwiftUI
 
-struct PokemonDetailConfig {
-    let id: Int
-    let name: String
-    let types: [String]
-    let imgUrl: String
-    let weight: String
-    let height: String
-    let baseExperience: String
-
-    init(name: String) {
-        id = 0
-        self.name = name
-        types = []
-        imgUrl = ""
-        weight = ""
-        height = ""
-        baseExperience = ""
-    }
-
-    init(
-        id: Int,
-        name: String,
-        types: [String],
-        imgUrl: String,
-        weight: String,
-        height: String,
-        baseExperience: String
-    ) {
-        self.id = id
-        self.name = name
-        self.types = types
-        self.imgUrl = imgUrl
-        self.weight = weight
-        self.height = height
-        self.baseExperience = baseExperience
-    }
-}
-
 final class PokemonCellViewModel: ObservableObject {
     private let pokemonsAPI: PokemonsAPIProtocol
     private weak var coordinator: PokemonsCoordinator?

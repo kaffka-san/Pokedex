@@ -20,7 +20,6 @@ struct PokemonsView: View {
             state: viewModel.$progressHudState
         )
         _viewModel = StateObject(wrappedValue: viewModel)
-        // configNavigationBar()
     }
 
     var body: some View {
@@ -65,18 +64,6 @@ private extension PokemonsView {
             }
         }
     }
-
-//    func configNavigationBar() {
-//        let appearance = UINavigationBarAppearance()
-//        // appearance.configureWithOpaqueBackground()
-//        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black, .font: UIFont.systemFont(ofSize: 30, weight: .black)]
-//        appearance.backgroundColor = .clear // Choose the background color you want
-//        UINavigationBar.appearance().standardAppearance = appearance
-//        // UINavigationBar.appearance().compactAppearance = appearance
-//        // UINavigationBar.appearance().scrollEdgeAppearance = appearance
-//        UINavigationBar.appearance().layoutMargins.left = 26
-//    }
 }
 
 #Preview {

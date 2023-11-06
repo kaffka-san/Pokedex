@@ -66,7 +66,7 @@ private extension PokemonCell {
         Text(viewModel.pokemon.name.capitalized)
             .font(PokedexFonts.label1)
             .frame(
-                width: 85,
+                width: 90,
                 alignment: .leading
             )
             .foregroundStyle(.white)
@@ -100,7 +100,7 @@ private extension PokemonCell {
                 image
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 90)
+                    .frame(height: 80)
                     .padding(.top, 20)
             } else {
                 Color.gray.opacity(0.2)
