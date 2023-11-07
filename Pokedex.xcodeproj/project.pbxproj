@@ -16,7 +16,6 @@
 		3042A8A02AF91C6500D65D54 /* CapsuleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042A89F2AF91C6500D65D54 /* CapsuleButton.swift */; };
 		3086F0FF2AF567BF0089FA33 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F0FE2AF567BF0089FA33 /* APIClient.swift */; };
 		3086F1012AF567E00089FA33 /* APIRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1002AF567E00089FA33 /* APIRouter.swift */; };
-		3086F1032AF567F70089FA33 /* NetworkingLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1022AF567F70089FA33 /* NetworkingLogger.swift */; };
 		3086F1052AF5681E0089FA33 /* NetworkingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1042AF5681E0089FA33 /* NetworkingExtensions.swift */; };
 		3086F1082AF568620089FA33 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1072AF568620089FA33 /* APIError.swift */; };
 		3086F10A2AF568760089FA33 /* APIErrorCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1092AF568760089FA33 /* APIErrorCode.swift */; };
@@ -69,7 +68,6 @@
 		3042A89F2AF91C6500D65D54 /* CapsuleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleButton.swift; sourceTree = "<group>"; };
 		3086F0FE2AF567BF0089FA33 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		3086F1002AF567E00089FA33 /* APIRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRouter.swift; sourceTree = "<group>"; };
-		3086F1022AF567F70089FA33 /* NetworkingLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingLogger.swift; sourceTree = "<group>"; };
 		3086F1042AF5681E0089FA33 /* NetworkingExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingExtensions.swift; sourceTree = "<group>"; };
 		3086F1072AF568620089FA33 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		3086F1092AF568760089FA33 /* APIErrorCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIErrorCode.swift; sourceTree = "<group>"; };
@@ -159,7 +157,6 @@
 			children = (
 				3086F0FE2AF567BF0089FA33 /* APIClient.swift */,
 				3086F1002AF567E00089FA33 /* APIRouter.swift */,
-				3086F1022AF567F70089FA33 /* NetworkingLogger.swift */,
 				3086F1042AF5681E0089FA33 /* NetworkingExtensions.swift */,
 				30B2FA1C2AF644BB00B9D94D /* PokemonsAPI.swift */,
 				30B2FA1E2AF6459C00B9D94D /* PokemonsDataRouter.swift */,
@@ -413,7 +410,6 @@
 				30DBD81B2AF82B810069F25A /* Colors.swift in Sources */,
 				3086F11B2AF56C250089FA33 /* PokemonsView.swift in Sources */,
 				3086F1162AF56AA30089FA33 /* MainCoordinator.swift in Sources */,
-				3086F1032AF567F70089FA33 /* NetworkingLogger.swift in Sources */,
 				3042A8A02AF91C6500D65D54 /* CapsuleButton.swift in Sources */,
 				30B2FA2B2AF6505300B9D94D /* PokemonCell.swift in Sources */,
 				30C552082AF7984D005D1DB8 /* PokemonDetailView.swift in Sources */,
