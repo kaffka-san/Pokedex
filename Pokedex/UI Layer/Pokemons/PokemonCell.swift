@@ -120,8 +120,9 @@ private extension PokemonCell {
             .frame(
                 width: 56,
                 height: 13,
-                alignment: .center
+                alignment: .trailing
             )
+            .padding(.trailing, 10)
             .padding(.top, 10)
     }
 }
@@ -130,6 +131,7 @@ private extension PokemonCell {
     PokemonCell(
         viewModel: PokemonCellViewModel(
             name: "",
+            url: "",
 
             // TODO: Create Mock
             pokemonsAPI: PokemonsAPI(

@@ -11,6 +11,7 @@ protocol PokemonsAPIProtocol {
     func getPokemons(offset: Int) async throws -> Pokemons
     func getPokemonDetail(name: String) async throws -> PokemonDetail
     func getPokemonSpecies(name: String) async throws -> PokemonSpecies
+    func getPokemonForGeneration(generation: Int) async throws -> PokemonsGeneration
 }
 
 class PokemonsAPI: PokemonsAPIProtocol, Service {
@@ -43,6 +44,13 @@ class PokemonsAPI: PokemonsAPIProtocol, Service {
 
     func getPokemonSpecies(name: String) async throws -> PokemonSpecies {
         let route = PokemonsRoute.pokemonSpecies(name: name)
+        return try await apiClient.requestDecodable(
+            for: urlConvertible(for: route)
+        )
+    }
+
+    func getPokemonForGeneration(generation: Int) async throws -> PokemonsGeneration {
+        let route = PokemonsRoute.pokemonsForGeneration(generation: generation)
         return try await apiClient.requestDecodable(
             for: urlConvertible(for: route)
         )

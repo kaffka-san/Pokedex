@@ -11,6 +11,7 @@ enum PokemonsRoute {
     case pokemons(offset: Int)
     case pokemonDetail(name: String)
     case pokemonSpecies(name: String)
+    case pokemonsForGeneration(generation: Int)
 }
 
 final class PokemonsRouter: Router, APIRouter {
@@ -43,6 +44,16 @@ final class PokemonsRouter: Router, APIRouter {
             return buildRequest(
                 method: .get,
                 url: "\(baseURL)/pokemon-species/\(name)",
+                headers: [
+                    "Content-Type": "application/json",
+                    "accept": "application/json"
+                ],
+                body: { nil }
+            )
+        case let .pokemonsForGeneration(generation: generation):
+            return buildRequest(
+                method: .get,
+                url: "\(baseURL)/generation/\(generation)",
                 headers: [
                     "Content-Type": "application/json",
                     "accept": "application/json"

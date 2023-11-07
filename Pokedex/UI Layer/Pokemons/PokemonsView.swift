@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PokemonsView: View {
     private let progressHudBinding: ProgressHudBinding
-
     @StateObject var viewModel: PokemonsViewModel
 
     init(
@@ -24,13 +23,37 @@ struct PokemonsView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                Text(L.Pokemons.pokemonsTitle)
-                    .font(.system(size: 30).weight(.black))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 26)
-                pokemonList
-                    .padding(.horizontal, 26)
+            ZStack(alignment: .bottomTrailing) {
+                ScrollView {
+                    Text(L.Pokemons.pokemonsTitle)
+                        .font(.system(size: 30).weight(.black))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 26)
+                    pokemonList
+                        .padding(.horizontal, 26)
+                }
+                Button {
+                    viewModel.showSettingsMenu.toggle()
+                } label: {
+                    AssetsImages.settings
+                        .padding(.trailing, 26)
+                        .shadow(radius: 20)
+                }
+                if viewModel.showSettingsMenu {
+                    SettingsView(
+                        viewModel: SettingsViewModel(
+                            close: { viewModel.showSettingsMenu.toggle() },
+                            generationSelected: { generationId in
+                                viewModel.showSettingsMenu.toggle()
+                                viewModel.loadGeneration(index: generationId)
+                            },
+                            showAll: {
+                                viewModel.showSettingsMenu.toggle()
+                                viewModel.showAllPokemons()
+                            }
+                        )
+                    )
+                }
             }
         }
         .navigationBarHidden(true)
@@ -50,6 +73,7 @@ private extension PokemonsView {
                     PokemonCell(
                         viewModel: PokemonCellViewModel(
                             name: pokemon.name,
+                            url: pokemon.url,
                             pokemonsAPI: viewModel.pokemonsAPI,
                             coordinator: viewModel.coordinator
                         )

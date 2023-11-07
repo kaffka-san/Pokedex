@@ -14,6 +14,8 @@ final class PokemonsViewModel: ObservableObject {
     @Published var alertConfig: AlertConfig?
     @Published private(set) var progressHudState: ProgressHudState = .hide
     @Published var isLoading = false
+    @Published var showSettingsMenu = false
+    @Published var disablePagination = false
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -38,8 +40,30 @@ final class PokemonsViewModel: ObservableObject {
         }
     }
 
+    func showAllPokemons() {
+        loadPokemons()
+        disablePagination = false
+    }
+
+    func loadGeneration(index: Int) {
+        disablePagination = true
+        isLoading = false
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let pokemonsList = try await pokemonsAPI.getPokemonForGeneration(generation: index)
+                await self.updateGeneration(pokemonsList: pokemonsList)
+
+            } catch {
+                await MainActor.run {
+                    self.showAlert()
+                }
+            }
+        }
+    }
+
     func loadNextPage(for pokemon: Pokemon) {
-        guard !isLoading else { return }
+        guard !isLoading && !disablePagination else { return }
         let isLastPost = pokemons.last?.id == pokemon.id
         if isLastPost {
             isLoading = true
@@ -58,6 +82,11 @@ final class PokemonsViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    @MainActor
+    private func updateGeneration(pokemonsList: PokemonsGeneration) {
+        pokemons = pokemonsList.pokemonSpecies
     }
 
     @MainActor

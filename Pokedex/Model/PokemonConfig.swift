@@ -9,6 +9,7 @@ import Foundation
 
 struct PokemonDetailConfig {
     let id: Int
+    let url: String
     let name: String
     let types: [String]
     let imgUrl: String
@@ -16,8 +17,9 @@ struct PokemonDetailConfig {
     let height: String
     let baseExperience: String
 
-    init(name: String) {
+    init(name: String, url: String) {
         id = 0
+        self.url = url
         self.name = name
         types = []
         imgUrl = ""
@@ -28,6 +30,7 @@ struct PokemonDetailConfig {
 
     init(
         id: Int,
+        url: String,
         name: String,
         types: [String],
         imgUrl: String,
@@ -36,6 +39,7 @@ struct PokemonDetailConfig {
         baseExperience: String
     ) {
         self.id = id
+        self.url = url
         self.name = name
         self.types = types
         self.imgUrl = imgUrl

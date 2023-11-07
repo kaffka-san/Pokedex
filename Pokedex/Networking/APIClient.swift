@@ -35,22 +35,22 @@ final class APIClient {
         _ convertible: URLRequestConvertible
     ) async throws -> (Data, URLResponse) {
         let request = try await urlRequest(of: convertible)
-        NetworkingLogger.logRequest(request, config: session.configuration)
+        // NetworkingLogger.logRequest(request, config: session.configuration)
 
         do {
             let (data, response) = try await session.data(for: request)
-            NetworkingLogger.logResponse(
-                response as? HTTPURLResponse,
-                data: data,
-                error: nil
-            )
+//            NetworkingLogger.logResponse(
+//                response as? HTTPURLResponse,
+//                data: data,
+//                error: nil
+            //           )
             if response.isFailure {
                 throw decodeError(from: data)
             }
 
             return (data, response)
         } catch {
-            NetworkingLogger.log("Error sending request: \(error)")
+            //  NetworkingLogger.log("Error sending request: \(error)")
             throw error
         }
     }
@@ -59,7 +59,7 @@ final class APIClient {
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
-            NetworkingLogger.log("Error decoding successful response: \(error)")
+            //   NetworkingLogger.log("Error decoding successful response: \(error)")
             throw APIError.decodingError(underlyingError: error)
         }
     }

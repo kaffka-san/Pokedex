@@ -23,7 +23,6 @@ struct PokemonDetailView: View {
         NavigationStack {
             scrollView
         }
-        .navigationViewStyle(StackNavigationViewStyle())
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
     }
@@ -46,7 +45,10 @@ private extension PokemonDetailView {
                         ZStack(alignment: .top) {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(Color.white)
-                                .frame(width: geometry.size.width, height: geometry.size.height)
+                                .frame(
+                                    width: geometry.size.width,
+                                    height: geometry.size.height
+                                )
                                 .shadow(radius: 10)
                             horizontalPokemonImages
                             VStack(alignment: .leading) {
@@ -254,7 +256,10 @@ private extension PokemonDetailView {
 
     struct ScrollOffsetPreferenceKey: PreferenceKey {
         static var defaultValue: CGPoint = .zero
-        static func reduce(value _: inout CGPoint, nextValue _: () -> CGPoint) {}
+        static func reduce(
+            value _: inout CGPoint,
+            nextValue _: () -> CGPoint
+        ) {}
     }
 }
 
@@ -262,12 +267,14 @@ private extension PokemonDetailView {
     PokemonDetailView(
         viewModel: PokemonDetailViewModel(
             coordinator: nil,
+            // TODO: create Mock
             pokemonsAPI: PokemonsAPI(
                 apiClient: APIClient(),
                 router: PokemonsRouter()
             ),
             pokemon: PokemonDetailConfig(
                 id: 4,
+                url: "https://pokeapi.co/api/v2/pokemon/4/",
                 name: "Charmander",
                 types: ["Fire"],
                 imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
