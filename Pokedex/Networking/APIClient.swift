@@ -5,6 +5,11 @@
 //  Created by Anastasia Lenina on 03.11.2023.
 //
 
+/*
+ * The following function is adapted from code provided by Applifting.
+ * All rights reserved by Applifting.
+ */
+
 import Foundation
 
 final class APIClient {

@@ -30,8 +30,9 @@ struct CapsuleButton: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
             .background {
-                Color.white.cornerRadius(30)
+                Color.white
             }
+            .clipShape(Capsule())
         }
     }
 }
