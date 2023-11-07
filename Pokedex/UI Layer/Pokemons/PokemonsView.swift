@@ -8,16 +8,12 @@
 import SwiftUI
 
 struct PokemonsView: View {
-    private let progressHudBinding: ProgressHudBinding
     @StateObject var viewModel: PokemonsViewModel
 
     init(
         viewModel: PokemonsViewModel
 
     ) {
-        progressHudBinding = ProgressHudBinding(
-            state: viewModel.$progressHudState
-        )
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 

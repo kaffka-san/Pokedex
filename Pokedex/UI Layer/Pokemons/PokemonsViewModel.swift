@@ -12,7 +12,6 @@ final class PokemonsViewModel: ObservableObject {
     let pokemonsAPI: PokemonsAPIProtocol
     @Published var pokemons = [Pokemon]()
     @Published var alertConfig: AlertConfig?
-    @Published private(set) var progressHudState: ProgressHudState = .hide
     @Published var isLoading = false
     @Published var showSettingsMenu = false
     @Published var disablePagination = false

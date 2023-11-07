@@ -70,7 +70,7 @@ final class APIClient {
         }
     }
 
-    private func urlRequest(of convertible: URLRequestConvertible) throws -> URLRequest {
+    private func urlRequest(of convertible: URLRequestConvertible) async throws -> URLRequest {
         do {
             return try convertible.asURLRequest()
         } catch {

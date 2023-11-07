@@ -29,12 +29,10 @@
 		3086F11D2AF56C3A0089FA33 /* PokemonsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F11C2AF56C3A0089FA33 /* PokemonsViewModel.swift */; };
 		3086F1232AF56D1C0089FA33 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1222AF56D1C0089FA33 /* HostingController.swift */; };
 		3086F1242AF56D1C0089FA33 /* NavigationPropagation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1202AF56D1C0089FA33 /* NavigationPropagation.swift */; };
-		3086F1252AF56D1C0089FA33 /* ProgressHudHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3086F1212AF56D1C0089FA33 /* ProgressHudHelper.swift */; };
 		309659B12AF55DEE00B2BE78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309659B02AF55DEE00B2BE78 /* AppDelegate.swift */; };
 		309659B32AF55DEE00B2BE78 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309659B22AF55DEE00B2BE78 /* SceneDelegate.swift */; };
 		309659BA2AF55DEF00B2BE78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 309659B92AF55DEF00B2BE78 /* Assets.xcassets */; };
 		309659BD2AF55DEF00B2BE78 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 309659BB2AF55DEF00B2BE78 /* LaunchScreen.storyboard */; };
-		30B2FA192AF63DB400B9D94D /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 30B2FA182AF63DB400B9D94D /* ProgressHUD */; };
 		30B2FA1B2AF640A200B9D94D /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B2FA1A2AF640A200B9D94D /* Pokemon.swift */; };
 		30B2FA1D2AF644BC00B9D94D /* PokemonsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B2FA1C2AF644BB00B9D94D /* PokemonsAPI.swift */; };
 		30B2FA1F2AF6459C00B9D94D /* PokemonsDataRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B2FA1E2AF6459C00B9D94D /* PokemonsDataRouter.swift */; };
@@ -80,7 +78,6 @@
 		3086F11A2AF56C250089FA33 /* PokemonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonsView.swift; sourceTree = "<group>"; };
 		3086F11C2AF56C3A0089FA33 /* PokemonsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonsViewModel.swift; sourceTree = "<group>"; };
 		3086F1202AF56D1C0089FA33 /* NavigationPropagation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationPropagation.swift; sourceTree = "<group>"; };
-		3086F1212AF56D1C0089FA33 /* ProgressHudHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHudHelper.swift; sourceTree = "<group>"; };
 		3086F1222AF56D1C0089FA33 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
 		309659AD2AF55DEE00B2BE78 /* Pokedex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pokedex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		309659B02AF55DEE00B2BE78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -112,7 +109,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30B2FA192AF63DB400B9D94D /* ProgressHUD in Frameworks */,
 				30B2FA2E2AF6508500B9D94D /* Nuke in Frameworks */,
 				30B2FA342AF6508500B9D94D /* NukeVideo in Frameworks */,
 				30B2FA302AF6508500B9D94D /* NukeExtensions in Frameworks */,
@@ -205,7 +201,6 @@
 				3086F1202AF56D1C0089FA33 /* NavigationPropagation.swift */,
 				3042A8942AF908B300D65D54 /* Ext+CGPoint.swift */,
 				3086F1222AF56D1C0089FA33 /* HostingController.swift */,
-				3086F1212AF56D1C0089FA33 /* ProgressHudHelper.swift */,
 				30B2FA372AF692CB00B9D94D /* Fonts.swift */,
 			);
 			path = Helpers;
@@ -298,7 +293,6 @@
 			);
 			name = Pokedex;
 			packageProductDependencies = (
-				30B2FA182AF63DB400B9D94D /* ProgressHUD */,
 				30B2FA2D2AF6508500B9D94D /* Nuke */,
 				30B2FA2F2AF6508500B9D94D /* NukeExtensions */,
 				30B2FA312AF6508500B9D94D /* NukeUI */,
@@ -333,7 +327,6 @@
 			);
 			mainGroup = 309659A42AF55DEE00B2BE78;
 			packageReferences = (
-				30B2FA172AF63DB400B9D94D /* XCRemoteSwiftPackageReference "ProgressHUD" */,
 				30B2FA2C2AF6508500B9D94D /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = 309659AE2AF55DEE00B2BE78 /* Products */;
@@ -426,7 +419,6 @@
 				30B2FA282AF64BC900B9D94D /* AlertConfig.swift in Sources */,
 				3086F1112AF569040089FA33 /* Router.swift in Sources */,
 				30C5520A2AF7A0BC005D1DB8 /* PokemonDetailViewModel.swift in Sources */,
-				3086F1252AF56D1C0089FA33 /* ProgressHudHelper.swift in Sources */,
 				30B2FA232AF64A4D00B9D94D /* Localization.swift in Sources */,
 				309659B12AF55DEE00B2BE78 /* AppDelegate.swift in Sources */,
 				3086F1132AF5692B0089FA33 /* URLRequestBuilding.swift in Sources */,
@@ -661,14 +653,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		30B2FA172AF63DB400B9D94D /* XCRemoteSwiftPackageReference "ProgressHUD" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/relatedcode/ProgressHUD.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 13.8.1;
-			};
-		};
 		30B2FA2C2AF6508500B9D94D /* XCRemoteSwiftPackageReference "Nuke" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kean/Nuke.git";
@@ -680,11 +664,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		30B2FA182AF63DB400B9D94D /* ProgressHUD */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 30B2FA172AF63DB400B9D94D /* XCRemoteSwiftPackageReference "ProgressHUD" */;
-			productName = ProgressHUD;
-		};
 		30B2FA2D2AF6508500B9D94D /* Nuke */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 30B2FA2C2AF6508500B9D94D /* XCRemoteSwiftPackageReference "Nuke" */;

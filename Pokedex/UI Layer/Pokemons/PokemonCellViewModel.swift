@@ -20,7 +20,6 @@ final class PokemonCellViewModel: ObservableObject {
 
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
-    @Published private(set) var progressHudState: ProgressHudState = .hide
     var task: Task<Void, Never>?
 
     init(

@@ -5,7 +5,6 @@
 //  Created by Anastasia Lenina on 03.11.2023.
 //
 
-import ProgressHUD
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -23,6 +22,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController?.navigationController?.navigationBar.prefersLargeTitles = true
         window.rootViewController?.navigationItem.largeTitleDisplayMode = .always
         window.makeKeyAndVisible()
-        ProgressHUD.colorAnimation = .black
     }
 }
