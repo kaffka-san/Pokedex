@@ -44,6 +44,7 @@ final class PokemonCellViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
                 await self.update(pokemonDetail: pokemonDetail)
             } catch {
+                print("pokemonCell \(pokemon.id)")
                 print(error)
                 await MainActor.run {
                     self.showAlert()

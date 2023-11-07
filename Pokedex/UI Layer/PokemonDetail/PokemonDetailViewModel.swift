@@ -74,6 +74,7 @@ final class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonSpecies(name: pokemon.name)
                 await self.updateSpecies(pokemonDetail: pokemonDetail)
             } catch {
+                print("Error from pokemon \(pokemon.id)")
                 print(error)
                 await MainActor.run {
                     self.showAlert()

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class MainCoordinator: UINavigationController {
+final class MainCoordinator: UINavigationController {
     private let apiClient: APIClient
     private let pokemonsAPI: PokemonsAPI
     private let pokemonsDataRouter: PokemonsRouter
