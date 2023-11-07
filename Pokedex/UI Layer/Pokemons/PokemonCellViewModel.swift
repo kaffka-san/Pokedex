@@ -20,17 +20,20 @@ final class PokemonCellViewModel: ObservableObject {
 
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
+    @Binding var favouriteIds: Set<Int>
     var task: Task<Void, Never>?
 
     init(
         name: String,
         url: String,
         pokemonsAPI: PokemonsAPIProtocol,
-        coordinator: PokemonsCoordinator?
+        coordinator: PokemonsCoordinator?,
+        favouriteIds: Binding<Set<Int>>
     ) {
         pokemon = PokemonDetailConfig(name: name, url: url)
         self.pokemonsAPI = pokemonsAPI
         self.coordinator = coordinator
+        _favouriteIds = favouriteIds
         loadPokemon()
     }
 
@@ -41,6 +44,7 @@ final class PokemonCellViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
                 await self.update(pokemonDetail: pokemonDetail)
             } catch {
+                print("pokemonCell \(pokemon.id)")
                 print(error)
                 await MainActor.run {
                     self.showAlert()
@@ -50,7 +54,10 @@ final class PokemonCellViewModel: ObservableObject {
     }
 
     func goToDetailView() {
-        coordinator?.goToDetailView(pokemon: pokemon)
+        coordinator?.goToDetailView(
+            pokemon: pokemon,
+            favouriteIds: $favouriteIds
+        )
     }
 
     func onDisappear() {
@@ -62,7 +69,7 @@ final class PokemonCellViewModel: ObservableObject {
         pokemon = PokemonDetailConfig(
             id: pokemonDetail.id,
             url: pokemon.url,
-            name: pokemon.name,
+            name: pokemonDetail.name,
             types: pokemonDetail.types.map { $0.type.name },
             imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault ?? "",
             weight: convertToPoundsAndKilograms(pokemonDetail.weight),

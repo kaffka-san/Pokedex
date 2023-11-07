@@ -19,8 +19,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         self.window = window
         window.rootViewController = navigationController
-        window.rootViewController?.navigationController?.navigationBar.prefersLargeTitles = true
-        window.rootViewController?.navigationItem.largeTitleDisplayMode = .always
         window.makeKeyAndVisible()
     }
 }

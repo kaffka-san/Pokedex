@@ -5,7 +5,7 @@
 //  Created by Anastasia Lenina on 05.11.2023.
 //
 
-import Foundation
+import SwiftUI
 
 final class PokemonDetailViewModel: ObservableObject {
     private weak var coordinator: PokemonsCoordinator?
@@ -29,15 +29,20 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var scrollPosition: CGPoint = .zero
+    @Binding var favouriteIds: Set<Int>
+    @Published var isFavourite: Bool
 
     init(
         coordinator: PokemonsCoordinator?,
         pokemonsAPI: PokemonsAPIProtocol,
-        pokemon: PokemonDetailConfig
+        pokemon: PokemonDetailConfig,
+        favouriteIds: Binding<Set<Int>>
     ) {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         self.pokemon = pokemon
+        _favouriteIds = favouriteIds
+        isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
         loadPokemonSpecies()
         loadNextPokemon()
         loadPreviousPokemon()
@@ -49,7 +54,18 @@ final class PokemonDetailViewModel: ObservableObject {
     }
 
     @objc
-    func makeFavourite() {}
+    func toggleFavourite() {
+        if isFavourite {
+            favouriteIds.remove(pokemon.id)
+
+        } else {
+            favouriteIds.insert(pokemon.id)
+        }
+        isFavourite.toggle()
+        if let encodedData = try? JSONEncoder().encode(favouriteIds) {
+            UserDefaults.standard.set(encodedData, forKey: Constants.favourite)
+        }
+    }
 
     func loadPokemonSpecies() {
         Task { [weak self] in
@@ -58,6 +74,7 @@ final class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonSpecies(name: pokemon.name)
                 await self.updateSpecies(pokemonDetail: pokemonDetail)
             } catch {
+                print("Error from pokemon \(pokemon.id)")
                 print(error)
                 await MainActor.run {
                     self.showAlert()

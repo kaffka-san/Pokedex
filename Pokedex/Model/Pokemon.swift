@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct Pokemons: Codable {
+struct Pokemons: Decodable {
     let count: Int
     let next: String
     let results: [Pokemon]
 }
 
-struct Pokemon: Codable, Identifiable, Equatable {
+struct Pokemon: Decodable, Identifiable, Equatable {
     let id = UUID()
     let name: String
     let url: String
@@ -23,48 +23,37 @@ struct Pokemon: Codable, Identifiable, Equatable {
     }
 }
 
-struct PokemonDetail: Codable {
+struct PokemonDetail: Decodable {
     let id: Int
     let height: Int
     let weight: Int
     let baseExperience: Int?
-    // let stats: [PokemonStats]
     let types: [PokemonTypes]
     let sprites: Sprites
+    let name: String
 
     enum CodingKeys: String, CodingKey {
         case id
         case height
         case weight
         case baseExperience = "base_experience"
-        //  case stats
+        case name
         case types
         case sprites
     }
 }
 
-struct PokemonStats: Codable {
-    let base_stat: Int
-    let effort: Int
-    let stat: SpecificStat
-}
-
-struct SpecificStat: Codable {
-    let name: String
-    let url: String
-}
-
-struct PokemonTypes: Codable {
+struct PokemonTypes: Decodable {
     let slot: Int
     let type: SpecificType
 }
 
-struct SpecificType: Codable {
+struct SpecificType: Decodable {
     let name: String
     let url: String
 }
 
-class Sprites: Codable {
+class Sprites: Decodable {
     let frontDefault: String?
     let other: Other?
 
@@ -74,8 +63,7 @@ class Sprites: Codable {
     }
 }
 
-// MARK: - Other
-struct Other: Codable {
+struct Other: Decodable {
     let officialArtwork: OfficialArtwork
 
     enum CodingKeys: String, CodingKey {
@@ -83,8 +71,7 @@ struct Other: Codable {
     }
 }
 
-// MARK: - OfficialArtwork
-struct OfficialArtwork: Codable {
+struct OfficialArtwork: Decodable {
     let frontDefault: String?
 
     enum CodingKeys: String, CodingKey {
@@ -92,7 +79,7 @@ struct OfficialArtwork: Codable {
     }
 }
 
-struct PokemonSpecies: Codable {
+struct PokemonSpecies: Decodable {
     let eggGroups: [SpecificType]
     let flavorTextEntries: [FlavorTextEntry]
     let genderRate: Int
@@ -106,8 +93,7 @@ struct PokemonSpecies: Codable {
     }
 }
 
-// MARK: - FlavorTextEntry
-struct FlavorTextEntry: Codable {
+struct FlavorTextEntry: Decodable {
     let flavorText: String
 
     enum CodingKeys: String, CodingKey {
@@ -115,7 +101,7 @@ struct FlavorTextEntry: Codable {
     }
 }
 
-struct PokemonsGeneration: Codable {
+struct PokemonsGeneration: Decodable {
     let id: Int
     let pokemonSpecies: [Pokemon]
 

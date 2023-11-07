@@ -14,7 +14,7 @@ protocol PokemonsAPIProtocol {
     func getPokemonForGeneration(generation: Int) async throws -> PokemonsGeneration
 }
 
-class PokemonsAPI: PokemonsAPIProtocol, Service {
+final class PokemonsAPI: PokemonsAPIProtocol, Service {
     typealias Route = PokemonsRoute
 
     private let apiClient: APIClient

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class MainCoordinator: UINavigationController {
+final class MainCoordinator: UINavigationController {
     private let apiClient: APIClient
     private let pokemonsAPI: PokemonsAPI
     private let pokemonsDataRouter: PokemonsRouter
@@ -47,13 +47,17 @@ extension MainCoordinator: PokemonsCoordinator {
         popViewController(animated: true)
     }
 
-    func goToDetailView(pokemon: PokemonDetailConfig) {
+    func goToDetailView(
+        pokemon: PokemonDetailConfig,
+        favouriteIds: Binding<Set<Int>>
+    ) {
         let viewController = HostingController {
             PokemonDetailView(
                 viewModel: PokemonDetailViewModel(
                     coordinator: self,
                     pokemonsAPI: pokemonsAPI,
-                    pokemon: pokemon
+                    pokemon: pokemon,
+                    favouriteIds: favouriteIds
                 )
             )
         }

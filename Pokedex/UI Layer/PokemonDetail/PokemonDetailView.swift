@@ -89,8 +89,14 @@ private extension PokemonDetailView {
     }
 
     var loveButton: some View {
-        Button {} label: {
-            Image(AssetsImagesString.loveIcon)
+        Button {
+            viewModel.toggleFavourite()
+        } label: {
+            if viewModel.isFavourite {
+                AssetsImages.heartFill
+            } else {
+                AssetsImages.heart
+            }
         }
         .tint(.white)
     }
@@ -281,7 +287,8 @@ private extension PokemonDetailView {
                 weight: "13.2 lbs (6.9 kg)",
                 height: "1' 04 (0.70 cm)",
                 baseExperience: "65"
-            )
+            ),
+            favouriteIds: Binding.constant([1, 2, 3, 4])
         )
     )
 }
