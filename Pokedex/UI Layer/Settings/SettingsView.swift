@@ -32,7 +32,10 @@ private extension SettingsView {
 
     var settingButtons: some View {
         VStack(alignment: .trailing) {
-            Button {} label: {
+            Button {
+                viewModel.favouriteSelected()
+                viewModel.close()
+            } label: {
                 CapsuleButton(
                     labelText: L.Settings.favouritePokemon,
                     icon: AssetsImages.loveFill
@@ -112,6 +115,7 @@ private extension SettingsView {
         viewModel: SettingsViewModel(
             close: {},
             generationSelected: { _ in },
+            favouriteSelected: {},
             showAll: {}
         )
     )

@@ -31,6 +31,7 @@ struct PokemonDetail: Codable {
     // let stats: [PokemonStats]
     let types: [PokemonTypes]
     let sprites: Sprites
+    let name: String
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -38,6 +39,7 @@ struct PokemonDetail: Codable {
         case weight
         case baseExperience = "base_experience"
         //  case stats
+        case name
         case types
         case sprites
     }

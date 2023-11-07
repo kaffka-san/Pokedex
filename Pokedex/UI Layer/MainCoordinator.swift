@@ -49,7 +49,7 @@ extension MainCoordinator: PokemonsCoordinator {
 
     func goToDetailView(
         pokemon: PokemonDetailConfig,
-        favouriteIds: Binding<[Int]>
+        favouriteIds: Binding<Set<Int>>
     ) {
         let viewController = HostingController {
             PokemonDetailView(

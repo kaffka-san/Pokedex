@@ -22,6 +22,8 @@ enum AssetsImages {
     static let generation6 = Image("generation6")
     static let generation7 = Image("generation7")
     static let generation8 = Image("generation8")
+    static let heartFill = Image(systemName: "heart.fill")
+    static let heart = Image(systemName: "heart")
 }
 
 enum AssetsImagesString {

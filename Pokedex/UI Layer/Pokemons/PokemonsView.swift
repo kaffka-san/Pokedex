@@ -43,6 +43,7 @@ struct PokemonsView: View {
                                 viewModel.showSettingsMenu.toggle()
                                 viewModel.loadGeneration(index: generationId)
                             },
+                            favouriteSelected: { viewModel.getFavourite() },
                             showAll: {
                                 viewModel.showSettingsMenu.toggle()
                                 viewModel.showAllPokemons()
@@ -77,6 +78,11 @@ private extension PokemonsView {
                     )
                     .onAppear {
                         viewModel.loadNextPage(for: pokemon)
+                    }
+                    .onChange(of: viewModel.favouriteIds) { _ in
+                        if viewModel.showingFavourites {
+                            viewModel.getFavourite()
+                        }
                     }
                 }
             }

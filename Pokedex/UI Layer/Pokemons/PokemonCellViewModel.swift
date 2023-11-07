@@ -20,7 +20,7 @@ final class PokemonCellViewModel: ObservableObject {
 
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
-    @Binding var favouriteIds: [Int]
+    @Binding var favouriteIds: Set<Int>
     var task: Task<Void, Never>?
 
     init(
@@ -28,7 +28,7 @@ final class PokemonCellViewModel: ObservableObject {
         url: String,
         pokemonsAPI: PokemonsAPIProtocol,
         coordinator: PokemonsCoordinator?,
-        favouriteIds: Binding<[Int]>
+        favouriteIds: Binding<Set<Int>>
     ) {
         pokemon = PokemonDetailConfig(name: name, url: url)
         self.pokemonsAPI = pokemonsAPI
@@ -68,7 +68,7 @@ final class PokemonCellViewModel: ObservableObject {
         pokemon = PokemonDetailConfig(
             id: pokemonDetail.id,
             url: pokemon.url,
-            name: pokemon.name,
+            name: pokemonDetail.name,
             types: pokemonDetail.types.map { $0.type.name },
             imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault ?? "",
             weight: convertToPoundsAndKilograms(pokemonDetail.weight),

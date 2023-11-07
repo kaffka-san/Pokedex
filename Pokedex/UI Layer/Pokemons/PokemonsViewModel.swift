@@ -15,7 +15,8 @@ final class PokemonsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var showSettingsMenu = false
     @Published var disablePagination = false
-    @Published var favouriteIds = [Int]()
+    @Published var favouriteIds = Set<Int>()
+    @Published var showingFavourites = false
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -24,7 +25,11 @@ final class PokemonsViewModel: ObservableObject {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         loadPokemons()
-        favouriteIds = UserDefaults.standard.array(forKey: Constants.favourite) as? [Int] ?? []
+        if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
+            if let decodedSet = try? JSONDecoder().decode(Set<Int>.self, from: decodedData) {
+                favouriteIds = decodedSet
+            }
+        }
     }
 
     func loadPokemons() {
@@ -41,8 +46,17 @@ final class PokemonsViewModel: ObservableObject {
         }
     }
 
+    func getFavourite() {
+        showingFavourites = true
+        pokemons = []
+        pokemons = favouriteIds.map { id in
+            Pokemon(name: "", url: "\(id)")
+        }
+    }
+
     func showAllPokemons() {
         loadPokemons()
+        showingFavourites = false
         disablePagination = false
     }
 
@@ -64,7 +78,7 @@ final class PokemonsViewModel: ObservableObject {
     }
 
     func loadNextPage(for pokemon: Pokemon) {
-        guard !isLoading && !disablePagination else { return }
+        guard !isLoading && !disablePagination && !showingFavourites else { return }
         let isLastPost = pokemons.last?.id == pokemon.id
         if isLastPost {
             isLoading = true

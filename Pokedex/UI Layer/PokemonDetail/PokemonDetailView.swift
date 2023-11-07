@@ -89,8 +89,14 @@ private extension PokemonDetailView {
     }
 
     var loveButton: some View {
-        Button {} label: {
-            Image(AssetsImagesString.loveIcon)
+        Button {
+            viewModel.toggleFavourite()
+        } label: {
+            if viewModel.isFavourite {
+                AssetsImages.heartFill
+            } else {
+                AssetsImages.heart
+            }
         }
         .tint(.white)
     }
