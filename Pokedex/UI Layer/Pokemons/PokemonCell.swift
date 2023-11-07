@@ -7,17 +7,12 @@
 
 import Nuke
 import NukeUI
-import ProgressHUD
 import SwiftUI
 
 struct PokemonCell: View {
-    private let progressHudBinding: ProgressHudBinding
     @StateObject var viewModel: PokemonCellViewModel
 
     init(viewModel: PokemonCellViewModel) {
-        progressHudBinding = ProgressHudBinding(
-            state: viewModel.$progressHudState
-        )
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -120,8 +115,9 @@ private extension PokemonCell {
             .frame(
                 width: 56,
                 height: 13,
-                alignment: .center
+                alignment: .trailing
             )
+            .padding(.trailing, 10)
             .padding(.top, 10)
     }
 }
@@ -130,6 +126,7 @@ private extension PokemonCell {
     PokemonCell(
         viewModel: PokemonCellViewModel(
             name: "",
+            url: "",
 
             // TODO: Create Mock
             pokemonsAPI: PokemonsAPI(

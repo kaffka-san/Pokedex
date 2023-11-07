@@ -20,7 +20,14 @@
 "pokemon_detail_training" = "Training";
 "pokemon_detail_base_experience" = "Base EXP";
 "pokemon_detail_steps" = "steps";
+"pokemon_detail_default_string" = "not defined";
 
+
+// MARK: - Pokemon settings
+"pokemon_settings_favourite" = "Favourite Pokemon";
+"pokemon_settings_all_type" = "All Type";
+"pokemon_settings_all_gen" = "All Gen";
+"pokemon_settings_generation_title" = "Generation";
 
 // MARK: - Errors
 "error_generic_title" = "Error";

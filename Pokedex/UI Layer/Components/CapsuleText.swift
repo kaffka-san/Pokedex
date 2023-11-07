@@ -32,8 +32,8 @@ struct CapsuleText: View {
                 Color
                     .white
                     .opacity(0.3)
-                    .cornerRadius(38)
             }
+            .clipShape(Capsule())
     }
 }
 

@@ -11,11 +11,14 @@ enum PokemonsRoute {
     case pokemons(offset: Int)
     case pokemonDetail(name: String)
     case pokemonSpecies(name: String)
+    case pokemonsForGeneration(generation: Int)
 }
 
 final class PokemonsRouter: Router, APIRouter {
-    typealias Route = PokemonsRoute
-    private let encoder = JSONEncoder()
+    private let headers = [
+        "Content-Type": "application/json",
+        "accept": "application/json"
+    ]
 
     func urlRequest(for route: PokemonsRoute) -> URLRequestConvertible {
         switch route {
@@ -23,30 +26,28 @@ final class PokemonsRouter: Router, APIRouter {
             return buildRequest(
                 method: .get,
                 url: "\(baseURL)/pokemon?limit=10&offset=\(offset)",
-                headers: [
-                    "Content-Type": "application/json",
-                    "accept": "application/json"
-                ],
+                headers: headers,
                 body: { nil }
             )
         case let .pokemonDetail(name):
             return buildRequest(
                 method: .get,
                 url: "\(baseURL)/pokemon/\(name)",
-                headers: [
-                    "Content-Type": "application/json",
-                    "accept": "application/json"
-                ],
+                headers: headers,
                 body: { nil }
             )
         case let .pokemonSpecies(name):
             return buildRequest(
                 method: .get,
                 url: "\(baseURL)/pokemon-species/\(name)",
-                headers: [
-                    "Content-Type": "application/json",
-                    "accept": "application/json"
-                ],
+                headers: headers,
+                body: { nil }
+            )
+        case let .pokemonsForGeneration(generation: generation):
+            return buildRequest(
+                method: .get,
+                url: "\(baseURL)/generation/\(generation)",
+                headers: headers,
                 body: { nil }
             )
         }

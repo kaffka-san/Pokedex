@@ -112,7 +112,7 @@ final class PokemonDetailViewModel: ObservableObject {
             description: findLastOccurrence(
                 of: pokemon.name,
                 in: pokemonDetail.flavorTextEntries.map { $0.flavorText }
-            ) ?? "",
+            ),
             eggGroups: pokemonDetail.eggGroups.map { $0.name },
             gender: getPokemonGenderChance(femaleEighths: pokemonDetail.genderRate),
             hatchCounter: calculateHatchingSteps(initialHatchCounter: pokemonDetail.hatchCounter)
@@ -135,10 +135,13 @@ final class PokemonDetailViewModel: ObservableObject {
         }
     }
 
-    func findLastOccurrence(of name: String, in array: [String]) -> String? {
+    func findLastOccurrence(
+        of name: String,
+        in array: [String]
+    ) -> String {
         let uppercasedName = name.uppercased()
         let filteredArray = array.filter { $0.contains(uppercasedName) }
-        return removeNewLines(from: filteredArray.last ?? "")
+        return removeNewLines(from: filteredArray.last ?? L.PokemonDetail.defaultString)
     }
 
     func removeNewLines(from string: String) -> String {
@@ -146,9 +149,12 @@ final class PokemonDetailViewModel: ObservableObject {
     }
 
     // Initial hatch counter: one must walk 255 × (hatch_counter + 1) steps before this Pokémon's egg hatches
-    func calculateHatchingSteps(initialHatchCounter: Int) -> String {
+    func calculateHatchingSteps(initialHatchCounter: Int?) -> String {
+        guard let counter = initialHatchCounter else {
+            return L.PokemonDetail.defaultString
+        }
         let baseSteps = 255
-        return "\(baseSteps * (initialHatchCounter + 1)) \(L.PokemonDetail.steps)"
+        return "\(baseSteps * (counter + 1)) \(L.PokemonDetail.steps)"
     }
 
     func showAlert() {

@@ -21,20 +21,14 @@ struct Pokemon: Codable, Identifiable, Equatable {
     static func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
         lhs.id == rhs.id
     }
-
-//    init(name: String, url: String) {
-//        id = UUID()
-//        self.name = name
-//        self.url = url
-//    }
 }
 
 struct PokemonDetail: Codable {
     let id: Int
     let height: Int
     let weight: Int
-    let baseExperience: Int
-    let stats: [PokemonStats]
+    let baseExperience: Int?
+    // let stats: [PokemonStats]
     let types: [PokemonTypes]
     let sprites: Sprites
 
@@ -43,7 +37,7 @@ struct PokemonDetail: Codable {
         case height
         case weight
         case baseExperience = "base_experience"
-        case stats
+        //  case stats
         case types
         case sprites
     }
@@ -71,7 +65,7 @@ struct SpecificType: Codable {
 }
 
 class Sprites: Codable {
-    let frontDefault: String
+    let frontDefault: String?
     let other: Other?
 
     enum CodingKeys: String, CodingKey {
@@ -91,7 +85,7 @@ struct Other: Codable {
 
 // MARK: - OfficialArtwork
 struct OfficialArtwork: Codable {
-    let frontDefault: String
+    let frontDefault: String?
 
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
@@ -102,7 +96,7 @@ struct PokemonSpecies: Codable {
     let eggGroups: [SpecificType]
     let flavorTextEntries: [FlavorTextEntry]
     let genderRate: Int
-    let hatchCounter: Int
+    let hatchCounter: Int?
 
     enum CodingKeys: String, CodingKey {
         case eggGroups = "egg_groups"
@@ -118,5 +112,15 @@ struct FlavorTextEntry: Codable {
 
     enum CodingKeys: String, CodingKey {
         case flavorText = "flavor_text"
+    }
+}
+
+struct PokemonsGeneration: Codable {
+    let id: Int
+    let pokemonSpecies: [Pokemon]
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case pokemonSpecies = "pokemon_species"
     }
 }

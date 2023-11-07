@@ -15,20 +15,20 @@ final class PokemonCellViewModel: ObservableObject {
     }
 
     var colorBackground: String {
-        pokemon.types.first?.capitalized ?? "White"
+        pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
 
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
-    @Published private(set) var progressHudState: ProgressHudState = .hide
     var task: Task<Void, Never>?
 
     init(
         name: String,
+        url: String,
         pokemonsAPI: PokemonsAPIProtocol,
         coordinator: PokemonsCoordinator?
     ) {
-        pokemon = PokemonDetailConfig(name: name)
+        pokemon = PokemonDetailConfig(name: name, url: url)
         self.pokemonsAPI = pokemonsAPI
         self.coordinator = coordinator
         loadPokemon()
@@ -38,7 +38,7 @@ final class PokemonCellViewModel: ObservableObject {
         task = Task { [weak self] in
             guard let self else { return }
             do {
-                let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: pokemon.name)
+                let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
                 await self.update(pokemonDetail: pokemonDetail)
             } catch {
                 print(error)
@@ -61,12 +61,13 @@ final class PokemonCellViewModel: ObservableObject {
     private func update(pokemonDetail: PokemonDetail) {
         pokemon = PokemonDetailConfig(
             id: pokemonDetail.id,
+            url: pokemon.url,
             name: pokemon.name,
             types: pokemonDetail.types.map { $0.type.name },
-            imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault,
+            imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault ?? "",
             weight: convertToPoundsAndKilograms(pokemonDetail.weight),
             height: convertToFeetInchesAndCentimeters(pokemonDetail.height),
-            baseExperience: "\(pokemonDetail.baseExperience)"
+            baseExperience: describeValue(pokemonDetail.baseExperience)
         )
     }
 
@@ -77,11 +78,16 @@ final class PokemonCellViewModel: ObservableObject {
         )
     }
 
+    func describeValue(_ value: Int?) -> String {
+        guard let intValue = value else {
+            return L.PokemonDetail.defaultString
+        }
+        return "\(intValue)"
+    }
+
     func convertToPoundsAndKilograms(_ value: Int) -> String {
         let weightInKilograms = Double(value) / 10.0
         let weightInPounds = weightInKilograms * 2.20462 // Convert kg to lbs
-
-        // Format the string to have one decimal place for both kg and lbs
         let formattedWeightInKilograms = String(format: "%.1f kg", weightInKilograms)
         let formattedWeightInPounds = String(format: "%.1f lbs", weightInPounds)
 
@@ -89,26 +95,26 @@ final class PokemonCellViewModel: ObservableObject {
     }
 
     func convertToFeetInchesAndCentimeters(_ decimeters: Int) -> String {
-        // Conversion constants
         let centimetersPerDecimeter = 10.0
         let centimetersPerInch = 2.54
         let inchesPerFoot = 12.0
-
         // Convert decimeters to centimeters
         let centimeters = Double(decimeters) * centimetersPerDecimeter
-
         // Convert centimeters to inches
         let totalInches = centimeters / centimetersPerInch
-
-        // Calculate feet and inches
+        // Calculate feet and the remaining inches
         let feet = Int(totalInches / inchesPerFoot)
         let inches = totalInches.truncatingRemainder(dividingBy: inchesPerFoot)
-
-        // Format the string to have one decimal place for inches
-        // and no decimal places for centimeters as they're typically represented as a whole number
+        // Format the height in feet and inches
         let formattedHeightInFeetAndInches = "\(feet)'\(String(format: "%.1f", inches))\""
+        // Format the height in centimeters
         let formattedHeightInCentimeters = String(format: "%.0f cm", centimeters)
-
         return "\(formattedHeightInFeetAndInches) (\(formattedHeightInCentimeters))"
+    }
+
+    // Get id from the url
+    func extractNumberFromPokemonURL(_ urlString: String) -> String {
+        guard let url = URL(string: urlString) else { return "" }
+        return url.lastPathComponent
     }
 }

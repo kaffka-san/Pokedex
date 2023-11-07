@@ -49,6 +49,14 @@ enum LocalizedString {
         static let training = "pokemon_detail_training".tr
         static let experience = "pokemon_detail_base_experience".tr
         static let steps = "pokemon_detail_steps".tr
+        static let defaultString = "pokemon_detail_default_string".tr
+    }
+
+    enum Settings {
+        static let favouritePokemon = "pokemon_settings_favourite".tr
+        static let allType = "pokemon_settings_all_type".tr
+        static let allGen = "pokemon_settings_all_gen".tr
+        static let generationTitle = "pokemon_settings_generation_title".tr
     }
 
     enum Errors {
