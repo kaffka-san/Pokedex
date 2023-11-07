@@ -5,9 +5,12 @@
 //  Created by Anastasia Lenina on 03.11.2023.
 //
 
-import Foundation
+import SwiftUI
 
 protocol PokemonsCoordinator: AnyObject {
-    func goToDetailView(pokemon: PokemonDetailConfig)
+    func goToDetailView(
+        pokemon: PokemonDetailConfig,
+        favouriteIds: Binding<[Int]>
+    )
     func goBack()
 }

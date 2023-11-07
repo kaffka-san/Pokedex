@@ -71,7 +71,8 @@ private extension PokemonsView {
                             name: pokemon.name,
                             url: pokemon.url,
                             pokemonsAPI: viewModel.pokemonsAPI,
-                            coordinator: viewModel.coordinator
+                            coordinator: viewModel.coordinator,
+                            favouriteIds: $viewModel.favouriteIds
                         )
                     )
                     .onAppear {

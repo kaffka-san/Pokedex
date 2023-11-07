@@ -15,6 +15,7 @@ final class PokemonsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var showSettingsMenu = false
     @Published var disablePagination = false
+    @Published var favouriteIds = [Int]()
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -23,6 +24,7 @@ final class PokemonsViewModel: ObservableObject {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         loadPokemons()
+        favouriteIds = UserDefaults.standard.array(forKey: Constants.favourite) as? [Int] ?? []
     }
 
     func loadPokemons() {

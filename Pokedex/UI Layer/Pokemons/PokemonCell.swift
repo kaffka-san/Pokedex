@@ -133,7 +133,8 @@ private extension PokemonCell {
                 apiClient: APIClient(),
                 router: PokemonsRouter()
             ),
-            coordinator: nil
+            coordinator: nil,
+            favouriteIds: Binding.constant([1, 2, 3, 4])
         )
     )
 }

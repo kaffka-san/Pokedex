@@ -281,7 +281,8 @@ private extension PokemonDetailView {
                 weight: "13.2 lbs (6.9 kg)",
                 height: "1' 04 (0.70 cm)",
                 baseExperience: "65"
-            )
+            ),
+            favouriteIds: Binding.constant([1, 2, 3, 4])
         )
     )
 }

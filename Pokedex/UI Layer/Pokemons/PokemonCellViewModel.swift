@@ -20,17 +20,20 @@ final class PokemonCellViewModel: ObservableObject {
 
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
+    @Binding var favouriteIds: [Int]
     var task: Task<Void, Never>?
 
     init(
         name: String,
         url: String,
         pokemonsAPI: PokemonsAPIProtocol,
-        coordinator: PokemonsCoordinator?
+        coordinator: PokemonsCoordinator?,
+        favouriteIds: Binding<[Int]>
     ) {
         pokemon = PokemonDetailConfig(name: name, url: url)
         self.pokemonsAPI = pokemonsAPI
         self.coordinator = coordinator
+        _favouriteIds = favouriteIds
         loadPokemon()
     }
 
@@ -50,7 +53,10 @@ final class PokemonCellViewModel: ObservableObject {
     }
 
     func goToDetailView() {
-        coordinator?.goToDetailView(pokemon: pokemon)
+        coordinator?.goToDetailView(
+            pokemon: pokemon,
+            favouriteIds: $favouriteIds
+        )
     }
 
     func onDisappear() {

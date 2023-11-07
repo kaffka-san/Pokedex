@@ -5,7 +5,7 @@
 //  Created by Anastasia Lenina on 05.11.2023.
 //
 
-import Foundation
+import SwiftUI
 
 final class PokemonDetailViewModel: ObservableObject {
     private weak var coordinator: PokemonsCoordinator?
@@ -29,15 +29,18 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var scrollPosition: CGPoint = .zero
+    @Binding var favouriteIds: [Int]
 
     init(
         coordinator: PokemonsCoordinator?,
         pokemonsAPI: PokemonsAPIProtocol,
-        pokemon: PokemonDetailConfig
+        pokemon: PokemonDetailConfig,
+        favouriteIds: Binding<[Int]>
     ) {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         self.pokemon = pokemon
+        _favouriteIds = favouriteIds
         loadPokemonSpecies()
         loadNextPokemon()
         loadPreviousPokemon()

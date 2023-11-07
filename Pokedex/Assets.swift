@@ -34,4 +34,5 @@ enum AssetsImagesString {
 enum Constants {
     static let scrollName = "scroll"
     static let neutralBackground = "Default"
+    static let favourite = "favouriteId"
 }
