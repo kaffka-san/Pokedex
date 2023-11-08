@@ -127,12 +127,7 @@ private extension PokemonCell {
         viewModel: PokemonCellViewModel(
             name: "",
             url: "",
-
-            // TODO: Create Mock
-            pokemonsAPI: PokemonsAPI(
-                apiClient: APIClient(),
-                router: PokemonsRouter()
-            ),
+            pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
             favouriteIds: Binding.constant([1, 2, 3, 4])
         )

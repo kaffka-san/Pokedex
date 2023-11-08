@@ -327,17 +327,13 @@ private extension PokemonDetailView {
     PokemonDetailView(
         viewModel: PokemonDetailViewModel(
             coordinator: nil,
-            // TODO: create Mock
-            pokemonsAPI: PokemonsAPI(
-                apiClient: APIClient(),
-                router: PokemonsRouter()
-            ),
+            pokemonsAPI: MockPokemonsAPI(),
             pokemon: PokemonDetailConfig(
-                id: 4,
-                url: "https://pokeapi.co/api/v2/pokemon/4/",
-                name: "Charmander",
-                types: ["Fire"],
-                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+                id: 1,
+                url: "https://pokeapi.co/api/v2/pokemon/1/",
+                name: "Bulbasaur",
+                types: ["Grass", "Poison"],
+                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
                 weight: "13.2 lbs (6.9 kg)",
                 height: "1' 04 (0.70 cm)",
                 baseExperience: "65"

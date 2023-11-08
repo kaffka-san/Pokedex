@@ -44,18 +44,21 @@ struct PokemonDetail: Decodable {
 }
 
 struct PokemonTypes: Decodable {
-    let slot: Int
     let type: SpecificType
 }
 
 struct SpecificType: Decodable {
     let name: String
-    let url: String
 }
 
 class Sprites: Decodable {
     let frontDefault: String?
     let other: Other?
+
+    init(frontDefault: String?, other: Other?) {
+        self.frontDefault = frontDefault
+        self.other = other
+    }
 
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
