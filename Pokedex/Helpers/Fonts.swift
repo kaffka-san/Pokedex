@@ -16,6 +16,10 @@ enum PokedexFonts {
         .system(size: 20)
         .weight(.black)
 
+    static let headline1 = Font
+        .system(size: 18)
+        .weight(.black)
+
     static let headline2 = Font
         .system(size: 16)
         .weight(.bold)
