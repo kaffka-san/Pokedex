@@ -38,7 +38,7 @@ private extension PokemonDetailView {
             ScrollView {
                 VStack {
                     ZStack(alignment: .top) {
-                        Color.clear.frame(height: geometry.size.height * 0.32)
+                        Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.32 : geometry.size.height * 0.7)
                         pokemonTypes
                     }
                     VStack {
@@ -51,6 +51,8 @@ private extension PokemonDetailView {
                                 )
                                 .shadow(radius: 10)
                             horizontalPokemonImages
+                                .offset(y: isLandscape() ? -190 : -190)
+
                             VStack(alignment: .leading) {
                                 description
                                 sizeCard
@@ -59,6 +61,7 @@ private extension PokemonDetailView {
                         }
                     }
                 }
+
                 // Detect scroll position
                 .background(GeometryReader { geometry in
                     Color.clear
@@ -75,6 +78,7 @@ private extension PokemonDetailView {
                 }
             }
             .edgesIgnoringSafeArea(.bottom)
+            .edgesIgnoringSafeArea(.horizontal)
             .coordinateSpace(name: Constants.scrollName)
             .navigationTitle(viewModel.pokemon.name.capitalized)
             .toolbar {
@@ -195,12 +199,12 @@ private extension PokemonDetailView {
     var horizontalPokemonImages: some View {
         HStack {
             GrayImage(url: viewModel.previousImageUrl)
-                .offset(x: 0, y: -190)
+                //  .offset(x: 0, y: -190)
                 .frame(width: 80, height: 100)
-
             pokemonImage
             GrayImage(url: viewModel.nextImageUrl)
-                .offset(x: 0, y: -190)
+                //  .offset(x: 0, y: -190)
+                .offset(y: 0)
                 .frame(width: 80, height: 100)
         }
         .frame(width: UIScreen.main.bounds.width)
@@ -226,7 +230,7 @@ private extension PokemonDetailView {
             }
         }
         .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
-        .offset(y: -190)
+        // .offset(y: -190)
     }
 
     var sizeCard: some View {
@@ -240,15 +244,23 @@ private extension PokemonDetailView {
                 descriptionText: L.PokemonDetail.weight
             )
         }
-        .frame(maxWidth: .infinity)
+
+       /// .frame(alignment: .center)
+
         .padding(20)
+        // .frame(maxWidth: .infinity)
+        .frame(width: UIScreen.main.bounds.width * 0.8, alignment: .center)
         .background {
             Color(.white)
                 .cornerRadius(20)
         }
+
         .shadow(radius: 10)
+
         .padding(.top, 26)
+
         .padding(.horizontal, 26)
+        .background(.blue)
     }
 
     func configNavigationBar() {
@@ -266,6 +278,10 @@ private extension PokemonDetailView {
             value _: inout CGPoint,
             nextValue _: () -> CGPoint
         ) {}
+    }
+
+    func isLandscape() -> Bool {
+        return UIDevice.current.orientation.isLandscape
     }
 }
 
