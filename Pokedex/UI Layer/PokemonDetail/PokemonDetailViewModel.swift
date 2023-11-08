@@ -15,6 +15,10 @@ final class PokemonDetailViewModel: ObservableObject {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
 
+    var idFormatted: String {
+        String(format: "#%03d", pokemon.id)
+    }
+
     @Published var pokemonSpecies = PokemonSpeciesConfig(
         description: "",
         eggGroups: [],

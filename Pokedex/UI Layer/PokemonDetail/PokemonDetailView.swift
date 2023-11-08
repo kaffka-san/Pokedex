@@ -38,8 +38,12 @@ private extension PokemonDetailView {
             ScrollView {
                 VStack {
                     ZStack(alignment: .top) {
-                        Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.32 : geometry.size.height * 0.7)
-                        pokemonTypes
+                        Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.7 : geometry.size.height * 0.32)
+                        HStack {
+                            pokemonTypes
+                            Spacer()
+                            pokemonId
+                        }
                     }
                     VStack {
                         ZStack(alignment: .top) {
@@ -51,12 +55,14 @@ private extension PokemonDetailView {
                                 )
                                 .shadow(radius: 10)
                             horizontalPokemonImages
-                                .offset(y: isLandscape() ? -190 : -190)
-
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 0) {
                                 description
                                 sizeCard
-                                verticalStatistics
+                                if isLandscape() {
+                                    horizontalStatics
+                                } else {
+                                    verticalStatistics
+                                }
                             }
                         }
                     }
@@ -126,6 +132,16 @@ private extension PokemonDetailView {
             Spacer()
         }
         .padding(.leading, 26)
+        .padding(.leading, isLandscape() ? 46 : 0)
+    }
+
+    var pokemonId: some View {
+        Text(viewModel.idFormatted)
+            .font(PokedexFonts.headline1)
+            .foregroundColor(.white)
+
+            .padding(.trailing, 26)
+            .padding(.trailing, isLandscape() ? 46 : 0)
     }
 
     var verticalStatistics: some View {
@@ -149,8 +165,38 @@ private extension PokemonDetailView {
             )
         }
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, 26)
+        .padding(.horizontal, isLandscape() ? 100 : 26)
         .padding(.top, 24)
+    }
+
+    var horizontalStatics: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 10) {
+                HeadLineLabel(text: L.PokemonDetail.breeding)
+                genderStatistic
+                HorizontalLabel(
+                    text: viewModel.pokemonSpecies.eggGroups.first ?? "",
+                    descriptionText: L.PokemonDetail.eggGroups
+                )
+
+                Spacer()
+            }
+            VStack(alignment: .leading, spacing: 10) {
+                HorizontalLabel(
+                    text: viewModel.pokemonSpecies.hatchCounter,
+                    descriptionText: L.PokemonDetail.eggCylce
+                )
+                HeadLineLabel(text: L.PokemonDetail.training)
+                HorizontalLabel(
+                    text: viewModel.pokemon.baseExperience,
+                    descriptionText: L.PokemonDetail.experience
+                )
+                Spacer()
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, isLandscape() ? 100 : 26)
+        .padding(.top, 14)
     }
 
     var genderStatistic: some View {
@@ -184,12 +230,14 @@ private extension PokemonDetailView {
     }
 
     var description: some View {
+//        Text("Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.")
         Text(viewModel.pokemonSpecies.description)
             .font(PokedexFonts.body3)
             .padding(.top, 50)
+            .padding(.horizontal, isLandscape() ? 100 : 26)
+            .padding(.bottom, isLandscape() ? 0 : 20)
             .foregroundColor(PokedexColors.dark)
             .lineSpacing(8)
-            .padding(.horizontal, 26)
             .frame(
                 maxWidth: .infinity,
                 alignment: .leading
@@ -199,17 +247,16 @@ private extension PokemonDetailView {
     var horizontalPokemonImages: some View {
         HStack {
             GrayImage(url: viewModel.previousImageUrl)
-                //  .offset(x: 0, y: -190)
                 .frame(width: 80, height: 100)
             pokemonImage
             GrayImage(url: viewModel.nextImageUrl)
-                //  .offset(x: 0, y: -190)
                 .offset(y: 0)
                 .frame(width: 80, height: 100)
         }
         .frame(width: UIScreen.main.bounds.width)
         .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -90.0) ? 1 : 0)
         .animation(.easeInOut, value: viewModel.scrollPosition)
+        .offset(y: isLandscape() ? -190 : -190)
     }
 
     var pokemonImage: some View {
@@ -230,7 +277,6 @@ private extension PokemonDetailView {
             }
         }
         .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
-        // .offset(y: -190)
     }
 
     var sizeCard: some View {
@@ -244,23 +290,15 @@ private extension PokemonDetailView {
                 descriptionText: L.PokemonDetail.weight
             )
         }
-
-       /// .frame(alignment: .center)
-
-        .padding(20)
-        // .frame(maxWidth: .infinity)
-        .frame(width: UIScreen.main.bounds.width * 0.8, alignment: .center)
+        .padding(isLandscape() ? 10 : 20)
+        .frame(maxWidth: .infinity)
         .background {
             Color(.white)
                 .cornerRadius(20)
         }
-
         .shadow(radius: 10)
-
-        .padding(.top, 26)
-
-        .padding(.horizontal, 26)
-        .background(.blue)
+        .padding(.top, 20)
+        .padding(.horizontal, isLandscape() ? 100 : 26)
     }
 
     func configNavigationBar() {
@@ -281,7 +319,7 @@ private extension PokemonDetailView {
     }
 
     func isLandscape() -> Bool {
-        return UIDevice.current.orientation.isLandscape
+        UIDevice.current.orientation.isLandscape
     }
 }
 
