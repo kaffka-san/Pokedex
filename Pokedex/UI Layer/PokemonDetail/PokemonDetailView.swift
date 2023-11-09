@@ -5,6 +5,7 @@
 //  Created by Anastasia Lenina on 05.11.2023.
 //
 
+import MapKit
 import NukeUI
 import SwiftUI
 import UIKit
@@ -16,7 +17,6 @@ struct PokemonDetailView: View {
         viewModel: PokemonDetailViewModel
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        configNavigationBar()
     }
 
     var body: some View {
@@ -57,7 +57,7 @@ private extension PokemonDetailView {
                                 .fill(Color.white)
                                 .frame(
                                     width: geometry.size.width,
-                                    height: geometry.size.height
+                                    height: isLandscape() ? geometry.size.height * 1.7 : geometry.size.height * 1.1
                                 )
                                 .shadow(radius: 10)
                             horizontalPokemonImages
@@ -69,6 +69,7 @@ private extension PokemonDetailView {
                                 } else {
                                     verticalStatistics
                                 }
+                                mapView
                             }
                         }
                     }
@@ -102,6 +103,40 @@ private extension PokemonDetailView {
                 }
             }
         }
+    }
+
+    var mapView: some View {
+        VStackLayout(alignment: .leading) {
+            HeadLineLabel(text: L.PokemonDetail.location)
+                .padding(.top, 26)
+            Map(
+                coordinateRegion: $viewModel.region,
+                showsUserLocation: true,
+                annotationItems: viewModel.pokemonsLocations
+            ) { location in
+                MapAnnotation(coordinate: location.coordinate) {
+                    LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
+                        if let image = state.image {
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        } else {}
+                    }
+                    .frame(width: 40, height: 40)
+                    .opacity(viewModel.pokemonPinsOpacity)
+                    .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
+                    .onAppear {
+                        viewModel.pokemonPinsOpacity = 1.0
+                    }
+                }
+            }
+            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+            .frame(height: 150)
+            .cornerRadius(20)
+            .padding(.vertical, 20)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, isLandscape() ? 100 : 26)
     }
 
     var loveButton: some View {
@@ -145,7 +180,6 @@ private extension PokemonDetailView {
         Text(viewModel.idFormatted)
             .font(PokedexFonts.headline1)
             .foregroundColor(.white)
-
             .padding(.trailing, 26)
             .padding(.trailing, isLandscape() ? 46 : 0)
     }
@@ -176,7 +210,7 @@ private extension PokemonDetailView {
     }
 
     var horizontalStatics: some View {
-        HStack {
+        HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 10) {
                 HeadLineLabel(text: L.PokemonDetail.breeding)
                 genderStatistic
@@ -184,20 +218,17 @@ private extension PokemonDetailView {
                     text: viewModel.pokemonSpecies.eggGroups.first ?? "",
                     descriptionText: L.PokemonDetail.eggGroups
                 )
-
-                Spacer()
-            }
-            VStack(alignment: .leading, spacing: 10) {
                 HorizontalLabel(
                     text: viewModel.pokemonSpecies.hatchCounter,
                     descriptionText: L.PokemonDetail.eggCylce
                 )
+            }
+            VStack(alignment: .leading, spacing: 10) {
                 HeadLineLabel(text: L.PokemonDetail.training)
                 HorizontalLabel(
                     text: viewModel.pokemon.baseExperience,
                     descriptionText: L.PokemonDetail.experience
                 )
-                Spacer()
             }
         }
         .frame(maxWidth: .infinity)
@@ -236,7 +267,6 @@ private extension PokemonDetailView {
     }
 
     var description: some View {
-        //        Text("Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.")
         Text(viewModel.pokemonSpecies.description)
             .font(PokedexFonts.body3)
             .padding(.top, 50)
@@ -310,15 +340,6 @@ private extension PokemonDetailView {
         .padding(.horizontal, isLandscape() ? 100 : 26)
     }
 
-    func configNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 22, weight: .black)]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 36, weight: .black)]
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().layoutMargins.left = 26
-    }
-
     struct ScrollOffsetPreferenceKey: PreferenceKey {
         static var defaultValue: CGPoint = .zero
         static func reduce(
@@ -346,6 +367,9 @@ private extension PokemonDetailView {
                 weight: "13.2 lbs (6.9 kg)",
                 height: "1' 04 (0.70 cm)",
                 baseExperience: "65"
+            ),
+            userLocation: Binding.constant(
+                MockLocation.location
             ),
             favouriteIds: Binding.constant([1, 2, 3, 4])
         )

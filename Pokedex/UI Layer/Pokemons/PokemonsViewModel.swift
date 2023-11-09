@@ -5,11 +5,13 @@
 //  Created by Anastasia Lenina on 03.11.2023.
 //
 
+import CoreLocation
 import Foundation
 
-final class PokemonsViewModel: ObservableObject {
+final class PokemonsViewModel: NSObject, ObservableObject {
     weak var coordinator: PokemonsCoordinator?
     let pokemonsAPI: PokemonsAPIProtocol
+    let locationManager = CLLocationManager()
     @Published var pokemons = [Pokemon]()
     @Published var alertConfig: AlertConfig?
     @Published var isLoading = false
@@ -17,6 +19,7 @@ final class PokemonsViewModel: ObservableObject {
     @Published var disablePagination = false
     @Published var favouriteIds = Set<Int>()
     @Published var showingFavourites = false
+    @Published var userLocation = MockLocation.location
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -24,7 +27,14 @@ final class PokemonsViewModel: ObservableObject {
     ) {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
+        super.init()
         loadPokemons()
+        getFavouritePokemons()
+        locationManager.delegate = self
+        locationManager.startUpdatingLocation()
+    }
+
+    func getFavouritePokemons() {
         if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
             if let decodedSet = try? JSONDecoder().decode(Set<Int>.self, from: decodedData) {
                 favouriteIds = decodedSet
@@ -114,5 +124,38 @@ final class PokemonsViewModel: ObservableObject {
             title: L.Errors.genericTitle,
             message: L.Errors.genericMessage
         )
+    }
+}
+
+extension PokemonsViewModel: CLLocationManagerDelegate {
+    func requestLocation() {
+        locationManager.requestLocation()
+    }
+
+    func locationManager(
+        _: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
+        if let location = locations.first?.coordinate {
+            userLocation = Location(coordinate: location)
+        }
+    }
+
+    func locationManager(
+        _: CLLocationManager,
+        didFailWithError _: Error
+    ) {}
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .authorizedWhenInUse:
+            break
+        case .restricted, .denied:
+            break
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        default:
+            break
+        }
     }
 }

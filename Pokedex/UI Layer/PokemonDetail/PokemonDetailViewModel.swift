@@ -6,13 +6,16 @@
 //
 
 import AVFoundation
+import MapKit
 import SwiftUI
 
-final class PokemonDetailViewModel: ObservableObject {
-    private weak var coordinator: PokemonsCoordinator?
+class PokemonDetailViewModel: ObservableObject {
     private let pokemonsAPI: PokemonsAPIProtocol
+    private var player: AVAudioPlayer?
+    private weak var coordinator: PokemonsCoordinator?
     let pokemon: PokemonDetailConfig
-    var player: AVAudioPlayer?
+    var region: MKCoordinateRegion
+    var pokemonsLocations = [Location]()
     var colorBackground: String {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
@@ -21,37 +24,38 @@ final class PokemonDetailViewModel: ObservableObject {
         String(format: "#%03d", pokemon.id)
     }
 
-    @Published var pokemonSpecies = PokemonSpeciesConfig(
-        description: "",
-        eggGroups: [],
-        gender: Gender(
-            male: "",
-            female: "",
-            genderCase: .genderless
-        ),
-        hatchCounter: ""
-    )
+    @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var scrollPosition: CGPoint = .zero
-    @Binding var favouriteIds: Set<Int>
     @Published var isFavourite: Bool
+    @Published var pokemonPinsOpacity = 0.0
+    @Binding var userLocation: Location
+    @Binding var favouriteIds: Set<Int>
 
     init(
         coordinator: PokemonsCoordinator?,
         pokemonsAPI: PokemonsAPIProtocol,
         pokemon: PokemonDetailConfig,
+        userLocation: Binding<Location>,
         favouriteIds: Binding<Set<Int>>
     ) {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         self.pokemon = pokemon
+        _userLocation = userLocation
         _favouriteIds = favouriteIds
         isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
+        region = MKCoordinateRegion(
+            center: userLocation.coordinate.wrappedValue,
+            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        )
         loadPokemonSpecies()
         loadNextPokemon()
         loadPreviousPokemon()
+        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
+        configNavigationBar()
     }
 
     @objc
@@ -80,8 +84,6 @@ final class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonSpecies(name: pokemon.name)
                 await self.updateSpecies(pokemonDetail: pokemonDetail)
             } catch {
-                print("Error from pokemon \(pokemon.id)")
-                print(error)
                 await MainActor.run {
                     self.showAlert()
                 }
@@ -96,7 +98,6 @@ final class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id + 1)")
                 await self.updateNext(pokemonDetail: pokemonDetail)
             } catch {
-                print(error)
                 await MainActor.run {
                     self.showAlert()
                 }
@@ -111,11 +112,30 @@ final class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id - 1)")
                 await self.updatePrevious(pokemonDetail: pokemonDetail)
             } catch {
-                print(error)
                 await MainActor.run {
                     self.showAlert()
                 }
             }
+        }
+    }
+
+    func showAlert() {
+        alertConfig = AlertConfig(
+            title: L.Errors.genericTitle,
+            message: L.Errors.genericMessage
+        )
+    }
+
+    func playSound() {
+        if pokemon.name == Constants.pikachuSound {
+            guard let path = Bundle.main.path(forResource: AssetsSound.pikachu, ofType: nil) else {
+                return
+            }
+            let url = URL(fileURLWithPath: path)
+            do {
+                player = try AVAudioPlayer(contentsOf: url)
+                player?.play()
+            } catch {}
         }
     }
 
@@ -180,23 +200,32 @@ final class PokemonDetailViewModel: ObservableObject {
         return "\(baseSteps * (counter + 1)) \(L.PokemonDetail.steps)"
     }
 
-    func showAlert() {
-        alertConfig = AlertConfig(
-            title: L.Errors.genericTitle,
-            message: L.Errors.genericMessage
-        )
+    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
+        // Generate a random number of locations to create
+        let numberOfLocations = Int.random(in: 1...4)
+        let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
+        return locations
     }
 
-    func playSound() {
-        if pokemon.name == "pikachu" {
-            guard let path = Bundle.main.path(forResource: "pikachu.mp3", ofType: nil) else {
-                return
-            }
-            let url = URL(fileURLWithPath: path)
-            do {
-                player = try AVAudioPlayer(contentsOf: url)
-                player?.play()
-            } catch {}
-        }
+    private func configNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = UIColor(named: colorBackground)
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(
+                ofSize: 22,
+                weight: .black
+            )
+        ]
+        appearance.largeTitleTextAttributes = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(
+                ofSize: 36,
+                weight: .black
+            )
+        ]
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().layoutMargins.left = 26
     }
 }

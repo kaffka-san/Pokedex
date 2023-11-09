@@ -5,6 +5,7 @@
 //  Created by Anastasia Lenina on 04.11.2023.
 //
 
+import CoreLocation
 import Nuke
 import NukeUI
 import SwiftUI
@@ -129,6 +130,14 @@ private extension PokemonCell {
             url: "",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
+            userLocation: Binding.constant(
+                Location(
+                    coordinate: CLLocationCoordinate2D(
+                        latitude: 40.7128,
+                        longitude: -74.0060
+                    )
+                )
+            ),
             favouriteIds: Binding.constant([1, 2, 3, 4])
         )
     )
