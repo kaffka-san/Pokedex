@@ -97,11 +97,7 @@ private extension PokemonsView {
     PokemonsView(
         viewModel: PokemonsViewModel(
             coordinator: nil,
-            // TODO: create Mock
-            pokemonsAPI: PokemonsAPI(
-                apiClient: APIClient(),
-                router: PokemonsRouter()
-            )
+            pokemonsAPI: MockPokemonsAPI()
         )
     )
 }
