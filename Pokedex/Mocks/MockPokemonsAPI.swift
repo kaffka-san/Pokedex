@@ -53,7 +53,7 @@ final class MockPokemonsAPI: PokemonsAPIProtocol {
                 SpecificType(name: "monster")
             ],
             flavorTextEntries: [
-                FlavorTextEntry(flavorText: "BULBASAUR can be seen napping in\nbright sunlight.\nThere is a seed on its back.By soaking up the sun’s rays, the seed\ngrows progressively larger."),
+                FlavorTextEntry(flavorText: "BULBASAUR can be seen napping in\nbright sunlight.\nThere is a seed on its back."),
                 FlavorTextEntry(flavorText: "While it is young,\nit uses the\nnutrients that are stored in the\nseeds on its back\nin order to grow.")
             ],
             genderRate: 1,
@@ -75,5 +75,23 @@ final class MockPokemonsAPI: PokemonsAPIProtocol {
                 )
             ]
         )
+    }
+}
+
+final class MockFailingPokemonsAPI: PokemonsAPIProtocol {
+    func getPokemons(offset _: Int) async throws -> Pokemons {
+        throw APIError.timeoutError
+    }
+
+    func getPokemonDetail(name _: String) async throws -> PokemonDetail {
+        throw APIError.timeoutError
+    }
+
+    func getPokemonSpecies(name _: String) async throws -> PokemonSpecies {
+        throw APIError.timeoutError
+    }
+
+    func getPokemonForGeneration(generation _: Int) async throws -> PokemonsGeneration {
+        throw APIError.timeoutError
     }
 }

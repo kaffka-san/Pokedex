@@ -140,7 +140,7 @@ final class PokemonDetailViewModel: ObservableObject {
         )
     }
 
-    // The chance of this Pokémon being female, in eighths; or -1 for genderless
+    // The chance of this Pokemon being female, in eighths; or -1 for genderless
     func getPokemonGenderChance(femaleEighths: Int) -> Gender {
         switch femaleEighths {
         case -1:
@@ -169,7 +169,7 @@ final class PokemonDetailViewModel: ObservableObject {
         string.replacingOccurrences(of: "\n", with: "")
     }
 
-    // Initial hatch counter: one must walk 255 × (hatch_counter + 1) steps before this Pokémon's egg hatches
+    // Initial hatch counter: one must walk 255 × (hatch_counter + 1) steps before this Pokemon's egg hatches
     func calculateHatchingSteps(initialHatchCounter: Int?) -> String {
         guard let counter = initialHatchCounter else {
             return L.PokemonDetail.defaultString
