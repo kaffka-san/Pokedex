@@ -10,59 +10,45 @@ import MapKit
 import SwiftUI
 
 class PokemonDetailViewModel: ObservableObject {
-    private weak var coordinator: PokemonsCoordinator?
     private let pokemonsAPI: PokemonsAPIProtocol
+    private var player: AVAudioPlayer?
+    private weak var coordinator: PokemonsCoordinator?
     let pokemon: PokemonDetailConfig
-    var player: AVAudioPlayer?
+    var region: MKCoordinateRegion
+    var pokemonsLocations = [Location]()
     var colorBackground: String {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
-
     var idFormatted: String {
         String(format: "#%03d", pokemon.id)
     }
-
-    @Published var pokemonSpecies = PokemonSpeciesConfig(
-        description: "",
-        eggGroups: [],
-        gender: Gender(
-            male: "",
-            female: "",
-            genderCase: .genderless
-        ),
-        hatchCounter: ""
-    )
-    var region: MKCoordinateRegion
-    @Binding var userLocation: UserLocation
+    @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var scrollPosition: CGPoint = .zero
-    @Binding var favouriteIds: Set<Int>
     @Published var isFavourite: Bool
-    var pokemonsLocations = [UserLocation]()
     @Published var pokemonPinsOpacity = 0.0
+    @Binding var userLocation: Location
+    @Binding var favouriteIds: Set<Int>
 
     init(
         coordinator: PokemonsCoordinator?,
         pokemonsAPI: PokemonsAPIProtocol,
         pokemon: PokemonDetailConfig,
-        userLocation: Binding<UserLocation>,
+        userLocation: Binding<Location>,
         favouriteIds: Binding<Set<Int>>
     ) {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         self.pokemon = pokemon
         _userLocation = userLocation
-        print("Inited used location \(userLocation)")
         _favouriteIds = favouriteIds
         isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
-
         region = MKCoordinateRegion(
             center: userLocation.coordinate.wrappedValue,
             span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
         )
-
         loadPokemonSpecies()
         loadNextPokemon()
         loadPreviousPokemon()
@@ -215,13 +201,13 @@ class PokemonDetailViewModel: ObservableObject {
         }
     }
 
-    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [UserLocation] {
+    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
         // Generate a random number of locations to create
 
         let numberOfLocations = Int.random(in: 1...4)
 
         // Use the `randomLocationWithin` method to create an array of random locations
-        let locations = (1...numberOfLocations).map { _ in UserLocation(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
+        let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
         return locations
     }
 }

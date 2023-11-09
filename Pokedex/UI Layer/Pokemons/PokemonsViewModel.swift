@@ -19,13 +19,7 @@ final class PokemonsViewModel: NSObject, ObservableObject {
     @Published var disablePagination = false
     @Published var favouriteIds = Set<Int>()
     @Published var showingFavourites = false
-    @Published var userLocation =
-        UserLocation(
-            coordinate: CLLocationCoordinate2D(
-                latitude: 40.7128,
-                longitude: -74.0060
-            )
-        )
+    @Published var userLocation = MockLocation.location
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -135,43 +129,38 @@ final class PokemonsViewModel: NSObject, ObservableObject {
 
 extension PokemonsViewModel: CLLocationManagerDelegate {
     func requestLocation() {
-        print("Request Location")
         locationManager.requestLocation()
     }
 
-    func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(
+        _: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
         if let location = locations.first?.coordinate {
-//            region = MKCoordinateRegion(
-//                center: location,
-//                span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
-//            )
-            userLocation = UserLocation(coordinate: location)
-            print("user Location \(userLocation.coordinate)")
+            userLocation = Location(coordinate: location)
         }
     }
 
-    func locationManager(_: CLLocationManager, didFailWithError _: Error) {}
+    func locationManager(
+        _: CLLocationManager,
+        didFailWithError _: Error
+    ) {}
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
-        case .authorizedWhenInUse: // Location services are available.
-            // Insert code here of what should happen when Location services are authorized
+        case .authorizedWhenInUse:
             break
-
-        case .restricted, .denied: // Location services currently unavailable.
-            // Insert code here of what should happen when Location services are NOT authorized
+        case .restricted, .denied:
             break
-
-        case .notDetermined: // Authorization not determined yet.
+        case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
-
         default:
             break
         }
     }
 }
 
-struct UserLocation: Identifiable {
+struct Location: Identifiable {
     let id = UUID()
     var coordinate: CLLocationCoordinate2D
 }
@@ -190,10 +179,14 @@ extension CLLocationCoordinate2D {
         let currentLongitudeRadians = longitude * .pi / 180
 
         // Calculate the new latitude and longitude based on the random bearing and distance
-        let newLatitudeRadians = asin(sin(currentLatitudeRadians) * cos(distance / 6_371_000) +
-            cos(currentLatitudeRadians) * sin(distance / 6_371_000) * cos(bearing))
-        let newLongitudeRadians = currentLongitudeRadians + atan2(sin(bearing) * sin(distance / 6_371_000) * cos(currentLatitudeRadians),
-                                                                  cos(distance / 6_371_000) - sin(currentLatitudeRadians) * sin(newLatitudeRadians))
+        let newLatitudeRadians = asin(
+            sin(currentLatitudeRadians) * cos(distance / 6_371_000) +
+                cos(currentLatitudeRadians) * sin(distance / 6_371_000) * cos(bearing)
+        )
+        let newLongitudeRadians = currentLongitudeRadians + atan2(
+            sin(bearing) * sin(distance / 6_371_000) * cos(currentLatitudeRadians),
+            cos(distance / 6_371_000) - sin(currentLatitudeRadians) * sin(newLatitudeRadians)
+        )
 
         // Convert the new latitude and longitude from radians to degrees
         let newLatitude = newLatitudeRadians * 180 / .pi

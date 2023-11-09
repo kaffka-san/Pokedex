@@ -51,7 +51,7 @@ extension MainCoordinator: PokemonsCoordinator {
     func goToDetailView(
         pokemon: PokemonDetailConfig,
         favouriteIds: Binding<Set<Int>>,
-        userLocation: Binding<UserLocation>
+        userLocation: Binding<Location>
     ) {
         let viewController = HostingController {
             PokemonDetailView(

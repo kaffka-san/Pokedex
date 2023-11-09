@@ -15,6 +15,7 @@
 		3042A89E2AF91BD600D65D54 /* FilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042A89D2AF91BD600D65D54 /* FilterViewModel.swift */; };
 		3042A8A02AF91C6500D65D54 /* CapsuleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042A89F2AF91C6500D65D54 /* CapsuleButton.swift */; };
 		304B41AB2AFD12CD00B2803B /* pikachu.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 304B41AA2AFD12CD00B2803B /* pikachu.mp3 */; };
+		304B41B02AFD8D6500B2803B /* MockLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304B41AF2AFD8D6500B2803B /* MockLocation.swift */; };
 		305FB3442AFBD071003804B8 /* MockPokemonsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305FB3432AFBD071003804B8 /* MockPokemonsAPI.swift */; };
 		305FB34D2AFBD72B003804B8 /* PokemonsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305FB34C2AFBD72B003804B8 /* PokemonsViewModelTests.swift */; };
 		305FB3542AFBE7A9003804B8 /* PokemonCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305FB3532AFBE7A9003804B8 /* PokemonCellViewModelTests.swift */; };
@@ -81,6 +82,7 @@
 		3042A89D2AF91BD600D65D54 /* FilterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewModel.swift; sourceTree = "<group>"; };
 		3042A89F2AF91C6500D65D54 /* CapsuleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleButton.swift; sourceTree = "<group>"; };
 		304B41AA2AFD12CD00B2803B /* pikachu.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pikachu.mp3; sourceTree = "<group>"; };
+		304B41AF2AFD8D6500B2803B /* MockLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocation.swift; sourceTree = "<group>"; };
 		305FB3432AFBD071003804B8 /* MockPokemonsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPokemonsAPI.swift; sourceTree = "<group>"; };
 		305FB34A2AFBD72B003804B8 /* PokedexTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokedexTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		305FB34C2AFBD72B003804B8 /* PokemonsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonsViewModelTests.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				305FB3432AFBD071003804B8 /* MockPokemonsAPI.swift */,
+				304B41AF2AFD8D6500B2803B /* MockLocation.swift */,
 				305FB3572AFCF252003804B8 /* MockPokemon.swift */,
 			);
 			path = Mocks;
@@ -532,6 +535,7 @@
 				3086F1082AF568620089FA33 /* APIError.swift in Sources */,
 				3086F1242AF56D1C0089FA33 /* NavigationPropagation.swift in Sources */,
 				3086F10A2AF568760089FA33 /* APIErrorCode.swift in Sources */,
+				304B41B02AFD8D6500B2803B /* MockLocation.swift in Sources */,
 				309659B32AF55DEE00B2BE78 /* SceneDelegate.swift in Sources */,
 				3086F10F2AF568E90089FA33 /* Service.swift in Sources */,
 				30C552052AF6BE76005D1DB8 /* CapsuleText.swift in Sources */,

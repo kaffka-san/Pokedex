@@ -10,7 +10,7 @@ import SwiftUI
 final class PokemonCellViewModel: ObservableObject {
     private let pokemonsAPI: PokemonsAPIProtocol
     private weak var coordinator: PokemonsCoordinator?
-
+    var task: Task<Void, Never>?
     var idFormatted: String {
         String(format: "#%03d", pokemon.id)
     }
@@ -19,18 +19,17 @@ final class PokemonCellViewModel: ObservableObject {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
 
-    @Binding var userLocation: UserLocation
+    @Binding var userLocation: Location
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
     @Binding var favouriteIds: Set<Int>
-    var task: Task<Void, Never>?
 
     init(
         name: String,
         url: String,
         pokemonsAPI: PokemonsAPIProtocol,
         coordinator: PokemonsCoordinator?,
-        userLocation: Binding<UserLocation>,
+        userLocation: Binding<Location>,
         favouriteIds: Binding<Set<Int>>
     ) {
         pokemon = PokemonDetailConfig(name: name, url: url)
@@ -48,8 +47,6 @@ final class PokemonCellViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
                 await self.update(pokemonDetail: pokemonDetail)
             } catch {
-                print("pokemonCell \(pokemon.id)")
-                print(error)
                 await MainActor.run {
                     self.showAlert()
                 }

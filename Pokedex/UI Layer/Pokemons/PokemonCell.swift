@@ -131,7 +131,7 @@ private extension PokemonCell {
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
             userLocation: Binding.constant(
-                UserLocation(
+                Location(
                     coordinate: CLLocationCoordinate2D(
                         latitude: 40.7128,
                         longitude: -74.0060

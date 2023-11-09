@@ -372,12 +372,7 @@ private extension PokemonDetailView {
                 baseExperience: "65"
             ),
             userLocation: Binding.constant(
-                UserLocation(
-                    coordinate: CLLocationCoordinate2D(
-                        latitude: 40.7128,
-                        longitude: -74.0060
-                    )
-                )
+                MockLocation.location
             ),
             favouriteIds: Binding.constant([1, 2, 3, 4])
         )

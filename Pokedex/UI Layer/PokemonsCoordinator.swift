@@ -11,7 +11,7 @@ protocol PokemonsCoordinator: AnyObject {
     func goToDetailView(
         pokemon: PokemonDetailConfig,
         favouriteIds: Binding<Set<Int>>,
-        userLocation: Binding<UserLocation>
+        userLocation: Binding<Location>
     )
     func goBack()
 }

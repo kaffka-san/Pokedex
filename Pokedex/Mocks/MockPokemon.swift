@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-enum MockPokemonDetailConfig {
-    static let pokemon = PokemonDetailConfig(
+enum MockPokemon {
+    static let pokemonDetailConfig = PokemonDetailConfig(
         id: 1,
         url: "https://pokeapi.co/api/v2/pokemon/1/",
         name: "bulbasaur",
@@ -20,5 +20,16 @@ enum MockPokemonDetailConfig {
         weight: "69",
         height: "7",
         baseExperience: "64"
+    )
+
+    static let emptyPokemonSpecies = PokemonSpeciesConfig(
+        description: "",
+        eggGroups: [],
+        gender: Gender(
+            male: "",
+            female: "",
+            genderCase: .genderless
+        ),
+        hatchCounter: ""
     )
 }

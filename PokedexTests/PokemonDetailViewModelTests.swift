@@ -27,7 +27,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         viewModel.$pokemonSpecies
@@ -50,7 +50,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockFailingPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         viewModel.$alertConfig
@@ -74,7 +74,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         viewModel.$nextImageUrl
@@ -97,7 +97,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         viewModel.$previousImageUrl
@@ -119,7 +119,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         let gender = viewModel.getPokemonGenderChance(femaleEighths: -1)
@@ -131,7 +131,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         let gender = viewModel.getPokemonGenderChance(femaleEighths: 0)
@@ -143,7 +143,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         let gender = viewModel.getPokemonGenderChance(femaleEighths: 8)
@@ -155,7 +155,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         let array = ["Ivysaur", "", "BULBASAUR", "Charmander", "Charmeleon", "Charizard"]
@@ -170,7 +170,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         let stringWithNewLines = "This\nis\na\ntest\nstring."
@@ -184,7 +184,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             coordinator: nil,
             pokemonsAPI: MockPokemonsAPI(),
-            pokemon: MockPokemonDetailConfig.pokemon,
+            pokemon: MockPokemon.pokemon,
             favouriteIds: Binding.constant([1, 3, 6])
         )
         let initialHatchCounter = 10
