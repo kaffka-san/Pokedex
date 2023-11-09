@@ -29,6 +29,16 @@ struct PokemonDetailView: View {
 }
 
 private extension PokemonDetailView {
+    var typeIdLabel: some View {
+        HStack {
+            pokemonTypes
+            Spacer()
+            pokemonId
+        }
+        .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -10.0) ? 1 : 0)
+        .animation(.easeInOut, value: viewModel.scrollPosition)
+    }
+
     var scrollView: some View {
         GeometryReader { geometry in
             ZStack {
@@ -39,11 +49,7 @@ private extension PokemonDetailView {
                 VStack {
                     ZStack(alignment: .top) {
                         Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.7 : geometry.size.height * 0.32)
-                        HStack {
-                            pokemonTypes
-                            Spacer()
-                            pokemonId
-                        }
+                        typeIdLabel
                     }
                     VStack {
                         ZStack(alignment: .top) {
@@ -230,7 +236,7 @@ private extension PokemonDetailView {
     }
 
     var description: some View {
-//        Text("Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.")
+        //        Text("Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.")
         Text(viewModel.pokemonSpecies.description)
             .font(PokedexFonts.body3)
             .padding(.top, 50)
@@ -249,6 +255,9 @@ private extension PokemonDetailView {
             GrayImage(url: viewModel.previousImageUrl)
                 .frame(width: 80, height: 100)
             pokemonImage
+                .onTapGesture {
+                    viewModel.playSound()
+                }
             GrayImage(url: viewModel.nextImageUrl)
                 .offset(y: 0)
                 .frame(width: 80, height: 100)
