@@ -35,22 +35,23 @@ struct PokemonsView: View {
                         .padding(.trailing, 26)
                         .shadow(radius: 20)
                 }
-                if viewModel.showSettingsMenu {
-                    SettingsView(
-                        viewModel: SettingsViewModel(
-                            close: { viewModel.showSettingsMenu.toggle() },
-                            generationSelected: { generationId in
-                                viewModel.showSettingsMenu.toggle()
-                                viewModel.loadGeneration(index: generationId)
-                            },
-                            favouriteSelected: { viewModel.getFavourite() },
-                            showAll: {
-                                viewModel.showSettingsMenu.toggle()
-                                viewModel.showAllPokemons()
-                            }
-                        )
+
+                FilterView(
+                    viewModel: FilterViewModel(
+                        close: { viewModel.showSettingsMenu.toggle() },
+                        generationSelected: { generationId in
+                            viewModel.showSettingsMenu.toggle()
+                            viewModel.loadGeneration(index: generationId)
+                        },
+                        favouriteSelected: { viewModel.getFavourite() },
+                        showAll: {
+                            viewModel.showSettingsMenu.toggle()
+                            viewModel.showAllPokemons()
+                        }
                     )
-                }
+                )
+                .opacity(viewModel.showSettingsMenu ? 1 : 0)
+                .animation(.easeInOut, value: viewModel.showSettingsMenu)
             }
         }
         .navigationBarHidden(true)

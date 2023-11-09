@@ -5,12 +5,14 @@
 //  Created by Anastasia Lenina on 05.11.2023.
 //
 
+import AVFoundation
 import SwiftUI
 
 final class PokemonDetailViewModel: ObservableObject {
     private weak var coordinator: PokemonsCoordinator?
     private let pokemonsAPI: PokemonsAPIProtocol
     let pokemon: PokemonDetailConfig
+    var player: AVAudioPlayer?
     var colorBackground: String {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
@@ -183,5 +185,18 @@ final class PokemonDetailViewModel: ObservableObject {
             title: L.Errors.genericTitle,
             message: L.Errors.genericMessage
         )
+    }
+
+    func playSound() {
+        if pokemon.name == "pikachu" {
+            guard let path = Bundle.main.path(forResource: "pikachu.mp3", ofType: nil) else {
+                return
+            }
+            let url = URL(fileURLWithPath: path)
+            do {
+                player = try AVAudioPlayer(contentsOf: url)
+                player?.play()
+            } catch {}
+        }
     }
 }

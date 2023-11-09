@@ -1,5 +1,5 @@
 //
-//  SettingsView.swift
+//  FilterView.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 06.11.2023.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct SettingsView: View {
-    @StateObject var viewModel: SettingsViewModel
+struct FilterView: View {
+    @StateObject var viewModel: FilterViewModel
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -22,12 +22,15 @@ struct SettingsView: View {
     }
 }
 
-private extension SettingsView {
+private extension FilterView {
     var background: some View {
         Rectangle()
             .fill(.black)
             .opacity(0.6)
             .ignoresSafeArea()
+            .onTapGesture {
+                viewModel.close()
+            }
     }
 
     var settingButtons: some View {
@@ -88,20 +91,20 @@ private extension SettingsView {
                 GridItem(.adaptive(minimum: 150))
             ]
         ) {
-            ForEach(1...8, id: \.self) { index in
+            ForEach(FilterViewModel.PokemonGeneration.allCases, id: \.self) { generation in
                 ZStack(alignment: .top) {
-                    Image("\(index)")
+                    Image("\(generation.index)")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 155)
-                    Text("\(L.Settings.generationTitle) \(viewModel.integerToRoman(index))")
+                    Text("\(L.Settings.generationTitle) \(generation.rawValue)")
                         .font(PokedexFonts.label1)
                         .padding(.top, 16)
                         .foregroundColor(PokedexColors.dark)
                 }
                 .onTapGesture {
                     viewModel.showAllGeneration.toggle()
-                    viewModel.generationSelected(index)
+                    viewModel.generationSelected(generation.index)
                 }
                 .shadow(radius: 20)
             }
@@ -111,8 +114,8 @@ private extension SettingsView {
 }
 
 #Preview {
-    SettingsView(
-        viewModel: SettingsViewModel(
+    FilterView(
+        viewModel: FilterViewModel(
             close: {},
             generationSelected: { _ in },
             favouriteSelected: {},

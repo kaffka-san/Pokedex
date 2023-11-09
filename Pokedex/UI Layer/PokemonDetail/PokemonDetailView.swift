@@ -255,6 +255,9 @@ private extension PokemonDetailView {
             GrayImage(url: viewModel.previousImageUrl)
                 .frame(width: 80, height: 100)
             pokemonImage
+                .onTapGesture {
+                    viewModel.playSound()
+                }
             GrayImage(url: viewModel.nextImageUrl)
                 .offset(y: 0)
                 .frame(width: 80, height: 100)
