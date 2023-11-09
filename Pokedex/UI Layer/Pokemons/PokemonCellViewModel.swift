@@ -10,6 +10,7 @@ import SwiftUI
 final class PokemonCellViewModel: ObservableObject {
     private let pokemonsAPI: PokemonsAPIProtocol
     private weak var coordinator: PokemonsCoordinator?
+
     var idFormatted: String {
         String(format: "#%03d", pokemon.id)
     }
@@ -18,6 +19,7 @@ final class PokemonCellViewModel: ObservableObject {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
 
+    @Binding var userLocation: UserLocation
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
     @Binding var favouriteIds: Set<Int>
@@ -28,11 +30,13 @@ final class PokemonCellViewModel: ObservableObject {
         url: String,
         pokemonsAPI: PokemonsAPIProtocol,
         coordinator: PokemonsCoordinator?,
+        userLocation: Binding<UserLocation>,
         favouriteIds: Binding<Set<Int>>
     ) {
         pokemon = PokemonDetailConfig(name: name, url: url)
         self.pokemonsAPI = pokemonsAPI
         self.coordinator = coordinator
+        _userLocation = userLocation
         _favouriteIds = favouriteIds
         loadPokemon()
     }
@@ -56,7 +60,8 @@ final class PokemonCellViewModel: ObservableObject {
     func goToDetailView() {
         coordinator?.goToDetailView(
             pokemon: pokemon,
-            favouriteIds: $favouriteIds
+            favouriteIds: $favouriteIds,
+            userLocation: $userLocation
         )
     }
 

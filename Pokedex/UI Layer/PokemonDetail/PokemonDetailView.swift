@@ -5,6 +5,7 @@
 //  Created by Anastasia Lenina on 05.11.2023.
 //
 
+import MapKit
 import NukeUI
 import SwiftUI
 import UIKit
@@ -69,6 +70,31 @@ private extension PokemonDetailView {
                                 } else {
                                     verticalStatistics
                                 }
+                                Map(
+                                    coordinateRegion: $viewModel.region,
+                                    showsUserLocation: true,
+                                    annotationItems: viewModel.pokemonsLocations
+                                ) { location in
+                                    MapAnnotation(coordinate: location.coordinate) {
+                                        LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
+                                            if let image = state.image {
+                                                image
+                                                    .resizable()
+                                                    .scaledToFit()
+                                            } else {}
+                                        }
+                                        .frame(width: 40, height: 40)
+                                        .opacity(viewModel.pokemonPinsOpacity)
+                                        .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
+                                        .onAppear {
+                                            viewModel.pokemonPinsOpacity = 1.0
+                                        }
+                                    }
+                                }
+                                .frame(width: 334, height: 150)
+                                .cornerRadius(20)
+                                .padding(.top, 20)
+                                .padding(.horizontal, 26)
                             }
                         }
                     }
@@ -145,7 +171,6 @@ private extension PokemonDetailView {
         Text(viewModel.idFormatted)
             .font(PokedexFonts.headline1)
             .foregroundColor(.white)
-
             .padding(.trailing, 26)
             .padding(.trailing, isLandscape() ? 46 : 0)
     }
@@ -236,7 +261,6 @@ private extension PokemonDetailView {
     }
 
     var description: some View {
-        //        Text("Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.Bulbasaur can be seen napping in bright sunlight.There is a seed on its back. By soaking up the sun’s rays,the seed grows progressively larger.")
         Text(viewModel.pokemonSpecies.description)
             .font(PokedexFonts.body3)
             .padding(.top, 50)
@@ -346,6 +370,14 @@ private extension PokemonDetailView {
                 weight: "13.2 lbs (6.9 kg)",
                 height: "1' 04 (0.70 cm)",
                 baseExperience: "65"
+            ),
+            userLocation: Binding.constant(
+                UserLocation(
+                    coordinate: CLLocationCoordinate2D(
+                        latitude: 40.7128,
+                        longitude: -74.0060
+                    )
+                )
             ),
             favouriteIds: Binding.constant([1, 2, 3, 4])
         )

@@ -178,6 +178,13 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		304B41AE2AFD175600B2803B /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		305FB3452AFBD07E003804B8 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +289,7 @@
 				3086F1062AF568310089FA33 /* Networking */,
 				30B2FA242AF64B9100B9D94D /* Model */,
 				3086F1172AF56BC50089FA33 /* UI Layer */,
+				304B41AE2AFD175600B2803B /* Services */,
 				305FB3452AFBD07E003804B8 /* Mocks */,
 				3086F1262AF56D290089FA33 /* Helpers */,
 				309659B92AF55DEF00B2BE78 /* Assets.xcassets */,
@@ -726,6 +734,8 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pokedex/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -754,6 +764,8 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pokedex/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

@@ -10,7 +10,8 @@ import SwiftUI
 protocol PokemonsCoordinator: AnyObject {
     func goToDetailView(
         pokemon: PokemonDetailConfig,
-        favouriteIds: Binding<Set<Int>>
+        favouriteIds: Binding<Set<Int>>,
+        userLocation: Binding<UserLocation>
     )
     func goBack()
 }

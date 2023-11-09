@@ -53,6 +53,9 @@ struct PokemonsView: View {
                 .opacity(viewModel.showSettingsMenu ? 1 : 0)
                 .animation(.easeInOut, value: viewModel.showSettingsMenu)
             }
+            .onAppear {
+                viewModel.requestLocation()
+            }
         }
         .navigationBarHidden(true)
     }
@@ -74,6 +77,7 @@ private extension PokemonsView {
                             url: pokemon.url,
                             pokemonsAPI: viewModel.pokemonsAPI,
                             coordinator: viewModel.coordinator,
+                            userLocation: $viewModel.userLocation,
                             favouriteIds: $viewModel.favouriteIds
                         )
                     )

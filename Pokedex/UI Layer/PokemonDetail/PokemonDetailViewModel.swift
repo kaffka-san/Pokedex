@@ -6,9 +6,10 @@
 //
 
 import AVFoundation
+import MapKit
 import SwiftUI
 
-final class PokemonDetailViewModel: ObservableObject {
+class PokemonDetailViewModel: ObservableObject {
     private weak var coordinator: PokemonsCoordinator?
     private let pokemonsAPI: PokemonsAPIProtocol
     let pokemon: PokemonDetailConfig
@@ -31,27 +32,41 @@ final class PokemonDetailViewModel: ObservableObject {
         ),
         hatchCounter: ""
     )
+    var region: MKCoordinateRegion
+    @Binding var userLocation: UserLocation
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var scrollPosition: CGPoint = .zero
     @Binding var favouriteIds: Set<Int>
     @Published var isFavourite: Bool
+    var pokemonsLocations = [UserLocation]()
+    @Published var pokemonPinsOpacity = 0.0
 
     init(
         coordinator: PokemonsCoordinator?,
         pokemonsAPI: PokemonsAPIProtocol,
         pokemon: PokemonDetailConfig,
+        userLocation: Binding<UserLocation>,
         favouriteIds: Binding<Set<Int>>
     ) {
         self.coordinator = coordinator
         self.pokemonsAPI = pokemonsAPI
         self.pokemon = pokemon
+        _userLocation = userLocation
+        print("Inited used location \(userLocation)")
         _favouriteIds = favouriteIds
         isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
+
+        region = MKCoordinateRegion(
+            center: userLocation.coordinate.wrappedValue,
+            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        )
+
         loadPokemonSpecies()
         loadNextPokemon()
         loadPreviousPokemon()
+        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
     }
 
     @objc
@@ -198,5 +213,15 @@ final class PokemonDetailViewModel: ObservableObject {
                 player?.play()
             } catch {}
         }
+    }
+
+    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [UserLocation] {
+        // Generate a random number of locations to create
+
+        let numberOfLocations = Int.random(in: 1...4)
+
+        // Use the `randomLocationWithin` method to create an array of random locations
+        let locations = (1...numberOfLocations).map { _ in UserLocation(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
+        return locations
     }
 }

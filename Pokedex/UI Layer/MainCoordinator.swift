@@ -5,6 +5,7 @@
 //  Created by Anastasia Lenina on 03.11.2023.
 //
 
+import CoreLocation
 import SwiftUI
 
 final class MainCoordinator: UINavigationController {
@@ -49,7 +50,8 @@ extension MainCoordinator: PokemonsCoordinator {
 
     func goToDetailView(
         pokemon: PokemonDetailConfig,
-        favouriteIds: Binding<Set<Int>>
+        favouriteIds: Binding<Set<Int>>,
+        userLocation: Binding<UserLocation>
     ) {
         let viewController = HostingController {
             PokemonDetailView(
@@ -57,6 +59,7 @@ extension MainCoordinator: PokemonsCoordinator {
                     coordinator: self,
                     pokemonsAPI: pokemonsAPI,
                     pokemon: pokemon,
+                    userLocation: userLocation,
                     favouriteIds: favouriteIds
                 )
             )
