@@ -19,9 +19,11 @@ class PokemonDetailViewModel: ObservableObject {
     var colorBackground: String {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
+
     var idFormatted: String {
         String(format: "#%03d", pokemon.id)
     }
+
     @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
@@ -53,6 +55,7 @@ class PokemonDetailViewModel: ObservableObject {
         loadNextPokemon()
         loadPreviousPokemon()
         pokemonsLocations = getRandomLocationsNearUser(radius: 500)
+        configNavigationBar()
     }
 
     @objc
@@ -81,8 +84,6 @@ class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonSpecies(name: pokemon.name)
                 await self.updateSpecies(pokemonDetail: pokemonDetail)
             } catch {
-                print("Error from pokemon \(pokemon.id)")
-                print(error)
                 await MainActor.run {
                     self.showAlert()
                 }
@@ -97,7 +98,6 @@ class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id + 1)")
                 await self.updateNext(pokemonDetail: pokemonDetail)
             } catch {
-                print(error)
                 await MainActor.run {
                     self.showAlert()
                 }
@@ -112,11 +112,30 @@ class PokemonDetailViewModel: ObservableObject {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id - 1)")
                 await self.updatePrevious(pokemonDetail: pokemonDetail)
             } catch {
-                print(error)
                 await MainActor.run {
                     self.showAlert()
                 }
             }
+        }
+    }
+
+    func showAlert() {
+        alertConfig = AlertConfig(
+            title: L.Errors.genericTitle,
+            message: L.Errors.genericMessage
+        )
+    }
+
+    func playSound() {
+        if pokemon.name == Constants.pikachuSound {
+            guard let path = Bundle.main.path(forResource: AssetsSound.pikachu, ofType: nil) else {
+                return
+            }
+            let url = URL(fileURLWithPath: path)
+            do {
+                player = try AVAudioPlayer(contentsOf: url)
+                player?.play()
+            } catch {}
         }
     }
 
@@ -181,33 +200,32 @@ class PokemonDetailViewModel: ObservableObject {
         return "\(baseSteps * (counter + 1)) \(L.PokemonDetail.steps)"
     }
 
-    func showAlert() {
-        alertConfig = AlertConfig(
-            title: L.Errors.genericTitle,
-            message: L.Errors.genericMessage
-        )
-    }
-
-    func playSound() {
-        if pokemon.name == "pikachu" {
-            guard let path = Bundle.main.path(forResource: "pikachu.mp3", ofType: nil) else {
-                return
-            }
-            let url = URL(fileURLWithPath: path)
-            do {
-                player = try AVAudioPlayer(contentsOf: url)
-                player?.play()
-            } catch {}
-        }
-    }
-
     func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
         // Generate a random number of locations to create
-
         let numberOfLocations = Int.random(in: 1...4)
-
-        // Use the `randomLocationWithin` method to create an array of random locations
         let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
         return locations
+    }
+
+    private func configNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = UIColor(named: colorBackground)
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(
+                ofSize: 22,
+                weight: .black
+            )
+        ]
+        appearance.largeTitleTextAttributes = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(
+                ofSize: 36,
+                weight: .black
+            )
+        ]
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().layoutMargins.left = 26
     }
 }

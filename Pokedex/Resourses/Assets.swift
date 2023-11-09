@@ -33,8 +33,13 @@ enum AssetsImagesString {
     static let loveIcon = "love"
 }
 
+enum AssetsSound {
+    static let pikachu = "pikachu.mp3"
+}
+
 enum Constants {
     static let scrollName = "scroll"
     static let neutralBackground = "Default"
     static let favourite = "favouriteId"
+    static let pikachuSound = "pikachu"
 }

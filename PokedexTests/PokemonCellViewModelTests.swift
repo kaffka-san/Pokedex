@@ -9,7 +9,6 @@ import Combine
 @testable import Pokedex
 import SwiftUI
 import XCTest
-
 final class PokemonCellViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
     private let genericErrorConfig = AlertConfig(
@@ -29,6 +28,9 @@ final class PokemonCellViewModelTests: XCTestCase {
             url: "https://pokeapi.co/api/v2/pokemon/1",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
+            userLocation: Binding.constant(
+                MockLocation.location
+            ),
             favouriteIds: Binding.constant([1, 2, 3])
         )
 
@@ -54,6 +56,9 @@ final class PokemonCellViewModelTests: XCTestCase {
             url: "https://pokeapi.co/api/v2/pokemon/1",
             pokemonsAPI: MockFailingPokemonsAPI(),
             coordinator: nil,
+            userLocation: Binding.constant(
+                MockLocation.location
+            ),
             favouriteIds: Binding.constant([1, 2, 3])
         )
         viewModel.$alertConfig
@@ -78,6 +83,9 @@ final class PokemonCellViewModelTests: XCTestCase {
             url: "https://pokeapi.co/api/v2/pokemon/1",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
+            userLocation: Binding.constant(
+                MockLocation.location
+            ),
             favouriteIds: Binding.constant([1, 2, 3])
         )
         let testValue = 100 // This is the value in decagrams.
@@ -97,6 +105,9 @@ final class PokemonCellViewModelTests: XCTestCase {
             url: "https://pokeapi.co/api/v2/pokemon/1",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
+            userLocation: Binding.constant(
+                MockLocation.location
+            ),
             favouriteIds: Binding.constant([1, 2, 3])
         )
         let decimeters = 32
@@ -118,6 +129,9 @@ final class PokemonCellViewModelTests: XCTestCase {
             url: "https://pokeapi.co/api/v2/pokemon/1",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
+            userLocation: Binding.constant(
+                MockLocation.location
+            ),
             favouriteIds: Binding.constant([1, 2, 3])
         )
         let validURL = "https://pokeapi.co/api/v2/pokemon/25/"
