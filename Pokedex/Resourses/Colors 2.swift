@@ -1,5 +1,5 @@
 //
-//  Colors.swift
+//  Colors 2.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 05.11.2023.

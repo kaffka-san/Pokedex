@@ -103,6 +103,9 @@ private extension PokemonDetailView {
                 }
             }
         }
+        .refreshable {
+            viewModel.refresh()
+        }
     }
 
     var mapView: some View {

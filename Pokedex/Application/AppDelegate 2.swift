@@ -1,5 +1,5 @@
 //
-//  AppDelegate.swift
+//  AppDelegate 2.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 03.11.2023.

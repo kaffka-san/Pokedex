@@ -25,7 +25,7 @@ final class PokemonsRouter: Router, APIRouter {
         case let .pokemons(offset):
             return buildRequest(
                 method: .get,
-                url: "\(baseURL)/pokemon?limit=10&offset=\(offset)",
+                url: "\(baseURL)/pokemon?limit=20&offset=\(offset)",
                 headers: headers,
                 body: { nil }
             )

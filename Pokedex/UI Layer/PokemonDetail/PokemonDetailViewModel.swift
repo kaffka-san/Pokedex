@@ -91,6 +91,12 @@ class PokemonDetailViewModel: ObservableObject {
         }
     }
 
+    func refresh() {
+        loadPokemonSpecies()
+        loadNextPokemon()
+        loadPreviousPokemon()
+    }
+
     func loadNextPokemon() {
         Task { [weak self] in
             guard let self else { return }

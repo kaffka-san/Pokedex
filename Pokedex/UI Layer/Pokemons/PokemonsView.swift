@@ -56,6 +56,9 @@ struct PokemonsView: View {
             .onAppear {
                 viewModel.requestLocation()
             }
+            .refreshable {
+                viewModel.refresh()
+            }
         }
         .navigationBarHidden(true)
     }

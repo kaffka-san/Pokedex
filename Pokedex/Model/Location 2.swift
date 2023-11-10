@@ -1,5 +1,5 @@
 //
-//  Location.swift
+//  Location 2.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 10.11.2023.

@@ -20,6 +20,7 @@ final class PokemonsViewModel: NSObject, ObservableObject {
     @Published var favouriteIds = Set<Int>()
     @Published var showingFavourites = false
     @Published var userLocation = MockLocation.location
+    @Published private var lastGenerationIndex = 0
 
     init(
         coordinator: PokemonsCoordinator?,
@@ -56,6 +57,17 @@ final class PokemonsViewModel: NSObject, ObservableObject {
         }
     }
 
+    func refresh() {
+        // pokemons = []
+        if showingFavourites {
+            getFavourite()
+        } else if disablePagination {
+            loadGeneration(index: lastGenerationIndex)
+        } else {
+            loadPokemons()
+        }
+    }
+
     func getFavourite() {
         showingFavourites = true
         pokemons = []
@@ -68,9 +80,11 @@ final class PokemonsViewModel: NSObject, ObservableObject {
         loadPokemons()
         showingFavourites = false
         disablePagination = false
+        lastGenerationIndex = 0
     }
 
     func loadGeneration(index: Int) {
+        lastGenerationIndex = index
         disablePagination = true
         isLoading = false
         Task { [weak self] in
@@ -94,11 +108,12 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             isLoading = true
             Task { [weak self] in
                 guard let self else { return }
+                // self.isLoading = false
                 do {
                     let pokemons = try await pokemonsAPI.getPokemons(offset: self.pokemons.count)
                     await MainActor.run {
-                        self.pokemons.append(contentsOf: pokemons.results)
                         self.isLoading = false
+                        self.pokemons.append(contentsOf: pokemons.results)
                     }
                 } catch let error as APIError {
                     await MainActor.run {
