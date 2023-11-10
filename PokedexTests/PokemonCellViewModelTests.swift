@@ -88,7 +88,7 @@ final class PokemonCellViewModelTests: XCTestCase {
             ),
             favouriteIds: Binding.constant([1, 2, 3])
         )
-        let testValue = 100 // This is the value in decagrams.
+        let testValue = 100
 
         let result = viewModel.convertToPoundsAndKilograms(testValue)
 

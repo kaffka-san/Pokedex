@@ -13,7 +13,7 @@ enum APIError: Error {
     case invalidData
     case genericError
     case unknown
-
+    
     var localizedDescription: ErrorDescription {
         switch self {
         case .genericError:
@@ -28,11 +28,11 @@ enum APIError: Error {
             return ErrorDescription(L.Errors.unknownTile, L.Errors.unknownMessage)
         }
     }
-
+    
     struct ErrorDescription {
         let title: String
         let message: String
-
+        
         init(_ title: String, _ message: String) {
             self.title = title
             self.message = message

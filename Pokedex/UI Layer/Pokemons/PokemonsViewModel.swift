@@ -21,7 +21,7 @@ final class PokemonsViewModel: NSObject, ObservableObject {
     @Published var showingFavourites = false
     @Published var userLocation = MockLocation.location
     @Published private var lastGenerationIndex = 0
-
+    
     init(
         coordinator: PokemonsCoordinator?,
         pokemonsAPI: PokemonsAPIProtocol
@@ -34,15 +34,18 @@ final class PokemonsViewModel: NSObject, ObservableObject {
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
     }
-
+    
     func getFavouritePokemons() {
         if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
-            if let decodedSet = try? JSONDecoder().decode(Set<Int>.self, from: decodedData) {
+            if let decodedSet = try? JSONDecoder().decode(
+                Set<Int>.self,
+                from: decodedData
+            ) {
                 favouriteIds = decodedSet
             }
         }
     }
-
+    
     func loadPokemons() {
         Task { [weak self] in
             guard let self else { return }
@@ -56,9 +59,8 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             }
         }
     }
-
+    
     func refresh() {
-        // pokemons = []
         if showingFavourites {
             getFavourite()
         } else if disablePagination {
@@ -67,7 +69,7 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             loadPokemons()
         }
     }
-
+    
     func getFavourite() {
         showingFavourites = true
         pokemons = []
@@ -75,14 +77,14 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             Pokemon(name: "", url: "\(id)")
         }
     }
-
+    
     func showAllPokemons() {
         loadPokemons()
         showingFavourites = false
         disablePagination = false
         lastGenerationIndex = 0
     }
-
+    
     func loadGeneration(index: Int) {
         lastGenerationIndex = index
         disablePagination = true
@@ -92,7 +94,7 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             do {
                 let pokemonsList = try await pokemonsAPI.getPokemonForGeneration(generation: index)
                 await self.updateGeneration(pokemonsList: pokemonsList)
-
+                
             } catch let error as APIError {
                 await MainActor.run {
                     self.showAlert(for: error)
@@ -100,7 +102,7 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             }
         }
     }
-
+    
     func loadNextPage(for pokemon: Pokemon) {
         guard !isLoading && !disablePagination && !showingFavourites else { return }
         let isLastPost = pokemons.last?.id == pokemon.id
@@ -108,7 +110,6 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             isLoading = true
             Task { [weak self] in
                 guard let self else { return }
-                // self.isLoading = false
                 do {
                     let pokemons = try await pokemonsAPI.getPokemons(offset: self.pokemons.count)
                     await MainActor.run {
@@ -123,17 +124,17 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             }
         }
     }
-
+    
     @MainActor
     private func updateGeneration(pokemonsList: PokemonsGeneration) {
         pokemons = pokemonsList.pokemonSpecies
     }
-
+    
     @MainActor
     private func update(pokemonsList: Pokemons) {
         pokemons = pokemonsList.results
     }
-
+    
     func showAlert(for error: APIError) {
         alertConfig = AlertConfig(
             title: error.localizedDescription.title,
@@ -146,7 +147,7 @@ extension PokemonsViewModel: CLLocationManagerDelegate {
     func requestLocation() {
         locationManager.requestLocation()
     }
-
+    
     func locationManager(
         _: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
@@ -155,12 +156,12 @@ extension PokemonsViewModel: CLLocationManagerDelegate {
             userLocation = Location(coordinate: location)
         }
     }
-
+    
     func locationManager(
         _: CLLocationManager,
         didFailWithError _: Error
     ) {}
-
+    
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse:

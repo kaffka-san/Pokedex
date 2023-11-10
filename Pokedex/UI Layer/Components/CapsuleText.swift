@@ -11,7 +11,7 @@ struct CapsuleText: View {
     private let text: String
     private let font: Font
     private let width: CGFloat
-
+    
     init(
         text: String,
         font: Font,
@@ -21,7 +21,7 @@ struct CapsuleText: View {
         self.font = font
         self.width = width
     }
-
+    
     var body: some View {
         Text(text)
             .font(font)

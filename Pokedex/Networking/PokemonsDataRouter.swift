@@ -19,7 +19,7 @@ final class PokemonsRouter: Router, APIRouter {
         "Content-Type": "application/json",
         "accept": "application/json"
     ]
-
+    
     func urlRequest(for route: PokemonsRoute) -> URLRequestConvertible {
         switch route {
         case let .pokemons(offset):
