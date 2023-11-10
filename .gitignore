@@ -1,6 +1,25 @@
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two
+Icon
+
+# Thumbnails
+._*
+
+### Xcode ###
 # Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
 ## User settings
 xcuserdata/
 
-.DS_Store
+### Swift Package Manager ###
+Packages/
+Package.pins
+.swiftpm
+.build/
