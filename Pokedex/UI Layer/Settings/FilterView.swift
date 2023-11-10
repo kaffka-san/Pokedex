@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FilterView: View {
     @StateObject var viewModel: FilterViewModel
-    
+
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             background
@@ -32,7 +32,7 @@ private extension FilterView {
                 viewModel.close()
             }
     }
-    
+
     var settingButtons: some View {
         VStack(alignment: .trailing) {
             Button {
@@ -68,7 +68,7 @@ private extension FilterView {
             }
         }
     }
-    
+
     var generationMenu: some View {
         VStack {
             titleLabel
@@ -76,7 +76,7 @@ private extension FilterView {
         }
         .presentationDetents([.height(580)])
     }
-    
+
     var titleLabel: some View {
         Text(L.Settings.generationTitle)
             .font(PokedexFonts.title2)
@@ -84,7 +84,7 @@ private extension FilterView {
             .padding(.bottom, 24)
             .foregroundColor(PokedexColors.dark)
     }
-    
+
     var generationButtons: some View {
         LazyVGrid(
             columns: [

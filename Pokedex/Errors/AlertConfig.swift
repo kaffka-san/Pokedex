@@ -17,7 +17,7 @@ struct AlertConfig: Identifiable {
     let title: String
     let message: String
     let action: AlertAction?
-    
+
     init(
         title: String,
         message: String,

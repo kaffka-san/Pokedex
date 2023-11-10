@@ -9,14 +9,14 @@ import SwiftUI
 
 struct PokemonsView: View {
     @StateObject var viewModel: PokemonsViewModel
-    
+
     init(
         viewModel: PokemonsViewModel
-        
+
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
+
     var body: some View {
         NavigationView {
             ZStack(alignment: .bottomTrailing) {
@@ -35,7 +35,7 @@ struct PokemonsView: View {
                         .padding(.trailing, 26)
                         .shadow(radius: 20)
                 }
-                
+
                 FilterView(
                     viewModel: FilterViewModel(
                         close: { viewModel.showSettingsMenu.toggle() },

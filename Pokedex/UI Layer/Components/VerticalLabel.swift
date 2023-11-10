@@ -10,7 +10,7 @@ import SwiftUI
 struct VerticalLabel: View {
     private let text: String
     private let descriptionText: String
-    
+
     init(
         text: String,
         descriptionText: String
@@ -18,7 +18,7 @@ struct VerticalLabel: View {
         self.text = text
         self.descriptionText = descriptionText
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(descriptionText)

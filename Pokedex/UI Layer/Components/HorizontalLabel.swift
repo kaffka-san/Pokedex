@@ -10,7 +10,7 @@ import SwiftUI
 struct HorizontalLabel: View {
     private let text: String
     private let descriptionText: String
-    
+
     init(
         text: String,
         descriptionText: String
@@ -18,7 +18,7 @@ struct HorizontalLabel: View {
         self.text = text
         self.descriptionText = descriptionText
     }
-    
+
     var body: some View {
         HStack(spacing: 12) {
             Text(descriptionText)

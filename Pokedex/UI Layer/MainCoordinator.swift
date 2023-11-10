@@ -12,7 +12,7 @@ final class MainCoordinator: UINavigationController {
     private let apiClient: APIClient
     private let pokemonsAPI: PokemonsAPI
     private let pokemonsDataRouter: PokemonsRouter
-    
+
     init(
         apiClient: APIClient,
         pokemonsDataRouter: PokemonsRouter
@@ -23,9 +23,9 @@ final class MainCoordinator: UINavigationController {
             apiClient: apiClient,
             router: pokemonsDataRouter
         )
-        
+
         super.init(nibName: nil, bundle: nil)
-        
+
         let viewController = HostingController {
             PokemonsView(
                 viewModel: PokemonsViewModel(
@@ -36,7 +36,7 @@ final class MainCoordinator: UINavigationController {
         }
         setViewControllers([viewController], animated: false)
     }
-    
+
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -47,7 +47,7 @@ extension MainCoordinator: PokemonsCoordinator {
     func goBack() {
         popViewController(animated: true)
     }
-    
+
     func goToDetailView(
         pokemon: PokemonDetailConfig,
         favouriteIds: Binding<Set<Int>>,

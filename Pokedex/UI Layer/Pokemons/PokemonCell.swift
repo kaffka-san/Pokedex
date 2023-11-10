@@ -12,11 +12,11 @@ import SwiftUI
 
 struct PokemonCell: View {
     @StateObject var viewModel: PokemonCellViewModel
-    
+
     init(viewModel: PokemonCellViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
+
     var body: some View {
         ZStack {
             backgroundCard
@@ -57,7 +57,7 @@ private extension PokemonCell {
         }
         .frame(maxWidth: .infinity)
     }
-    
+
     var pokemonName: some View {
         Text(viewModel.pokemon.name.capitalized)
             .font(PokedexFonts.label1)
@@ -70,7 +70,7 @@ private extension PokemonCell {
             .padding(.top, 24)
             .padding(.bottom, 10)
     }
-    
+
     var backgroundCard: some View {
         RoundedRectangle(cornerRadius: 15)
             .foregroundColor(Color(viewModel.colorBackground))
@@ -89,7 +89,7 @@ private extension PokemonCell {
                 }
             }
     }
-    
+
     var pokemonImage: some View {
         LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
             if let image = state.image {
@@ -101,7 +101,7 @@ private extension PokemonCell {
             }
         }
     }
-    
+
     var idLabel: some View {
         Text(viewModel.idFormatted)
             .font(PokedexFonts.label1)

@@ -10,11 +10,11 @@ import SwiftUI
 
 struct GrayImage: View {
     private let url: String?
-    
+
     init(url: String?) {
         self.url = url
     }
-    
+
     var body: some View {
         LazyImage(url: URL(string: url ?? "")) { state in
             if let image = state.image {

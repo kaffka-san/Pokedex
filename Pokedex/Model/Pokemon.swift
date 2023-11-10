@@ -14,10 +14,10 @@ struct Pokemons: Decodable {
 }
 
 struct Pokemon: Decodable, Identifiable, Equatable {
-    var id = UUID()
+    let id = UUID()
     let name: String
     let url: String
-    
+
     static func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
         lhs.id == rhs.id
     }
@@ -31,7 +31,7 @@ struct PokemonDetail: Decodable {
     let types: [PokemonTypes]
     let sprites: Sprites
     let name: String
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case height
@@ -54,12 +54,12 @@ struct SpecificType: Decodable {
 class Sprites: Decodable {
     let frontDefault: String?
     let other: Other?
-    
+
     init(frontDefault: String?, other: Other?) {
         self.frontDefault = frontDefault
         self.other = other
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
         case other
@@ -68,7 +68,7 @@ class Sprites: Decodable {
 
 struct Other: Decodable {
     let officialArtwork: OfficialArtwork
-    
+
     enum CodingKeys: String, CodingKey {
         case officialArtwork = "official-artwork"
     }
@@ -76,7 +76,7 @@ struct Other: Decodable {
 
 struct OfficialArtwork: Decodable {
     let frontDefault: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
     }
@@ -87,7 +87,7 @@ struct PokemonSpecies: Decodable {
     let flavorTextEntries: [FlavorTextEntry]
     let genderRate: Int
     let hatchCounter: Int?
-    
+
     enum CodingKeys: String, CodingKey {
         case eggGroups = "egg_groups"
         case flavorTextEntries = "flavor_text_entries"
@@ -98,7 +98,7 @@ struct PokemonSpecies: Decodable {
 
 struct FlavorTextEntry: Decodable {
     let flavorText: String
-    
+
     enum CodingKeys: String, CodingKey {
         case flavorText = "flavor_text"
     }
@@ -107,7 +107,7 @@ struct FlavorTextEntry: Decodable {
 struct PokemonsGeneration: Decodable {
     let id: Int
     let pokemonSpecies: [Pokemon]
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case pokemonSpecies = "pokemon_species"
