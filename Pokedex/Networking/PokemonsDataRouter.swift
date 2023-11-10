@@ -19,13 +19,14 @@ final class PokemonsRouter: Router, APIRouter {
         "Content-Type": "application/json",
         "accept": "application/json"
     ]
+    private let itemsCount = 20
 
     func urlRequest(for route: PokemonsRoute) -> URLRequestConvertible {
         switch route {
         case let .pokemons(offset):
             return buildRequest(
                 method: .get,
-                url: "\(baseURL)/pokemon?limit=20&offset=\(offset)",
+                url: "\(baseURL)/pokemon?limit=\(itemsCount)&offset=\(offset)",
                 headers: headers,
                 body: { nil }
             )

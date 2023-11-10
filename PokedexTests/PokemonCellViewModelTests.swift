@@ -25,7 +25,7 @@ final class PokemonCellViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Pokemon should be loaded successfully.")
         let viewModel = PokemonCellViewModel(
             name: "bulbasaur",
-            url: "https://pokeapi.co/api/v2/pokemon/1",
+            url: "",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
             userLocation: Binding.constant(
@@ -53,7 +53,7 @@ final class PokemonCellViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Error is thrown")
         let viewModel = PokemonCellViewModel(
             name: "bulbasaur",
-            url: "https://pokeapi.co/api/v2/pokemon/1",
+            url: "",
             pokemonsAPI: MockFailingPokemonsAPI(),
             coordinator: nil,
             userLocation: Binding.constant(
@@ -80,7 +80,7 @@ final class PokemonCellViewModelTests: XCTestCase {
     func testConvertToPoundsAndKilograms() {
         let viewModel = PokemonCellViewModel(
             name: "bulbasaur",
-            url: "https://pokeapi.co/api/v2/pokemon/1",
+            url: "",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
             userLocation: Binding.constant(
@@ -102,7 +102,7 @@ final class PokemonCellViewModelTests: XCTestCase {
     func testConvertToFeetInchesAndCentimeters() {
         let viewModel = PokemonCellViewModel(
             name: "bulbasaur",
-            url: "https://pokeapi.co/api/v2/pokemon/1",
+            url: "",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
             userLocation: Binding.constant(
@@ -126,7 +126,7 @@ final class PokemonCellViewModelTests: XCTestCase {
     func testExtractNumberFromValidPokemonURL() {
         let viewModel = PokemonCellViewModel(
             name: "bulbasaur",
-            url: "https://pokeapi.co/api/v2/pokemon/1",
+            url: "",
             pokemonsAPI: MockPokemonsAPI(),
             coordinator: nil,
             userLocation: Binding.constant(

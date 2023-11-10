@@ -17,6 +17,7 @@ struct PokemonDetailView: View {
         viewModel: PokemonDetailViewModel
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        // configNavigationBar()
     }
 
     var body: some View {
@@ -42,7 +43,7 @@ private extension PokemonDetailView {
     var scrollView: some View {
         GeometryReader { geometry in
             ZStack {
-                Color(viewModel.colorBackground)
+                Color(viewModel.colorBackground.rawValue)
                     .edgesIgnoringSafeArea(.all)
             }
             ScrollView {
@@ -89,6 +90,9 @@ private extension PokemonDetailView {
                 .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
                     viewModel.scrollPosition = value
                 }
+            }
+            .onAppear {
+                configNavigationBar()
             }
             .edgesIgnoringSafeArea(.bottom)
             .edgesIgnoringSafeArea(.horizontal)
@@ -353,6 +357,28 @@ private extension PokemonDetailView {
 
     func isLandscape() -> Bool {
         UIDevice.current.orientation.isLandscape
+    }
+
+    func configNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = UIColor(named: viewModel.colorBackground.rawValue)
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(
+                ofSize: 22,
+                weight: .black
+            )
+        ]
+        appearance.largeTitleTextAttributes = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(
+                ofSize: 36,
+                weight: .black
+            )
+        ]
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().layoutMargins.left = 26
     }
 }
 
