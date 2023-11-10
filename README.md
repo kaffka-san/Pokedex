@@ -32,14 +32,25 @@ The POKEDEX app is a Swift-based iOS application that leverages the Open Pokémo
 
 <img src="https://github.com/kaffka-san/Pokedex/blob/develop/Pokedex/Previews/h_DeatiBottom.png?raw=true" width="300"><img src="https://github.com/kaffka-san/Pokedex/blob/develop/Pokedex/Previews/h_GenerationFilter.png?raw=true" width="300">
 
-## Technology
-- MVVM-C Architecture: Built using the Model-View-ViewModel-Coordinator (MVVM-C) architecture for clean, maintainable, and scalable code.
-- SwiftUI Interface: Modern SwiftUI interface that provides a responsive and fluid user experience.
-- UIKit Navigation Integration: Seamless integration of UIKit for complex navigation flows.
-- UnitTests: Ensures app reliability and stability through Unit tests.
-- URLSession for Networking: Utilizes URLSession for efficient and robust network calls to the Open Pokémon API.
-- Nuke for Async Image Loading and Caching: Implements Nuke for fast and efficient image loading and caching, enhancing the performance and user experience.
+# Using Tools and Libraries
 
+## Resource
+### Data
+- [PokéAPI](https://pokeapi.co/)
+
+## Develop Support Tools
+- [SwiftGen](https://github.com/SwiftGen/SwiftGen)
+- [SwiftLint](https://github.com/realm/SwiftLint)
+
+## Network
+- URLSession
+
+## Image Loading
+- [Nuke](https://github.com/kean/Nuke)
+
+## Testing
+
+- [UnitTests - XCTest](https://developer.apple.com/documentation/xctest)
 
 ## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
