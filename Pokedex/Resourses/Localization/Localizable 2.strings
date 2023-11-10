@@ -1,0 +1,34 @@
+/* 
+  Localizable.strings
+  Pokedex
+
+  Created by Anastasia Lenina on 04.11.2023.
+  
+*/
+
+// MARK: - Pokemons
+"pokemons_title" = "Pokedex";
+
+// MARK: - Pokemon detail
+"pokemon_detail_height" = "Height";
+"pokemon_detail_weight" = "Weight";
+"pokemon_detail_breeding" = "Breeding";
+"pokemon_detail_gender" = "Gender";
+"pokemon_detail_egg_groups" = "Egg Groups";
+"pokemon_detail_egg_cycle" = "Egg Cycle";
+"pokemon_detail_location" = "Location";
+"pokemon_detail_training" = "Training";
+"pokemon_detail_base_experience" = "Base EXP";
+"pokemon_detail_steps" = "steps";
+"pokemon_detail_default_string" = "not defined";
+
+
+// MARK: - Pokemon settings
+"pokemon_settings_favourite" = "Favourite Pokemon";
+"pokemon_settings_all_type" = "All Type";
+"pokemon_settings_all_gen" = "All Gen";
+"pokemon_settings_generation_title" = "Generation";
+
+// MARK: - Errors
+"error_generic_title" = "Error";
+"error_generic_message" = "Something went wrong";
