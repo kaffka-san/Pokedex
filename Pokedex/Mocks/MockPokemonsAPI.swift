@@ -80,18 +80,18 @@ final class MockPokemonsAPI: PokemonsAPIProtocol {
 
 final class MockFailingPokemonsAPI: PokemonsAPIProtocol {
     func getPokemons(offset _: Int) async throws -> Pokemons {
-        throw APIError.timeoutError
+        throw APIError.genericError
     }
 
     func getPokemonDetail(name _: String) async throws -> PokemonDetail {
-        throw APIError.timeoutError
+        throw APIError.genericError
     }
 
     func getPokemonSpecies(name _: String) async throws -> PokemonSpecies {
-        throw APIError.timeoutError
+        throw APIError.genericError
     }
 
     func getPokemonForGeneration(generation _: Int) async throws -> PokemonsGeneration {
-        throw APIError.timeoutError
+        throw APIError.genericError
     }
 }

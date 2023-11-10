@@ -12,13 +12,13 @@ import UIKit
 
 struct PokemonDetailView: View {
     @StateObject private var viewModel: PokemonDetailViewModel
-
+    
     init(
         viewModel: PokemonDetailViewModel
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
         NavigationStack {
             scrollView
@@ -38,7 +38,7 @@ private extension PokemonDetailView {
         .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -10.0) ? 1 : 0)
         .animation(.easeInOut, value: viewModel.scrollPosition)
     }
-
+    
     var scrollView: some View {
         GeometryReader { geometry in
             ZStack {
@@ -74,7 +74,7 @@ private extension PokemonDetailView {
                         }
                     }
                 }
-
+                
                 // Detect scroll position
                 .background(GeometryReader { geometry in
                     Color.clear
@@ -103,8 +103,11 @@ private extension PokemonDetailView {
                 }
             }
         }
+        .refreshable {
+            viewModel.refresh()
+        }
     }
-
+    
     var mapView: some View {
         VStackLayout(alignment: .leading) {
             HeadLineLabel(text: L.PokemonDetail.location)
@@ -138,7 +141,7 @@ private extension PokemonDetailView {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, isLandscape() ? 100 : 26)
     }
-
+    
     var loveButton: some View {
         Button {
             viewModel.toggleFavourite()
@@ -151,7 +154,7 @@ private extension PokemonDetailView {
         }
         .tint(.white)
     }
-
+    
     var backButton: some View {
         Button {
             viewModel.goBack()
@@ -160,7 +163,7 @@ private extension PokemonDetailView {
         }
         .tint(.white)
     }
-
+    
     var pokemonTypes: some View {
         HStack {
             ForEach(viewModel.pokemon.types, id: \.self) { type in
@@ -175,7 +178,7 @@ private extension PokemonDetailView {
         .padding(.leading, 26)
         .padding(.leading, isLandscape() ? 46 : 0)
     }
-
+    
     var pokemonId: some View {
         Text(viewModel.idFormatted)
             .font(PokedexFonts.headline1)
@@ -183,7 +186,7 @@ private extension PokemonDetailView {
             .padding(.trailing, 26)
             .padding(.trailing, isLandscape() ? 46 : 0)
     }
-
+    
     var verticalStatistics: some View {
         VStack(alignment: .leading, spacing: 18) {
             HeadLineLabel(text: L.PokemonDetail.breeding)
@@ -208,7 +211,7 @@ private extension PokemonDetailView {
         .padding(.horizontal, isLandscape() ? 100 : 26)
         .padding(.top, 24)
     }
-
+    
     var horizontalStatics: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 10) {
@@ -235,7 +238,7 @@ private extension PokemonDetailView {
         .padding(.horizontal, isLandscape() ? 100 : 26)
         .padding(.top, 14)
     }
-
+    
     var genderStatistic: some View {
         HStack(spacing: 12) {
             Text(L.PokemonDetail.gender)
@@ -265,7 +268,7 @@ private extension PokemonDetailView {
             }
         }
     }
-
+    
     var description: some View {
         Text(viewModel.pokemonSpecies.description)
             .font(PokedexFonts.body3)
@@ -279,7 +282,7 @@ private extension PokemonDetailView {
                 alignment: .leading
             )
     }
-
+    
     var horizontalPokemonImages: some View {
         HStack {
             GrayImage(url: viewModel.previousImageUrl)
@@ -297,7 +300,7 @@ private extension PokemonDetailView {
         .animation(.easeInOut, value: viewModel.scrollPosition)
         .offset(y: isLandscape() ? -190 : -190)
     }
-
+    
     var pokemonImage: some View {
         ZStack {
             AssetsImages.pokeball
@@ -317,7 +320,7 @@ private extension PokemonDetailView {
         }
         .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
     }
-
+    
     var sizeCard: some View {
         HStack(spacing: 45) {
             VerticalLabel(
@@ -339,7 +342,7 @@ private extension PokemonDetailView {
         .padding(.top, 20)
         .padding(.horizontal, isLandscape() ? 100 : 26)
     }
-
+    
     struct ScrollOffsetPreferenceKey: PreferenceKey {
         static var defaultValue: CGPoint = .zero
         static func reduce(
@@ -347,7 +350,7 @@ private extension PokemonDetailView {
             nextValue _: () -> CGPoint
         ) {}
     }
-
+    
     func isLandscape() -> Bool {
         UIDevice.current.orientation.isLandscape
     }

@@ -10,7 +10,7 @@ import SwiftUI
 struct CapsuleButton: View {
     private let labelText: String
     private let icon: Image
-
+    
     init(
         labelText: String,
         icon: Image
@@ -18,7 +18,7 @@ struct CapsuleButton: View {
         self.labelText = labelText
         self.icon = icon
     }
-
+    
     var body: some View {
         VStack {
             HStack {

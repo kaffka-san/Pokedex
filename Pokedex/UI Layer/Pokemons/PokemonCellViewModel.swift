@@ -10,20 +10,20 @@ import SwiftUI
 final class PokemonCellViewModel: ObservableObject {
     private let pokemonsAPI: PokemonsAPIProtocol
     private weak var coordinator: PokemonsCoordinator?
-    var task: Task<Void, Never>?
+    var task: Task<Void, Error>?
     var idFormatted: String {
         String(format: "#%03d", pokemon.id)
     }
-
+    
     var colorBackground: String {
         pokemon.types.first?.capitalized ?? Constants.neutralBackground
     }
-
-    @Binding var userLocation: Location
+    
     @Published var pokemon: PokemonDetailConfig
     @Published var alertConfig: AlertConfig?
+    @Binding var userLocation: Location
     @Binding var favouriteIds: Set<Int>
-
+    
     init(
         name: String,
         url: String,
@@ -39,21 +39,21 @@ final class PokemonCellViewModel: ObservableObject {
         _favouriteIds = favouriteIds
         loadPokemon()
     }
-
+    
     func loadPokemon() {
         task = Task { [weak self] in
             guard let self else { return }
             do {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
                 await self.update(pokemonDetail: pokemonDetail)
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
     }
-
+    
     func goToDetailView() {
         coordinator?.goToDetailView(
             pokemon: pokemon,
@@ -61,11 +61,11 @@ final class PokemonCellViewModel: ObservableObject {
             userLocation: $userLocation
         )
     }
-
+    
     func onDisappear() {
         task?.cancel()
     }
-
+    
     @MainActor
     private func update(pokemonDetail: PokemonDetail) {
         pokemon = PokemonDetailConfig(
@@ -79,30 +79,30 @@ final class PokemonCellViewModel: ObservableObject {
             baseExperience: describeValue(pokemonDetail.baseExperience)
         )
     }
-
-    func showAlert() {
+    
+    func showAlert(for error: APIError) {
         alertConfig = AlertConfig(
-            title: L.Errors.genericTitle,
-            message: L.Errors.genericMessage
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
         )
     }
-
+    
     func describeValue(_ value: Int?) -> String {
         guard let intValue = value else {
             return L.PokemonDetail.defaultString
         }
         return "\(intValue)"
     }
-
+    
     func convertToPoundsAndKilograms(_ value: Int) -> String {
         let weightInKilograms = Double(value) / 10.0
         let weightInPounds = weightInKilograms * 2.20462 // Convert kg to lbs
         let formattedWeightInKilograms = String(format: "%.1f kg", weightInKilograms)
         let formattedWeightInPounds = String(format: "%.1f lbs", weightInPounds)
-
+        
         return "\(formattedWeightInPounds) (\(formattedWeightInKilograms))"
     }
-
+    
     func convertToFeetInchesAndCentimeters(_ decimeters: Int) -> String {
         let centimetersPerDecimeter = 10.0
         let centimetersPerInch = 2.54
@@ -120,7 +120,7 @@ final class PokemonCellViewModel: ObservableObject {
         let formattedHeightInCentimeters = String(format: "%.0f cm", centimeters)
         return "\(formattedHeightInFeetAndInches) (\(formattedHeightInCentimeters))"
     }
-
+    
     // Get id from the url
     func extractNumberFromPokemonURL(_ urlString: String) -> String {
         guard let url = URL(string: urlString) else { return "" }

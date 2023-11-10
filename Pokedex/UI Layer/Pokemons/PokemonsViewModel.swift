@@ -20,7 +20,8 @@ final class PokemonsViewModel: NSObject, ObservableObject {
     @Published var favouriteIds = Set<Int>()
     @Published var showingFavourites = false
     @Published var userLocation = MockLocation.location
-
+    @Published private var lastGenerationIndex = 0
+    
     init(
         coordinator: PokemonsCoordinator?,
         pokemonsAPI: PokemonsAPIProtocol
@@ -33,29 +34,42 @@ final class PokemonsViewModel: NSObject, ObservableObject {
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
     }
-
+    
     func getFavouritePokemons() {
         if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
-            if let decodedSet = try? JSONDecoder().decode(Set<Int>.self, from: decodedData) {
+            if let decodedSet = try? JSONDecoder().decode(
+                Set<Int>.self,
+                from: decodedData
+            ) {
                 favouriteIds = decodedSet
             }
         }
     }
-
+    
     func loadPokemons() {
         Task { [weak self] in
             guard let self else { return }
             do {
                 let pokemonsList = try await pokemonsAPI.getPokemons(offset: 0)
                 await self.update(pokemonsList: pokemonsList)
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
     }
-
+    
+    func refresh() {
+        if showingFavourites {
+            getFavourite()
+        } else if disablePagination {
+            loadGeneration(index: lastGenerationIndex)
+        } else {
+            loadPokemons()
+        }
+    }
+    
     func getFavourite() {
         showingFavourites = true
         pokemons = []
@@ -63,14 +77,16 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             Pokemon(name: "", url: "\(id)")
         }
     }
-
+    
     func showAllPokemons() {
         loadPokemons()
         showingFavourites = false
         disablePagination = false
+        lastGenerationIndex = 0
     }
-
+    
     func loadGeneration(index: Int) {
+        lastGenerationIndex = index
         disablePagination = true
         isLoading = false
         Task { [weak self] in
@@ -78,15 +94,15 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             do {
                 let pokemonsList = try await pokemonsAPI.getPokemonForGeneration(generation: index)
                 await self.updateGeneration(pokemonsList: pokemonsList)
-
-            } catch {
+                
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
     }
-
+    
     func loadNextPage(for pokemon: Pokemon) {
         guard !isLoading && !disablePagination && !showingFavourites else { return }
         let isLastPost = pokemons.last?.id == pokemon.id
@@ -97,32 +113,32 @@ final class PokemonsViewModel: NSObject, ObservableObject {
                 do {
                     let pokemons = try await pokemonsAPI.getPokemons(offset: self.pokemons.count)
                     await MainActor.run {
-                        self.pokemons.append(contentsOf: pokemons.results)
                         self.isLoading = false
+                        self.pokemons.append(contentsOf: pokemons.results)
                     }
-                } catch {
+                } catch let error as APIError {
                     await MainActor.run {
-                        self.showAlert()
+                        self.showAlert(for: error)
                     }
                 }
             }
         }
     }
-
+    
     @MainActor
     private func updateGeneration(pokemonsList: PokemonsGeneration) {
         pokemons = pokemonsList.pokemonSpecies
     }
-
+    
     @MainActor
     private func update(pokemonsList: Pokemons) {
         pokemons = pokemonsList.results
     }
-
-    func showAlert() {
+    
+    func showAlert(for error: APIError) {
         alertConfig = AlertConfig(
-            title: L.Errors.genericTitle,
-            message: L.Errors.genericMessage
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
         )
     }
 }
@@ -131,7 +147,7 @@ extension PokemonsViewModel: CLLocationManagerDelegate {
     func requestLocation() {
         locationManager.requestLocation()
     }
-
+    
     func locationManager(
         _: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
@@ -140,12 +156,12 @@ extension PokemonsViewModel: CLLocationManagerDelegate {
             userLocation = Location(coordinate: location)
         }
     }
-
+    
     func locationManager(
         _: CLLocationManager,
         didFailWithError _: Error
     ) {}
-
+    
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse:

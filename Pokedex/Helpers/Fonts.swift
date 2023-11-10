@@ -39,7 +39,16 @@ enum PokedexFonts {
         .system(size: 14)
         .weight(.bold)
 
-    static let primaryButton = Font.system(size: 18, weight: .semibold)
-    static let secondaryButton = Font.system(size: 18, weight: .semibold)
-    static let AuthButton = Font.system(size: 18, weight: .regular)
+    static let primaryButton = Font.system(
+        size: 18,
+        weight: .semibold
+    )
+    static let secondaryButton = Font.system(
+        size: 18,
+        weight: .semibold
+    )
+    static let AuthButton = Font.system(
+        size: 18,
+        weight: .regular
+    )
 }

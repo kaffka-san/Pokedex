@@ -14,28 +14,28 @@ import Foundation
 
 final class APIClient {
     // MARK: - Private properties
-
+    
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
-
+    
     // MARK: - Public functions
-
+    
     func requestVoid(
         for convertible: URLRequestConvertible
-
+        
     ) async throws {
         _ = try await requestData(convertible)
     }
-
+    
     func requestDecodable<T: Decodable>(
         for convertible: URLRequestConvertible
     ) async throws -> T {
         let (data, response) = try await requestData(convertible)
         return try decodeResponse(response, withData: data)
     }
-
+    
     // MARK: - Private functions
-
+    
     private func requestData(
         _ convertible: URLRequestConvertible
     ) async throws -> (Data, URLResponse) {
@@ -43,38 +43,28 @@ final class APIClient {
         do {
             let (data, response) = try await session.data(for: request)
             if response.isFailure {
-                throw decodeError(from: data)
+                throw APIError.invalidResponse
             }
-
+            
             return (data, response)
         } catch {
             throw error
         }
     }
-
+    
     private func decodeResponse<T: Decodable>(_: URLResponse, withData data: Data) throws -> T {
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
-            throw APIError.decodingError(underlyingError: error)
+            throw APIError.invalidData
         }
     }
-
-    private func decodeError(from data: Data) -> APIError {
-        do {
-            return try APIError.apiResponseError(
-                underlyingError: decoder.decode(APIResponseError.self, from: data)
-            )
-        } catch {
-            return APIError.decodingError(underlyingError: error)
-        }
-    }
-
+    
     private func urlRequest(of convertible: URLRequestConvertible) async throws -> URLRequest {
         do {
             return try convertible.asURLRequest()
         } catch {
-            throw APIError.wrongUrl(underlyingError: error)
+            throw APIError.invalidURL
         }
     }
 }
