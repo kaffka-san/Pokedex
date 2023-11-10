@@ -16,8 +16,8 @@ class PokemonDetailViewModel: ObservableObject {
     let pokemon: PokemonDetailConfig
     var region: MKCoordinateRegion
     var pokemonsLocations = [Location]()
-    var colorBackground: String {
-        pokemon.types.first?.capitalized ?? Constants.neutralBackground
+    var colorBackground: ColorType {
+        return ColorType(rawValue: pokemon.types.first?.capitalized ?? "") ?? ColorType.basic
     }
 
     var idFormatted: String {
@@ -55,7 +55,6 @@ class PokemonDetailViewModel: ObservableObject {
         loadNextPokemon()
         loadPreviousPokemon()
         pokemonsLocations = getRandomLocationsNearUser(radius: 500)
-        configNavigationBar()
     }
 
     @objc
@@ -211,27 +210,5 @@ class PokemonDetailViewModel: ObservableObject {
         let numberOfLocations = Int.random(in: 1...4)
         let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
         return locations
-    }
-
-    private func configNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = UIColor(named: colorBackground)
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(
-                ofSize: 22,
-                weight: .black
-            )
-        ]
-        appearance.largeTitleTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(
-                ofSize: 36,
-                weight: .black
-            )
-        ]
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().layoutMargins.left = 26
     }
 }

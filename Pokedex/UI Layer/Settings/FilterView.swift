@@ -91,7 +91,7 @@ private extension FilterView {
                 GridItem(.adaptive(minimum: 150))
             ]
         ) {
-            ForEach(FilterViewModel.PokemonGeneration.allCases, id: \.self) { generation in
+            ForEach(PokemonGeneration.allCases, id: \.self) { generation in
                 ZStack(alignment: .top) {
                     Image("\(generation.index)")
                         .resizable()
