@@ -32,11 +32,3 @@
 // MARK: - Errors
 "error_generic_title" = "Error";
 "error_generic_message" = "Something went wrong";
-"invalid_url_title" = "Error";
-"invalid_url_message" = "The URL provided is invalid";
-"invalid_data_title" = "Invalid Data";
-"invalid_data_message" = "The data received is invalid";
-"unknown_title" = "Unknown Error";
-"unknown_message" = "An unknown error occurred";
-"invalid_data_message" = "The data format is incorrect or unreadable";
-"invalid_response_title" = "Invalid Response";

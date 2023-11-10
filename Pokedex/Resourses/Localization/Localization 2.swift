@@ -62,13 +62,5 @@ enum LocalizedString {
     enum Errors {
         static let genericTitle = "error_generic_title".tr
         static let genericMessage = "error_generic_message".tr
-        static let invalidUrlTile = "invalid_url_title".tr
-        static let invalidUrlMessage = "invalid_url_message".tr
-        static let invalidDataTile = "invalid_data_title".tr
-        static let invalidDataMessage = "invalid_data_message".tr
-        static let invalidResponseTile = "invalid_response_title".tr
-        static let invalidResponseMessage = "invalid_response_message".tr
-        static let unknownTile = "unknown_title".tr
-        static let unknownMessage = "unknown_message".tr
     }
 }

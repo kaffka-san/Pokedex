@@ -83,9 +83,9 @@ class PokemonDetailViewModel: ObservableObject {
             do {
                 let pokemonDetail = try await pokemonsAPI.getPokemonSpecies(name: pokemon.name)
                 await self.updateSpecies(pokemonDetail: pokemonDetail)
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
@@ -97,9 +97,9 @@ class PokemonDetailViewModel: ObservableObject {
             do {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id + 1)")
                 await self.updateNext(pokemonDetail: pokemonDetail)
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
@@ -111,18 +111,18 @@ class PokemonDetailViewModel: ObservableObject {
             do {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id - 1)")
                 await self.updatePrevious(pokemonDetail: pokemonDetail)
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
     }
 
-    func showAlert() {
+    func showAlert(for error: APIError) {
         alertConfig = AlertConfig(
-            title: L.Errors.genericTitle,
-            message: L.Errors.genericMessage
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
         )
     }
 

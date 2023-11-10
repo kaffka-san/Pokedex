@@ -48,9 +48,9 @@ final class PokemonsViewModel: NSObject, ObservableObject {
             do {
                 let pokemonsList = try await pokemonsAPI.getPokemons(offset: 0)
                 await self.update(pokemonsList: pokemonsList)
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
@@ -79,9 +79,9 @@ final class PokemonsViewModel: NSObject, ObservableObject {
                 let pokemonsList = try await pokemonsAPI.getPokemonForGeneration(generation: index)
                 await self.updateGeneration(pokemonsList: pokemonsList)
 
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
@@ -100,9 +100,9 @@ final class PokemonsViewModel: NSObject, ObservableObject {
                         self.pokemons.append(contentsOf: pokemons.results)
                         self.isLoading = false
                     }
-                } catch {
+                } catch let error as APIError {
                     await MainActor.run {
-                        self.showAlert()
+                        self.showAlert(for: error)
                     }
                 }
             }
@@ -119,10 +119,10 @@ final class PokemonsViewModel: NSObject, ObservableObject {
         pokemons = pokemonsList.results
     }
 
-    func showAlert() {
+    func showAlert(for error: APIError) {
         alertConfig = AlertConfig(
-            title: L.Errors.genericTitle,
-            message: L.Errors.genericMessage
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
         )
     }
 }

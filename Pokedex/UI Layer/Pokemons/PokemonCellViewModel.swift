@@ -10,7 +10,7 @@ import SwiftUI
 final class PokemonCellViewModel: ObservableObject {
     private let pokemonsAPI: PokemonsAPIProtocol
     private weak var coordinator: PokemonsCoordinator?
-    var task: Task<Void, Never>?
+    var task: Task<Void, Error>?
     var idFormatted: String {
         String(format: "#%03d", pokemon.id)
     }
@@ -46,9 +46,9 @@ final class PokemonCellViewModel: ObservableObject {
             do {
                 let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
                 await self.update(pokemonDetail: pokemonDetail)
-            } catch {
+            } catch let error as APIError {
                 await MainActor.run {
-                    self.showAlert()
+                    self.showAlert(for: error)
                 }
             }
         }
@@ -80,10 +80,10 @@ final class PokemonCellViewModel: ObservableObject {
         )
     }
 
-    func showAlert() {
+    func showAlert(for error: APIError) {
         alertConfig = AlertConfig(
-            title: L.Errors.genericTitle,
-            message: L.Errors.genericMessage
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
         )
     }
 

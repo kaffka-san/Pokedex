@@ -43,7 +43,7 @@ final class APIClient {
         do {
             let (data, response) = try await session.data(for: request)
             if response.isFailure {
-                throw decodeError(from: data)
+                throw APIError.invalidResponse
             }
 
             return (data, response)
@@ -56,25 +56,25 @@ final class APIClient {
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
-            throw APIError.decodingError(underlyingError: error)
+            throw APIError.invalidData
         }
     }
 
-    private func decodeError(from data: Data) -> APIError {
-        do {
-            return try APIError.apiResponseError(
-                underlyingError: decoder.decode(APIResponseError.self, from: data)
-            )
-        } catch {
-            return APIError.decodingError(underlyingError: error)
-        }
-    }
+//    private func decodeError(from data: Data) -> APIError {
+//        do {
+//            return try APIError.apiResponseError(
+//                underlyingError: decoder.decode(APIResponseError.self, from: data)
+//            )
+//        } catch {
+//            return APIError.invalidData
+//        }
+//    }
 
     private func urlRequest(of convertible: URLRequestConvertible) async throws -> URLRequest {
         do {
             return try convertible.asURLRequest()
         } catch {
-            throw APIError.wrongUrl(underlyingError: error)
+            throw APIError.invalidURL
         }
     }
 }
