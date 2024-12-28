@@ -7,14 +7,14 @@
 
 import Foundation
 
-enum GenericError: Error {
-    case unexpectedError
-}
-
-enum NetworkingError: Error {
-    case missingInvite
-    case notAuthenticated
-    case invalidData
-    case inviteConsumedAlready
-    case dataNotSaved
-}
+// enum GenericError: Error {
+//    case unexpectedError
+// }
+//
+// enum NetworkingError: Error {
+//    case missingInvite
+//    case notAuthenticated
+//    case invalidData
+//    case inviteConsumedAlready
+//    case dataNotSaved
+// }

@@ -37,6 +37,7 @@ private extension PokemonDetailView {
             pokemonId
         }
         .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -10.0) ? 1 : 0)
+        .sensoryFeedback(.impact, trigger: viewModel.scrollPosition < CGPoint(x: 0.0, y: -10.0))
         .animation(.easeInOut, value: viewModel.scrollPosition)
     }
 

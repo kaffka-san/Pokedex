@@ -31,6 +31,7 @@ struct PokemonDetail: Decodable {
     let types: [PokemonTypes]
     let sprites: Sprites
     let name: String
+    var imageUrl: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -40,10 +41,12 @@ struct PokemonDetail: Decodable {
         case name
         case types
         case sprites
+        case imageUrl
     }
 }
 
-struct PokemonTypes: Decodable {
+struct PokemonTypes: Decodable, Identifiable {
+    let id = UUID()
     let type: SpecificType
 }
 
@@ -111,5 +114,11 @@ struct PokemonsGeneration: Decodable {
     enum CodingKeys: String, CodingKey {
         case id
         case pokemonSpecies = "pokemon_species"
+    }
+}
+
+extension PokemonDetail {
+    var idFormatted: String {
+        String(format: "#%03d", id)
     }
 }

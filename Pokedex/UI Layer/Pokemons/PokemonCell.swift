@@ -11,11 +11,8 @@ import NukeUI
 import SwiftUI
 
 struct PokemonCell: View {
-    @StateObject var viewModel: PokemonCellViewModel
-
-    init(viewModel: PokemonCellViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
+    @EnvironmentObject var viewModel: AllPokemonViewModel
+    let pokemon: PokemonDetail
 
     var body: some View {
         ZStack {
@@ -23,7 +20,7 @@ struct PokemonCell: View {
             contentInfo
         }
         .onTapGesture {
-            viewModel.goToDetailView()
+            // viewModel.goToDetailView(for: pokemon)
         }
         .onDisappear {
             viewModel.onDisappear()
@@ -41,9 +38,9 @@ private extension PokemonCell {
             ) {
                 pokemonName
                 VStack(spacing: 0) {
-                    ForEach(viewModel.pokemon.types, id: \.self) { type in
+                    ForEach(pokemon.types, id: \.id) { type in
                         CapsuleText(
-                            text: type,
+                            text: type.type.name,
                             font: PokedexFonts.body1,
                             width: 43
                         )
@@ -59,7 +56,7 @@ private extension PokemonCell {
     }
 
     var pokemonName: some View {
-        Text(viewModel.pokemon.name.capitalized)
+        Text(pokemon.name.capitalized)
             .font(PokedexFonts.label1)
             .frame(
                 width: 90,
@@ -73,7 +70,7 @@ private extension PokemonCell {
 
     var backgroundCard: some View {
         RoundedRectangle(cornerRadius: 15)
-            .foregroundColor(Color(viewModel.colorBackground))
+            .foregroundColor(Color(viewModel.getColorBackground(for: pokemon)))
             .overlay {
                 ZStack(alignment: .trailing) {
                     AssetsImages.pokeballCard
@@ -83,27 +80,30 @@ private extension PokemonCell {
                         Spacer()
                         ZStack(alignment: .topTrailing) {
                             idLabel
-                            pokemonImage
+                            pokemonImage()
                         }
                     }
                 }
             }
     }
 
-    var pokemonImage: some View {
-        LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
-            if let image = state.image {
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 80)
-                    .padding(.top, 20)
+    @ViewBuilder
+    func pokemonImage() -> some View {
+        if let url = pokemon.imageUrl {
+            LazyImage(url: URL(string: url)) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 80)
+                        .padding(.top, 20)
+                }
             }
         }
     }
 
     var idLabel: some View {
-        Text(viewModel.idFormatted)
+        Text(pokemon.idFormatted)
             .font(PokedexFonts.label1)
             .foregroundStyle(
                 .black
@@ -119,22 +119,26 @@ private extension PokemonCell {
     }
 }
 
-#Preview {
-    PokemonCell(
-        viewModel: PokemonCellViewModel(
-            name: "",
-            url: "",
-            pokemonsAPI: MockPokemonsAPI(),
-            coordinator: nil,
-            userLocation: Binding.constant(
-                Location(
-                    coordinate: CLLocationCoordinate2D(
-                        latitude: 40.7128,
-                        longitude: -74.0060
-                    )
-                )
-            ),
-            favouriteIds: Binding.constant([1, 2, 3, 4])
-        )
-    )
-}
+// #Preview {
+//    PokemonCell(
+//        viewModel: PokemonCellViewModel(
+//            name: "",
+//            url: "",
+//            pokemonsAPI: MockPokemonsAPI(),
+//            coordinator: nil,
+//            userLocation: Binding.constant(
+//                Location(
+//                    coordinate: CLLocationCoordinate2D(
+//                        latitude: 40.7128,
+//                        longitude: -74.0060
+//                    )
+//                )
+//            ),
+//            favouriteIds: Binding.constant([1, 2, 3, 4])
+//        )
+//    )
+// }
+
+// #Preview {
+//    PokemonCell(viewModel: PokemonsViewModel(pokemonService: MocA), pokemon: <#T##PokemonDetail#>)
+// }

@@ -1,0 +1,321 @@
+//
+//  AllPokemonViewModel.swift
+//  Pokedex
+//
+//  Created by Anastasia Lenina on 03.11.2023.
+//
+
+import Combine
+import CoreLocation
+import Foundation
+
+final class AllPokemonViewModel: NSObject, ObservableObject {
+    // let locationManager = CLLocationManager()
+    @Published var pokemons = [Pokemon]()
+    @Published var pokemonsDetailed = [PokemonDetail]()
+    @Published var alertConfig: AlertConfig?
+    @Published var isLoading = false
+    @Published var showSettingsMenu = false
+    @Published var disablePagination = false
+    @Published var favouriteIds = Set<Int>()
+    @Published var showingFavourites = false
+    @Published var userLocation = MockLocation.location
+    @Published private var lastGenerationIndex = 0
+    private var task: Task<Void, Error>?
+    private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
+    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
+    var coordinator: AllPokemonFlow?
+
+    //    init(
+    //        coordinator: PokemonsCoordinator?,
+    //        pokemonsAPI: PokemonsAPIProtocol
+    //    ) {
+    //        self.coordinator = coordinator
+    //        self.pokemonsAPI = pokemonsAPI
+    //        super.init()
+    //        loadPokemons()
+    //        getFavouritePokemons()
+    //        locationManager.delegate = self
+    //        locationManager.startUpdatingLocation()
+    //    }
+
+    init(pokemonService: PokemonServiceProtocol) {
+        self.pokemonService = pokemonService
+    }
+}
+
+// MARK: - Public properties
+extension AllPokemonViewModel {
+    var dataLoaded: AnyPublisher<Result<Void, NetworkingError>, Never> {
+        dataLoadedSubject.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Public methods
+extension AllPokemonViewModel {
+    func getFavouritePokemons() {
+        if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
+            if let decodedSet = try? JSONDecoder().decode(
+                Set<Int>.self,
+                from: decodedData
+            ) {
+                favouriteIds = decodedSet
+            }
+        }
+    }
+
+    func loadPokemons() {
+        Task { [weak self] in
+            guard let self = self else { return }
+            do {
+                let pokemonsList = try await pokemonService.getPokemons(offset: 0)
+                await self.update(pokemonsList: pokemonsList)
+
+                // Create child tasks for detail requests
+                let detailTasks = self.pokemons.map { pokemon in
+                    Task { () -> PokemonDetail in
+                        // Extract the Pokemon id from its URL and pass it to fetch details
+                        let pokemonId = self.extractNumberFromPokemonURL(pokemon.url)
+                        var pokemonDetail = try await self.pokemonService.getPokemonDetail(name: pokemonId)
+                        // Add the pokemon URL to the details (if you need this in the PokemonDetail)
+                        pokemonDetail.imageUrl = pokemon.url // Assuming you add `url` to PokemonDetail
+                        return pokemonDetail
+                    }
+                }
+
+                // Await all child tasks in parallel
+                let details = try await detailTasks.asyncMap { task in
+                    try await task.value
+                }
+
+                // Update on main actor
+                await MainActor.run {
+                    self.pokemonsDetailed = details
+                }
+            } catch let error as APIError {
+                await MainActor.run {
+                    self.showAlert(for: error)
+                }
+            }
+        }
+    }
+
+    func refresh() {
+        if showingFavourites {
+            getFavourite()
+        } else if disablePagination {
+            loadGeneration(index: lastGenerationIndex)
+        } else {
+            loadPokemons()
+        }
+    }
+
+    func getFavourite() {
+        showingFavourites = true
+        pokemons = []
+        pokemons = favouriteIds.map { id in
+            Pokemon(name: "", url: "\(id)")
+        }
+    }
+
+    func showAllPokemons() {
+        loadPokemons()
+        showingFavourites = false
+        disablePagination = false
+        lastGenerationIndex = 0
+    }
+
+    func loadGeneration(index _: Int) {
+//        lastGenerationIndex = index
+//        disablePagination = true
+//        isLoading = false
+//        Task { [weak self] in
+//            guard let self else { return }
+//            do {
+//                let pokemonsList = try await pokemonsAPI.getPokemonForGeneration(generation: index)
+//                await self.updateGeneration(pokemonsList: pokemonsList)
+//
+//            } catch let error as APIError {
+//                await MainActor.run {
+//                    self.showAlert(for: error)
+//                }
+//            }
+//        }
+    }
+
+    func loadNextPage(for _: Pokemon) {
+//        guard !isLoading && !disablePagination && !showingFavourites else { return }
+//        let isLastPost = pokemons.last?.id == pokemon.id
+//        if isLastPost {
+//            isLoading = true
+//            Task { [weak self] in
+//                guard let self else { return }
+//                do {
+//                    let pokemons = try await pokemonsAPI.getPokemons(offset: self.pokemons.count)
+//                    await MainActor.run {
+//                        self.isLoading = false
+//                        self.pokemons.append(contentsOf: pokemons.results)
+//                    }
+//                } catch let error as APIError {
+//                    await MainActor.run {
+//                        self.showAlert(for: error)
+//                    }
+//                }
+//            }
+//        }
+    }
+
+    @MainActor
+    private func updateGeneration(pokemonsList: PokemonsGeneration) {
+        pokemons = pokemonsList.pokemonSpecies
+    }
+
+    @MainActor
+    private func update(pokemonsList: Pokemons) {
+        pokemons = pokemonsList.results
+    }
+
+    func showAlert(for error: APIError) {
+        alertConfig = AlertConfig(
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
+        )
+    }
+}
+
+extension AllPokemonViewModel: CLLocationManagerDelegate {
+    func requestLocation() {
+        // locationManager.requestLocation()
+    }
+
+    func locationManager(
+        _: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
+        if let location = locations.first?.coordinate {
+            userLocation = Location(coordinate: location)
+        }
+    }
+
+    func locationManager(
+        _: CLLocationManager,
+        didFailWithError _: Error
+    ) {}
+
+//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+//        switch manager.authorizationStatus {
+//        case .authorizedWhenInUse:
+//            break
+//        case .restricted, .denied:
+//            break
+//        case .notDetermined:
+//            locationManager.requestWhenInUseAuthorization()
+//        default:
+//            break
+//        }
+//    }
+}
+
+extension AllPokemonViewModel {
+//    func loadPokemon(for pokemon: Pokemon) -> PokemonDetail {
+//        task = Task { [weak self] in
+//            guard let self else { return }
+//            do {
+//                let pokemonDetail = try await pokemonService.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
+//
+//               // await self.update(pokemonDetail: pokemonDetail)
+//            } catch let error as APIError {
+//                await MainActor.run {
+//                    self.showAlert(for: error)
+//                }
+//            }
+//        }
+//    }
+//
+//    func goToDetailView(for pokemon: Pokemon) {
+//        coordinator?.goToDetailView(
+//            pokemon: pokemon,
+//            favouriteIds: $favouriteIds,
+//            userLocation: $userLocation
+//        )
+    //  }
+
+    func onDisappear() {
+        task?.cancel()
+    }
+
+    func getColorBackground(for pokemon: PokemonDetail) -> String {
+        pokemon.types.first?.type.name.capitalized ?? Constants.neutralBackground
+    }
+
+    @MainActor
+    private func update(pokemonDetail _: PokemonDetail) {
+//        pokemon = PokemonDetailConfig(
+//            id: pokemonDetail.id,
+//            url: pokemon.url,
+//            name: pokemonDetail.name,
+//            types: pokemonDetail.types.map { $0.type.name },
+//            imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault ?? "",
+//            weight: convertToPoundsAndKilograms(pokemonDetail.weight),
+//            height: convertToFeetInchesAndCentimeters(pokemonDetail.height),
+//            baseExperience: describeValue(pokemonDetail.baseExperience)
+//        )
+    }
+
+//    func showAlert(for error: APIError) {
+//        alertConfig = AlertConfig(
+//            title: error.localizedDescription.title,
+//            message: error.localizedDescription.message
+//        )
+//    }
+
+    func describeValue(_ value: Int?) -> String {
+        guard let intValue = value else {
+            return L.PokemonDetail.defaultString
+        }
+        return "\(intValue)"
+    }
+
+    func convertToPoundsAndKilograms(_ value: Int) -> String {
+        let weightInKilograms = Double(value) / 10.0
+        let weightInPounds = weightInKilograms * 2.20462 // Convert kg to lbs
+        let formattedWeightInKilograms = String(format: "%.1f kg", weightInKilograms)
+        let formattedWeightInPounds = String(format: "%.1f lbs", weightInPounds)
+
+        return "\(formattedWeightInPounds) (\(formattedWeightInKilograms))"
+    }
+
+    func convertToFeetInchesAndCentimeters(_ decimeters: Int) -> String {
+        let centimetersPerDecimeter = 10.0
+        let centimetersPerInch = 2.54
+        let inchesPerFoot = 12.0
+        // Convert decimeters to centimeters
+        let centimeters = Double(decimeters) * centimetersPerDecimeter
+        // Convert centimeters to inches
+        let totalInches = centimeters / centimetersPerInch
+        // Calculate feet and the remaining inches
+        let feet = Int(totalInches / inchesPerFoot)
+        let inches = totalInches.truncatingRemainder(dividingBy: inchesPerFoot)
+        // Format the height in feet and inches
+        let formattedHeightInFeetAndInches = "\(feet)'\(String(format: "%.1f", inches))\""
+        // Format the height in centimeters
+        let formattedHeightInCentimeters = String(format: "%.0f cm", centimeters)
+        return "\(formattedHeightInFeetAndInches) (\(formattedHeightInCentimeters))"
+    }
+
+    // Get id from the url
+    func extractNumberFromPokemonURL(_ urlString: String) -> String {
+        guard let url = URL(string: urlString) else { return "" }
+        return url.lastPathComponent
+    }
+}
+
+extension Sequence where Element: Sendable & Hashable {
+    func asyncMap<T>(_ transform: (Element) async throws -> T) async rethrows -> [T] {
+        var results = [T]()
+        for element in self {
+            try results.append(await transform(element))
+        }
+        return results
+    }
+}

@@ -1,5 +1,5 @@
 //
-//  PokemonsView.swift
+//  AllPokemonView.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 03.11.2023.
@@ -7,15 +7,8 @@
 
 import SwiftUI
 
-struct PokemonsView: View {
-    @StateObject var viewModel: PokemonsViewModel
-
-    init(
-        viewModel: PokemonsViewModel
-
-    ) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
+struct AllPokemonView: View {
+    @ObservedObject var viewModel: AllPokemonViewModel
 
     var body: some View {
         NavigationView {
@@ -64,7 +57,7 @@ struct PokemonsView: View {
     }
 }
 
-private extension PokemonsView {
+private extension AllPokemonView {
     var pokemonList: some View {
         VStack {
             LazyVGrid(
@@ -75,19 +68,13 @@ private extension PokemonsView {
             ) {
                 ForEach(viewModel.pokemons, id: \.id) { pokemon in
                     PokemonCell(
-                        viewModel: PokemonCellViewModel(
-                            name: pokemon.name,
-                            url: pokemon.url,
-                            pokemonsAPI: viewModel.pokemonsAPI,
-                            coordinator: viewModel.coordinator,
-                            userLocation: $viewModel.userLocation,
-                            favouriteIds: $viewModel.favouriteIds
-                        )
+                        pokemon: viewModel.pokemonsDetailed.first(where: { $0.imageUrl == pokemon.url })! // TODO: delete !
                     )
+                    .environmentObject(viewModel)
                     .onAppear {
                         viewModel.loadNextPage(for: pokemon)
                     }
-                    .onChange(of: viewModel.favouriteIds) { _ in
+                    .onChange(of: viewModel.favouriteIds) {
                         if viewModel.showingFavourites {
                             viewModel.getFavourite()
                         }
@@ -101,11 +88,11 @@ private extension PokemonsView {
     }
 }
 
-#Preview {
-    PokemonsView(
-        viewModel: PokemonsViewModel(
-            coordinator: nil,
-            pokemonsAPI: MockPokemonsAPI()
-        )
-    )
-}
+// #Preview {
+//    PokemonsView(
+//        viewModel: PokemonsViewModel(
+//            coordinator: nil,
+//            pokemonsAPI: MockPokemonsAPI()
+//        )
+//    )
+// }

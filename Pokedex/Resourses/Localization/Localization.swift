@@ -34,6 +34,8 @@ extension String {
 }
 
 enum LocalizedString {
+    static let cancel = "cancel".tr
+
     enum Pokemons {
         static let pokemonsTitle = "pokemons_title".tr
     }
@@ -70,5 +72,14 @@ enum LocalizedString {
         static let invalidResponseMessage = "invalid_response_message".tr
         static let unknownTile = "unknown_title".tr
         static let unknownMessage = "unknown_message".tr
+        static let unexpectedErrorOccurred = "an_unexpected_error_occurred_please_try_again_later".tr
+    }
+
+    enum InternetConnection {
+        static let connectionError = "connect_error".tr
+        static let title = "connection_title".tr
+        static let description = "connection_description".tr
+        static let tryAgain = "try_again".tr
+        static let statusDescription = "status_description".tr
     }
 }
