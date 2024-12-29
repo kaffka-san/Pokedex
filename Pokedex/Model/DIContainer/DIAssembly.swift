@@ -53,5 +53,10 @@ private extension DIAssembly {
         container.register(AllPokemonViewModel.self) { resolver in
             AllPokemonViewModel(pokemonService: resolver.resolve(PokemonServiceProtocol.self)!)
         }
+
+        // PokemonDetailViewModel
+        container.register(PokemonDetailViewModel.self) { resolver in
+            PokemonDetailViewModel(pokemonService: resolver.resolve(PokemonServiceProtocol.self)!)
+        }
     }
 }

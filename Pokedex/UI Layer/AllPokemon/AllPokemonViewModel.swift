@@ -11,7 +11,12 @@ import Foundation
 
 final class AllPokemonViewModel: NSObject, ObservableObject {
     // let locationManager = CLLocationManager()
-    @Published var pokemons = [Pokemon]()
+
+    private var task: Task<Void, Error>?
+    private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
+    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
+    var coordinator: AllPokemonFlow?
+
     @Published var pokemonsDetailed = [PokemonDetail]()
     @Published var alertConfig: AlertConfig?
     @Published var isLoading = false
@@ -21,10 +26,12 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
     @Published var showingFavourites = false
     @Published var userLocation = MockLocation.location
     @Published private var lastGenerationIndex = 0
-    private var task: Task<Void, Error>?
-    private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
-    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
-    var coordinator: AllPokemonFlow?
+
+    @Published var pokemons = [Pokemon]() {
+        didSet {
+            _ = pokemons.map { loadPokemon(for: $0) }
+        }
+    }
 
     //    init(
     //        coordinator: PokemonsCoordinator?,
@@ -64,42 +71,23 @@ extension AllPokemonViewModel {
         }
     }
 
+    @MainActor
     func loadPokemons() {
+        isLoading = true
         Task { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             do {
                 let pokemonsList = try await pokemonService.getPokemons(offset: 0)
-                await self.update(pokemonsList: pokemonsList)
-
-                // Create child tasks for detail requests
-                let detailTasks = self.pokemons.map { pokemon in
-                    Task { () -> PokemonDetail in
-                        // Extract the Pokemon id from its URL and pass it to fetch details
-                        let pokemonId = self.extractNumberFromPokemonURL(pokemon.url)
-                        var pokemonDetail = try await self.pokemonService.getPokemonDetail(name: pokemonId)
-                        // Add the pokemon URL to the details (if you need this in the PokemonDetail)
-                        pokemonDetail.imageUrl = pokemon.url // Assuming you add `url` to PokemonDetail
-                        return pokemonDetail
-                    }
-                }
-
-                // Await all child tasks in parallel
-                let details = try await detailTasks.asyncMap { task in
-                    try await task.value
-                }
-
-                // Update on main actor
-                await MainActor.run {
-                    self.pokemonsDetailed = details
-                }
+                isLoading = false
+                update(pokemonsList: pokemonsList)
             } catch let error as APIError {
-                await MainActor.run {
-                    self.showAlert(for: error)
-                }
+                isLoading = false
+                showAlert(for: error)
             }
         }
     }
 
+    @MainActor
     func refresh() {
         if showingFavourites {
             getFavourite()
@@ -118,6 +106,7 @@ extension AllPokemonViewModel {
         }
     }
 
+    @MainActor
     func showAllPokemons() {
         loadPokemons()
         showingFavourites = false
@@ -125,54 +114,43 @@ extension AllPokemonViewModel {
         lastGenerationIndex = 0
     }
 
-    func loadGeneration(index _: Int) {
-//        lastGenerationIndex = index
-//        disablePagination = true
-//        isLoading = false
-//        Task { [weak self] in
-//            guard let self else { return }
-//            do {
-//                let pokemonsList = try await pokemonsAPI.getPokemonForGeneration(generation: index)
-//                await self.updateGeneration(pokemonsList: pokemonsList)
-//
-//            } catch let error as APIError {
-//                await MainActor.run {
-//                    self.showAlert(for: error)
-//                }
-//            }
-//        }
-    }
-
-    func loadNextPage(for _: Pokemon) {
-//        guard !isLoading && !disablePagination && !showingFavourites else { return }
-//        let isLastPost = pokemons.last?.id == pokemon.id
-//        if isLastPost {
-//            isLoading = true
-//            Task { [weak self] in
-//                guard let self else { return }
-//                do {
-//                    let pokemons = try await pokemonsAPI.getPokemons(offset: self.pokemons.count)
-//                    await MainActor.run {
-//                        self.isLoading = false
-//                        self.pokemons.append(contentsOf: pokemons.results)
-//                    }
-//                } catch let error as APIError {
-//                    await MainActor.run {
-//                        self.showAlert(for: error)
-//                    }
-//                }
-//            }
-//        }
+    @MainActor
+    func loadGeneration(index: Int) {
+        isLoading = true
+        lastGenerationIndex = index
+        disablePagination = true
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let pokemonsList = try await pokemonService.getPokemonForGeneration(generation: index)
+                self.updateGeneration(pokemonsList: pokemonsList)
+                isLoading = false
+            } catch let error as APIError {
+                isLoading = false
+                self.showAlert(for: error)
+            }
+        }
     }
 
     @MainActor
-    private func updateGeneration(pokemonsList: PokemonsGeneration) {
-        pokemons = pokemonsList.pokemonSpecies
-    }
+    func loadNextPage(for pokemon: Pokemon) {
+        guard !isLoading, !disablePagination, !showingFavourites else { return }
+        let isLastPost = pokemons.last?.id == pokemon.id
+        if isLastPost {
+            isLoading = true
+            Task { [weak self] in
+                guard let self else { return }
+                do {
+                    let pokemons = try await pokemonService.getPokemons(offset: self.pokemons.count)
+                    self.isLoading = false
+                    self.pokemons.append(contentsOf: pokemons.results)
 
-    @MainActor
-    private func update(pokemonsList: Pokemons) {
-        pokemons = pokemonsList.results
+                } catch let error as APIError {
+                    showAlert(for: error)
+                    isLoading = false
+                }
+            }
+        }
     }
 
     func showAlert(for error: APIError) {
@@ -181,64 +159,21 @@ extension AllPokemonViewModel {
             message: error.localizedDescription.message
         )
     }
-}
 
-extension AllPokemonViewModel: CLLocationManagerDelegate {
-    func requestLocation() {
-        // locationManager.requestLocation()
-    }
+    func loadPokemon(for pokemon: Pokemon) {
+        task = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let pokemonDetail = try await pokemonService.getPokemonDetail(name: String(pokemon.id))
 
-    func locationManager(
-        _: CLLocationManager,
-        didUpdateLocations locations: [CLLocation]
-    ) {
-        if let location = locations.first?.coordinate {
-            userLocation = Location(coordinate: location)
+                await self.update(pokemonDetail: pokemonDetail)
+            } catch let error as APIError {
+                await MainActor.run {
+                    self.showAlert(for: error)
+                }
+            }
         }
     }
-
-    func locationManager(
-        _: CLLocationManager,
-        didFailWithError _: Error
-    ) {}
-
-//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-//        switch manager.authorizationStatus {
-//        case .authorizedWhenInUse:
-//            break
-//        case .restricted, .denied:
-//            break
-//        case .notDetermined:
-//            locationManager.requestWhenInUseAuthorization()
-//        default:
-//            break
-//        }
-//    }
-}
-
-extension AllPokemonViewModel {
-//    func loadPokemon(for pokemon: Pokemon) -> PokemonDetail {
-//        task = Task { [weak self] in
-//            guard let self else { return }
-//            do {
-//                let pokemonDetail = try await pokemonService.getPokemonDetail(name: extractNumberFromPokemonURL(pokemon.url))
-//
-//               // await self.update(pokemonDetail: pokemonDetail)
-//            } catch let error as APIError {
-//                await MainActor.run {
-//                    self.showAlert(for: error)
-//                }
-//            }
-//        }
-//    }
-//
-//    func goToDetailView(for pokemon: Pokemon) {
-//        coordinator?.goToDetailView(
-//            pokemon: pokemon,
-//            favouriteIds: $favouriteIds,
-//            userLocation: $userLocation
-//        )
-    //  }
 
     func onDisappear() {
         task?.cancel()
@@ -248,8 +183,36 @@ extension AllPokemonViewModel {
         pokemon.types.first?.type.name.capitalized ?? Constants.neutralBackground
     }
 
+    func goToDetailView(for pokemon: PokemonDetail) {
+        let pokemonConfig = PokemonDetailConfig(
+            id: pokemon.id,
+            url: pokemons.first(where: { $0.id == pokemon.id })?.url ?? "",
+            name: pokemon.name,
+            types: pokemon.types.map { $0.type.name },
+            imgUrl: pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault ?? "",
+            weight: convertToPoundsAndKilograms(pokemon.weight),
+            height: convertToFeetInchesAndCentimeters(pokemon.height),
+            baseExperience: describeValue(pokemon.baseExperience)
+        )
+
+        coordinator?.showDetail(pokemon: pokemonConfig)
+    }
+}
+
+// MARK: - Private methods
+private extension AllPokemonViewModel {
     @MainActor
-    private func update(pokemonDetail _: PokemonDetail) {
+    func updateGeneration(pokemonsList: PokemonsGeneration) {
+        pokemons = pokemonsList.pokemonSpecies
+    }
+
+    @MainActor
+    func update(pokemonsList: Pokemons) {
+        pokemons = pokemonsList.results
+    }
+
+    @MainActor
+    func update(pokemonDetail: PokemonDetail) {
 //        pokemon = PokemonDetailConfig(
 //            id: pokemonDetail.id,
 //            url: pokemon.url,
@@ -260,6 +223,7 @@ extension AllPokemonViewModel {
 //            height: convertToFeetInchesAndCentimeters(pokemonDetail.height),
 //            baseExperience: describeValue(pokemonDetail.baseExperience)
 //        )
+        pokemonsDetailed.append(pokemonDetail)
     }
 
 //    func showAlert(for error: APIError) {
@@ -302,12 +266,6 @@ extension AllPokemonViewModel {
         let formattedHeightInCentimeters = String(format: "%.0f cm", centimeters)
         return "\(formattedHeightInFeetAndInches) (\(formattedHeightInCentimeters))"
     }
-
-    // Get id from the url
-    func extractNumberFromPokemonURL(_ urlString: String) -> String {
-        guard let url = URL(string: urlString) else { return "" }
-        return url.lastPathComponent
-    }
 }
 
 extension Sequence where Element: Sendable & Hashable {
@@ -318,4 +276,37 @@ extension Sequence where Element: Sendable & Hashable {
         }
         return results
     }
+}
+
+extension AllPokemonViewModel: CLLocationManagerDelegate {
+    func requestLocation() {
+        // locationManager.requestLocation()
+    }
+
+    func locationManager(
+        _: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
+        if let location = locations.first?.coordinate {
+            userLocation = Location(coordinate: location)
+        }
+    }
+
+    func locationManager(
+        _: CLLocationManager,
+        didFailWithError _: Error
+    ) {}
+
+//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+//        switch manager.authorizationStatus {
+//        case .authorizedWhenInUse:
+//            break
+//        case .restricted, .denied:
+//            break
+//        case .notDetermined:
+//            locationManager.requestWhenInUseAuthorization()
+//        default:
+//            break
+//        }
+//    }
 }

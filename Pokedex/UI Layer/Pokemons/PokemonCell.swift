@@ -20,7 +20,7 @@ struct PokemonCell: View {
             contentInfo
         }
         .onTapGesture {
-            // viewModel.goToDetailView(for: pokemon)
+            viewModel.goToDetailView(for: pokemon)
         }
         .onDisappear {
             viewModel.onDisappear()
@@ -89,7 +89,7 @@ private extension PokemonCell {
 
     @ViewBuilder
     func pokemonImage() -> some View {
-        if let url = pokemon.imageUrl {
+        if let url = pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault {
             LazyImage(url: URL(string: url)) { state in
                 if let image = state.image {
                     image

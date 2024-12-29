@@ -31,13 +31,13 @@ extension AllPokemonCoordinator {
 }
 
 extension AllPokemonCoordinator: AllPokemonFlow {
-    func showDetail(pokemon _: PokemonDetail) {
-//        let coordinator = LogoutTestListCoordinator(navigationController: navigationController)
-//        coordinate(to: coordinator)
+    func showDetail(pokemon: PokemonDetailConfig) {
+        let coordinator = PokemonDetailCoordinator(navigationController: navigationController, pokemon: pokemon)
+        coordinate(to: coordinator)
         print("show detail coordinator")
     }
 }
 
 protocol AllPokemonFlow {
-    func showDetail(pokemon: PokemonDetail)
+    func showDetail(pokemon: PokemonDetailConfig)
 }

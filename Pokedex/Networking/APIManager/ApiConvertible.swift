@@ -108,7 +108,6 @@ extension APIConvertible {
         components.scheme = PokedexAPI().urlScheme
         components.host = PokedexAPI().urlHost
         components.path = PokedexAPI().urlPath
-
         components.queryItems = parameters
 
         return components
@@ -120,7 +119,7 @@ extension APIConvertible {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(apiVersion.rawValue, forHTTPHeaderField: "api-version")
-        request.url?.appendPathComponent(path)
+        request.url?.appendPathComponent("\(apiVersion.rawValue)/\(path)")
         request.httpMethod = httpMethod.rawValue
         return request
     }
@@ -142,8 +141,8 @@ protocol PokedexAPIRepresentable {
 }
 
 enum ApiVersion: String, Codable {
-    case v1 = "1"
-    case v2 = "2"
+    case v1
+    case v2
 
     static var defaultVersion: ApiVersion {
         return .v2

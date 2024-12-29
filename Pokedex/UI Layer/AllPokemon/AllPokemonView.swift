@@ -66,9 +66,11 @@ private extension AllPokemonView {
                 ],
                 spacing: 10
             ) {
+                let assa = print("Pokemons \(viewModel.pokemons)")
+                let assssa = print("Pokemons detailed \(viewModel.pokemonsDetailed)")
                 ForEach(viewModel.pokemons, id: \.id) { pokemon in
                     PokemonCell(
-                        pokemon: viewModel.pokemonsDetailed.first(where: { $0.imageUrl == pokemon.url })! // TODO: delete !
+                        pokemon: viewModel.pokemonsDetailed.first(where: { $0.id == pokemon.id }) ?? PokemonDetail() // TODO: delete !
                     )
                     .environmentObject(viewModel)
                     .onAppear {

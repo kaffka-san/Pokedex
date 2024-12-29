@@ -14,7 +14,7 @@ protocol APIRouter: Router {
 
 extension APIRouter {
     var baseURL: String {
-        "https:/pokeapi.co/api/v2"
+        "https:/pokeapi.co/api"
     }
 
     var apiVersion: String {

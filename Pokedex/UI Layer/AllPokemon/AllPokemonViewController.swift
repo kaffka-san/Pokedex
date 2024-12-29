@@ -27,6 +27,7 @@ extension AllPokemonViewController {
         super.viewDidLoad()
 
         prepareViewModel()
+        viewModel.loadPokemons()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -35,8 +36,8 @@ extension AllPokemonViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
         navigationController?.setNavigationBarHidden(false, animated: true)
     }

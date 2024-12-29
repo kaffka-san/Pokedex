@@ -13,8 +13,7 @@ struct Pokemons: Decodable {
     let results: [Pokemon]
 }
 
-struct Pokemon: Decodable, Identifiable, Equatable {
-    let id = UUID()
+struct Pokemon: Decodable, Equatable {
     let name: String
     let url: String
 
@@ -31,7 +30,7 @@ struct PokemonDetail: Decodable {
     let types: [PokemonTypes]
     let sprites: Sprites
     let name: String
-    var imageUrl: String?
+    // var imageUrl: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -41,7 +40,7 @@ struct PokemonDetail: Decodable {
         case name
         case types
         case sprites
-        case imageUrl
+        // case imageUrl
     }
 }
 
@@ -120,5 +119,24 @@ struct PokemonsGeneration: Decodable {
 extension PokemonDetail {
     var idFormatted: String {
         String(format: "#%03d", id)
+    }
+}
+
+extension PokemonDetail {
+    init() {
+        id = 0
+        height = 0
+        weight = 0
+        baseExperience = nil
+        types = []
+        sprites = Sprites(frontDefault: nil, other: nil)
+        name = ""
+    }
+}
+
+extension Pokemon: Identifiable {
+    var id: Int {
+        guard let url = URL(string: url) else { return -1 }
+        return Int(url.lastPathComponent) ?? -1
     }
 }

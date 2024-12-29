@@ -48,10 +48,10 @@ extension PokemonsRouter {
     }
 
     func createUrlRequest() throws -> URLRequest {
-        guard var urlRequest = urlRequest else {
+        guard let urlRequest = urlRequest else {
             throw NetworkingError.invalidUrlRequest
         }
-
+        print("request: \(urlRequest)")
         return urlRequest
     }
 }

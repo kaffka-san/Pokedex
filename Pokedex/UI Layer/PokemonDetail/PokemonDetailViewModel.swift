@@ -6,16 +6,19 @@
 //
 
 import AVFoundation
+import Combine
 import MapKit
 import SwiftUI
 
-class PokemonDetailViewModel: ObservableObject {
-    private let pokemonsAPI: PokemonsAPIProtocol
+final class PokemonDetailViewModel: ObservableObject {
+    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this
+    private var disposeBag = Set<AnyCancellable>()
+    private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
     private var player: AVAudioPlayer?
-    private weak var coordinator: PokemonsCoordinator?
-    let pokemon: PokemonDetailConfig
-    var region: MKCoordinateRegion
-    var pokemonsLocations = [Location]()
+    // private weak var coordinator: PokemonsCoordinator?
+    var pokemon: PokemonDetailConfig!
+    // var region: MKCoordinateRegion?
+    // var pokemonsLocations = [Location]()
     var colorBackground: ColorType {
         return ColorType(rawValue: pokemon.types.first?.capitalized ?? "") ?? ColorType.basic
     }
@@ -29,37 +32,57 @@ class PokemonDetailViewModel: ObservableObject {
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var scrollPosition: CGPoint = .zero
-    @Published var isFavourite: Bool
+    @Published var isFavourite = false
     @Published var pokemonPinsOpacity = 0.0
-    @Binding var userLocation: Location
-    @Binding var favouriteIds: Set<Int>
+    // @Binding var userLocation: Location
+    @Published var favouriteIds = Set<Int>()
+    @Published private(set) var isLoading = false
 
-    init(
-        coordinator: PokemonsCoordinator?,
-        pokemonsAPI: PokemonsAPIProtocol,
-        pokemon: PokemonDetailConfig,
-        userLocation: Binding<Location>,
-        favouriteIds: Binding<Set<Int>>
-    ) {
-        self.coordinator = coordinator
-        self.pokemonsAPI = pokemonsAPI
-        self.pokemon = pokemon
-        _userLocation = userLocation
-        _favouriteIds = favouriteIds
-        isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
-        region = MKCoordinateRegion(
-            center: userLocation.coordinate.wrappedValue,
-            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-        )
-        loadPokemonSpecies()
-        loadNextPokemon()
-        loadPreviousPokemon()
-        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
+//    init(
+//        coordinator: PokemonsCoordinator?,
+//        pokemonsAPI: PokemonsAPIProtocol,
+//        pokemon: PokemonDetailConfig,
+//        userLocation: Binding<Location>,
+//        favouriteIds: Binding<Set<Int>>
+//    ) {
+//        self.coordinator = coordinator
+//        self.pokemonsAPI = pokemonsAPI
+//        self.pokemon = pokemon
+//        _userLocation = userLocation
+//        _favouriteIds = favouriteIds
+//        isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
+//        region = MKCoordinateRegion(
+//            center: userLocation.coordinate.wrappedValue,
+//            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+//        )
+//        loadPokemonSpecies()
+//        loadNextPokemon()
+//        loadPreviousPokemon()
+//        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
+//    }
+
+    init(pokemonService: PokemonServiceProtocol) {
+        self.pokemonService = pokemonService
     }
 
-    @objc
-    func goBack() {
-        coordinator?.goBack()
+//    @objc
+//    func goBack() {
+//        coordinator?.goBack()
+//    }
+
+    var dataLoaded: AnyPublisher<Result<Void, NetworkingError>, Never> {
+        dataLoadedSubject.eraseToAnyPublisher()
+    }
+
+    func getFavouritePokemons() {
+        if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
+            if let decodedSet = try? JSONDecoder().decode(
+                Set<Int>.self,
+                from: decodedData
+            ) {
+                favouriteIds = decodedSet
+            }
+        }
     }
 
     @objc
@@ -80,7 +103,7 @@ class PokemonDetailViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
             do {
-                let pokemonDetail = try await pokemonsAPI.getPokemonSpecies(name: pokemon.name)
+                let pokemonDetail = try await pokemonService.getPokemonSpecies(name: pokemon.name)
                 await self.updateSpecies(pokemonDetail: pokemonDetail)
             } catch let error as APIError {
                 await MainActor.run {
@@ -100,7 +123,7 @@ class PokemonDetailViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
             do {
-                let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id + 1)")
+                let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id + 1)")
                 await self.updateNext(pokemonDetail: pokemonDetail)
             } catch let error as APIError {
                 await MainActor.run {
@@ -114,7 +137,7 @@ class PokemonDetailViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
             do {
-                let pokemonDetail = try await pokemonsAPI.getPokemonDetail(name: "\(pokemon.id - 1)")
+                let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id - 1)")
                 await self.updatePrevious(pokemonDetail: pokemonDetail)
             } catch let error as APIError {
                 await MainActor.run {
@@ -205,10 +228,10 @@ class PokemonDetailViewModel: ObservableObject {
         return "\(baseSteps * (counter + 1)) \(L.PokemonDetail.steps)"
     }
 
-    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
-        // Generate a random number of locations to create
-        let numberOfLocations = Int.random(in: 1...4)
-        let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
-        return locations
-    }
+//    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
+//        // Generate a random number of locations to create
+//        let numberOfLocations = Int.random(in: 1...4)
+//        let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
+//        return locations
+//    }
 }

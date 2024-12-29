@@ -11,21 +11,14 @@ import SwiftUI
 import UIKit
 
 struct PokemonDetailView: View {
-    @StateObject private var viewModel: PokemonDetailViewModel
-
-    init(
-        viewModel: PokemonDetailViewModel
-    ) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-        // configNavigationBar()
-    }
+    @ObservedObject var viewModel: PokemonDetailViewModel
 
     var body: some View {
-        NavigationStack {
-            scrollView
-        }
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        scrollView
+
+            .onAppear {
+                viewModel.getFavouritePokemons()
+            }
     }
 }
 
@@ -71,7 +64,7 @@ private extension PokemonDetailView {
                                 } else {
                                     verticalStatistics
                                 }
-                                mapView
+                                // mapView
                             }
                         }
                     }
@@ -98,76 +91,67 @@ private extension PokemonDetailView {
             .edgesIgnoringSafeArea(.bottom)
             .edgesIgnoringSafeArea(.horizontal)
             .coordinateSpace(name: Constants.scrollName)
-            .navigationTitle(viewModel.pokemon.name.capitalized)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    backButton
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    loveButton
-                }
-            }
         }
         .refreshable {
             viewModel.refresh()
         }
     }
 
-    var mapView: some View {
-        VStackLayout(alignment: .leading) {
-            HeadLineLabel(text: L.PokemonDetail.location)
-                .padding(.top, 26)
-            Map(
-                coordinateRegion: $viewModel.region,
-                showsUserLocation: true,
-                annotationItems: viewModel.pokemonsLocations
-            ) { location in
-                MapAnnotation(coordinate: location.coordinate) {
-                    LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
-                        if let image = state.image {
-                            image
-                                .resizable()
-                                .scaledToFit()
-                        } else {}
-                    }
-                    .frame(width: 40, height: 40)
-                    .opacity(viewModel.pokemonPinsOpacity)
-                    .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
-                    .onAppear {
-                        viewModel.pokemonPinsOpacity = 1.0
-                    }
-                }
-            }
-            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-            .frame(height: 150)
-            .cornerRadius(20)
-            .padding(.vertical, 20)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, isLandscape() ? 100 : 26)
-    }
+//    var mapView: some View {
+//        VStackLayout(alignment: .leading) {
+//            HeadLineLabel(text: L.PokemonDetail.location)
+//                .padding(.top, 26)
+//            Map(
+//                coordinateRegion: $viewModel.region,
+//                showsUserLocation: true,
+//                annotationItems: viewModel.pokemonsLocations
+//            ) { location in
+//                MapAnnotation(coordinate: location.coordinate) {
+//                    LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
+//                        if let image = state.image {
+//                            image
+//                                .resizable()
+//                                .scaledToFit()
+//                        } else {}
+//                    }
+//                    .frame(width: 40, height: 40)
+//                    .opacity(viewModel.pokemonPinsOpacity)
+//                    .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
+//                    .onAppear {
+//                        viewModel.pokemonPinsOpacity = 1.0
+//                    }
+//                }
+//            }
+//            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+//            .frame(height: 150)
+//            .cornerRadius(20)
+//            .padding(.vertical, 20)
+//        }
+//        .frame(maxWidth: .infinity)
+//        .padding(.horizontal, isLandscape() ? 100 : 26)
+//    }
 
-    var loveButton: some View {
-        Button {
-            viewModel.toggleFavourite()
-        } label: {
-            if viewModel.isFavourite {
-                AssetsImages.heartFill
-            } else {
-                AssetsImages.heart
-            }
-        }
-        .tint(.white)
-    }
-
-    var backButton: some View {
-        Button {
-            viewModel.goBack()
-        } label: {
-            Image(AssetsImagesString.backIcon)
-        }
-        .tint(.white)
-    }
+//    var loveButton: some View {
+//        Button {
+//            viewModel.toggleFavourite()
+//        } label: {
+//            if viewModel.isFavourite {
+//                AssetsImages.heartFill
+//            } else {
+//                AssetsImages.heart
+//            }
+//        }
+//        .tint(.white)
+//    }
+//
+//    var backButton: some View {
+//        Button {
+//            viewModel.goBack()
+//        } label: {
+//            Image(AssetsImagesString.backIcon)
+//        }
+//        .tint(.white)
+//    }
 
     var pokemonTypes: some View {
         HStack {
@@ -383,25 +367,26 @@ private extension PokemonDetailView {
     }
 }
 
-#Preview {
-    PokemonDetailView(
-        viewModel: PokemonDetailViewModel(
-            coordinator: nil,
-            pokemonsAPI: MockPokemonsAPI(),
-            pokemon: PokemonDetailConfig(
-                id: 1,
-                url: "https://pokeapi.co/api/v2/pokemon/1/",
-                name: "Bulbasaur",
-                types: ["Grass", "Poison"],
-                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-                weight: "13.2 lbs (6.9 kg)",
-                height: "1' 04 (0.70 cm)",
-                baseExperience: "65"
-            ),
-            userLocation: Binding.constant(
-                MockLocation.location
-            ),
-            favouriteIds: Binding.constant([1, 2, 3, 4])
-        )
-    )
-}
+//
+// #Preview {
+//    PokemonDetailView(
+//        viewModel: PokemonDetailViewModel(
+//            coordinator: nil,
+//            pokemonsAPI: MockPokemonsAPI(),
+//            pokemon: PokemonDetailConfig(
+//                id: 1,
+//                url: "https://pokeapi.co/api/v2/pokemon/1/",
+//                name: "Bulbasaur",
+//                types: ["Grass", "Poison"],
+//                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+//                weight: "13.2 lbs (6.9 kg)",
+//                height: "1' 04 (0.70 cm)",
+//                baseExperience: "65"
+//            ),
+//            userLocation: Binding.constant(
+//                MockLocation.location
+//            ),
+//            favouriteIds: Binding.constant([1, 2, 3, 4])
+//        )
+//    )
+// }
