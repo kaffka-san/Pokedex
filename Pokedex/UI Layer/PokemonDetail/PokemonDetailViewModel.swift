@@ -25,9 +25,15 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
-    @Published var scrollPosition: CGPoint = .zero
+    @Published var scrollPosition: CGPoint = .zero {
+        didSet {
+            print(scrollPosition)
+        }
+    }
+
     @Published var isFavourite = false
     @Published var pokemonPinsOpacity = 0.0
+
     // @Binding var userLocation: Location
     @Published var favouriteIds = Set<Int>()
     @Published private(set) var isLoading = false
@@ -93,7 +99,6 @@ extension PokemonDetailViewModel {
             ) {
                 favouriteIds = decodedSet
                 isFavourite = favouriteIds.contains(pokemon.id)
-                print("🍷 all fav id from detail \(favouriteIds)")
             }
         }
     }
@@ -106,25 +111,30 @@ extension PokemonDetailViewModel {
             favouriteIds.insert(pokemon.id)
         }
         isFavourite.toggle()
+
         if let encodedData = try? JSONEncoder().encode(favouriteIds) {
             UserDefaults.standard.set(encodedData, forKey: Constants.favourite)
+            NotificationCenter.default.post(.updateFavouritePokemon)
         }
     }
 
+    @MainActor
     func loadPokemonSpecies() {
+        isLoading = true
         Task { [weak self] in
             guard let self else { return }
             do {
                 let pokemonDetail = try await pokemonService.getPokemonSpecies(name: pokemon.name)
-                await self.updateSpecies(pokemonDetail: pokemonDetail)
+                updateSpecies(pokemonDetail: pokemonDetail)
+                isLoading = false
             } catch let error as APIError {
-                await MainActor.run {
-                    self.showAlert(for: error)
-                }
+                showAlert(for: error)
+                isLoading = false
             }
         }
     }
 
+    @MainActor
     func refresh() {
         loadPokemonSpecies()
         loadNextPokemon()

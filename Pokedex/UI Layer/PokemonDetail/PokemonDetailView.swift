@@ -11,12 +11,19 @@ import SwiftUI
 import UIKit
 
 struct PokemonDetailView: View {
+    private let offsetMinimum = 70.0
     @ObservedObject var viewModel: PokemonDetailViewModel
-
+    @Namespace private var animation
+    @State private var isLargeTitle = true
     var body: some View {
         scrollView
             .onAppear {
                 viewModel.getFavouritePokemons()
+            }
+            .onChange(of: viewModel.scrollPosition) { _, newValue in
+                withAnimation(.linear(duration: 0.1)) {
+                    isLargeTitle = newValue < CGPoint(x: 0.0, y: offsetMinimum) ? true : false
+                }
             }
     }
 }
@@ -28,9 +35,15 @@ private extension PokemonDetailView {
             Spacer()
             pokemonId
         }
-        .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -10.0) ? 1 : 0)
-        .sensoryFeedback(.impact, trigger: viewModel.scrollPosition < CGPoint(x: 0.0, y: -10.0))
+        .opacity(isLargeTitle ? 1 : 0)
+        .sensoryFeedback(.impact, trigger: isLargeTitle)
         .animation(.easeInOut, value: viewModel.scrollPosition)
+    }
+
+    var titleText: some View {
+        Text(viewModel.pokemon.name.capitalized)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 20)
     }
 
     var scrollView: some View {
@@ -39,18 +52,37 @@ private extension PokemonDetailView {
                 Color(viewModel.colorBackground.rawValue)
                     .edgesIgnoringSafeArea(.all)
             }
-            VStack {
+            VStack(spacing: 0) {
                 HStack {
                     backButton
                     Spacer()
+                    if !isLargeTitle {
+                        titleText
+                            .font(.system(size: 22, weight: .black))
+                            .hAlign(.center)
+                            .padding(.top, 0)
+                            .matchedGeometryEffect(id: AnimationNameSpace.title, in: animation)
+                        Spacer()
+                    }
                     loveButton
                 }
                 .padding(.horizontal, 20)
+                .padding(.bottom)
+                if isLargeTitle {
+                    titleText
+                        .font(.system(size: 36, weight: .black))
+                        .hAlign(.leading)
+                        .padding(.vertical, 10)
+                        .matchedGeometryEffect(id: AnimationNameSpace.title, in: animation)
+                }
+
                 ScrollView {
-                    VStack {
+                    VStack(spacing: 0) {
                         ZStack(alignment: .top) {
                             Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.7 : geometry.size.height * 0.32)
-                            typeIdLabel
+                            VStack(spacing: 0) {
+                                typeIdLabel
+                            }
                         }
                         VStack {
                             ZStack(alignment: .top) {
@@ -93,12 +125,14 @@ private extension PokemonDetailView {
                 }
             }
             .onAppear {
-                configNavigationBar()
+                // configNavigationBar()
+                viewModel.loadPokemonSpecies()
             }
             .edgesIgnoringSafeArea(.bottom)
             .edgesIgnoringSafeArea(.horizontal)
             .coordinateSpace(name: Constants.scrollName)
         }
+        .transition(.opacity)
         .refreshable {
             viewModel.refresh()
         }
@@ -302,8 +336,8 @@ private extension PokemonDetailView {
                 .frame(width: 80, height: 100)
         }
         .frame(width: UIScreen.main.bounds.width)
-        .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -90.0) ? 1 : 0)
-        .animation(.easeInOut, value: viewModel.scrollPosition)
+        .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -40.0) ? 1 : 0)
+        .animation(.smooth, value: viewModel.scrollPosition)
         .offset(y: isLandscape() ? -190 : -190)
     }
 
@@ -360,27 +394,12 @@ private extension PokemonDetailView {
     func isLandscape() -> Bool {
         UIDevice.current.orientation.isLandscape
     }
+}
 
-    func configNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = UIColor(named: viewModel.colorBackground.rawValue)
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(
-                ofSize: 22,
-                weight: .black
-            )
-        ]
-        appearance.largeTitleTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(
-                ofSize: 36,
-                weight: .black
-            )
-        ]
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().layoutMargins.left = 26
+// MARK: - Utilities
+private extension PokemonDetailView {
+    enum AnimationNameSpace: String {
+        case title
     }
 }
 

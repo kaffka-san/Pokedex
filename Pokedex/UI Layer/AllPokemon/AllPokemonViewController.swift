@@ -48,6 +48,7 @@ private extension AllPokemonViewController {
     func prepareViewModel() {
         bindIsLoading()
         bindDataLoaded()
+        bindFavouritePokemonChanged()
     }
 
     func bindIsLoading() {
@@ -65,6 +66,15 @@ private extension AllPokemonViewController {
                 case let .failure(error):
                     self?.presentErrorAlert(error: error)
                 }
+            }
+            .store(in: &disposeBag)
+    }
+
+    func bindFavouritePokemonChanged() {
+        NotificationCenter.default.publisher(for: .updateFavouritePokemon)
+            .sink { [weak self] _ in
+                print("⛸️ REFRESH!!")
+                self?.viewModel.refresh()
             }
             .store(in: &disposeBag)
     }

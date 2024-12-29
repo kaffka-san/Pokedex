@@ -51,7 +51,6 @@ extension PokemonsRouter {
         guard let urlRequest = urlRequest else {
             throw NetworkingError.invalidUrlRequest
         }
-        print("request: \(urlRequest)")
         return urlRequest
     }
 }
