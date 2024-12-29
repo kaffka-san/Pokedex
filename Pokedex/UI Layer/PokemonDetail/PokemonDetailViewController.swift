@@ -25,32 +25,26 @@ extension PokemonDetailViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        prepareUI()
         prepareViewModel()
     }
-}
 
-// MARK: - Private methods for UI
-private extension PokemonDetailViewController {
-    func prepareUI() {
-        view.backgroundColor = UIColor(named: viewModel.colorBackground.rawValue)
-        prepareNavigationItem()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
-    func prepareNavigationItem() {
-        // title = LocalizedString.signIn
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
-        let text = "love" // TODO: image instead
-        let rightBarButton = UIBarButtonItem(title: text, style: .plain, target: nil, action: nil)
-        // rightBarButton.progressFormat()
-        navigationItem.rightBarButtonItem = rightBarButton
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 }
 
 // MARK: - Prepare methods for View model
 private extension PokemonDetailViewController {
     func prepareViewModel() {
-        // bindCloseView()
+        bindCloseView()
         bindIsLoading()
         bindDataLoaded()
     }
@@ -74,17 +68,31 @@ private extension PokemonDetailViewController {
             .store(in: &disposeBag)
     }
 
-//    func bindCloseView() {
-//        viewModel.closeView
-//            .sink { [weak self]_ in
-//                self?.dismiss(animated: true, completion: nil)
-//            }
-//            .store(in: &disposeBag)
-//    }
+    func bindCloseView() {
+        viewModel.close
+            .sink { [weak self] _ in
+                self?.navigationController?.popViewController(animated: true)
+            }
+            .store(in: &disposeBag)
+    }
 }
 
 // MARK: - Actions
-private extension PokemonDetailViewController {}
+private extension PokemonDetailViewController {
+    @objc
+    func toggleFavourite() {
+        if viewModel.isFavourite {
+            viewModel.favouriteIds.remove(viewModel.pokemon.id)
+
+        } else {
+            viewModel.favouriteIds.insert(viewModel.pokemon.id)
+        }
+        viewModel.isFavourite.toggle()
+        if let encodedData = try? JSONEncoder().encode(viewModel.favouriteIds) {
+            UserDefaults.standard.set(encodedData, forKey: Constants.favourite)
+        }
+    }
+}
 
 // MARK: - Auto Layout
 private extension PokemonDetailViewController {

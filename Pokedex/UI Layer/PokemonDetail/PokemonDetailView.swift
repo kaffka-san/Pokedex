@@ -15,7 +15,6 @@ struct PokemonDetailView: View {
 
     var body: some View {
         scrollView
-
             .onAppear {
                 viewModel.getFavouritePokemons()
             }
@@ -40,49 +39,57 @@ private extension PokemonDetailView {
                 Color(viewModel.colorBackground.rawValue)
                     .edgesIgnoringSafeArea(.all)
             }
-            ScrollView {
-                VStack {
-                    ZStack(alignment: .top) {
-                        Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.7 : geometry.size.height * 0.32)
-                        typeIdLabel
-                    }
+            VStack {
+                HStack {
+                    backButton
+                    Spacer()
+                    loveButton
+                }
+                .padding(.horizontal, 20)
+                ScrollView {
                     VStack {
                         ZStack(alignment: .top) {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.white)
-                                .frame(
-                                    width: geometry.size.width,
-                                    height: isLandscape() ? geometry.size.height * 1.7 : geometry.size.height * 1.1
-                                )
-                                .shadow(radius: 10)
-                            horizontalPokemonImages
-                            VStack(alignment: .leading, spacing: 0) {
-                                description
-                                sizeCard
-                                if isLandscape() {
-                                    horizontalStatics
-                                } else {
-                                    verticalStatistics
+                            Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.7 : geometry.size.height * 0.32)
+                            typeIdLabel
+                        }
+                        VStack {
+                            ZStack(alignment: .top) {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.white)
+                                    .frame(
+                                        width: geometry.size.width,
+                                        height: isLandscape() ? geometry.size.height * 1.7 : geometry.size.height * 1.1
+                                    )
+                                    .shadow(radius: 10)
+                                horizontalPokemonImages
+                                VStack(alignment: .leading, spacing: 0) {
+                                    description
+                                    sizeCard
+                                    if isLandscape() {
+                                        horizontalStatics
+                                    } else {
+                                        verticalStatistics
+                                    }
+                                    // mapView
                                 }
-                                // mapView
                             }
                         }
                     }
-                }
 
-                // Detect scroll position
-                .background(GeometryReader { geometry in
-                    Color.clear
-                        .preference(
-                            key: ScrollOffsetPreferenceKey.self,
-                            value: geometry.frame(
-                                in: .named(Constants.scrollName)
+                    // Detect scroll position
+                    .background(GeometryReader { geometry in
+                        Color.clear
+                            .preference(
+                                key: ScrollOffsetPreferenceKey.self,
+                                value: geometry.frame(
+                                    in: .named(Constants.scrollName)
+                                )
+                                .origin
                             )
-                            .origin
-                        )
-                })
-                .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                    viewModel.scrollPosition = value
+                    })
+                    .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                        viewModel.scrollPosition = value
+                    }
                 }
             }
             .onAppear {
@@ -131,27 +138,37 @@ private extension PokemonDetailView {
 //        .padding(.horizontal, isLandscape() ? 100 : 26)
 //    }
 
-//    var loveButton: some View {
-//        Button {
-//            viewModel.toggleFavourite()
-//        } label: {
-//            if viewModel.isFavourite {
-//                AssetsImages.heartFill
-//            } else {
-//                AssetsImages.heart
-//            }
-//        }
-//        .tint(.white)
-//    }
-//
-//    var backButton: some View {
-//        Button {
-//            viewModel.goBack()
-//        } label: {
-//            Image(AssetsImagesString.backIcon)
-//        }
-//        .tint(.white)
-//    }
+    var loveButton: some View {
+        Button {
+            viewModel.toggleFavourite()
+        } label: {
+            Group {
+                if viewModel.isFavourite {
+                    AssetsImages.heartFill
+                        .resizable()
+                } else {
+                    AssetsImages.heart
+                        .resizable()
+                }
+            }
+
+            .frame(width: 20, height: 20)
+            .scaledToFit()
+        }
+        .tint(.white)
+    }
+
+    var backButton: some View {
+        Button {
+            viewModel.goBack()
+        } label: {
+            Image(AssetsImagesString.backIcon)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20, height: 20)
+        }
+        .tint(.white)
+    }
 
     var pokemonTypes: some View {
         HStack {

@@ -14,18 +14,12 @@ final class PokemonDetailViewModel: ObservableObject {
     private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this
     private var disposeBag = Set<AnyCancellable>()
     private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
+    private let closeSubject = PassthroughSubject<Void, Never>()
     private var player: AVAudioPlayer?
     // private weak var coordinator: PokemonsCoordinator?
     var pokemon: PokemonDetailConfig!
     // var region: MKCoordinateRegion?
     // var pokemonsLocations = [Location]()
-    var colorBackground: ColorType {
-        return ColorType(rawValue: pokemon.types.first?.capitalized ?? "") ?? ColorType.basic
-    }
-
-    var idFormatted: String {
-        String(format: "#%03d", pokemon.id)
-    }
 
     @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
     @Published var alertConfig: AlertConfig?
@@ -38,40 +32,57 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var favouriteIds = Set<Int>()
     @Published private(set) var isLoading = false
 
-//    init(
-//        coordinator: PokemonsCoordinator?,
-//        pokemonsAPI: PokemonsAPIProtocol,
-//        pokemon: PokemonDetailConfig,
-//        userLocation: Binding<Location>,
-//        favouriteIds: Binding<Set<Int>>
-//    ) {
-//        self.coordinator = coordinator
-//        self.pokemonsAPI = pokemonsAPI
-//        self.pokemon = pokemon
-//        _userLocation = userLocation
-//        _favouriteIds = favouriteIds
-//        isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
-//        region = MKCoordinateRegion(
-//            center: userLocation.coordinate.wrappedValue,
-//            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-//        )
-//        loadPokemonSpecies()
-//        loadNextPokemon()
-//        loadPreviousPokemon()
-//        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
-//    }
+    //    init(
+    //        coordinator: PokemonsCoordinator?,
+    //        pokemonsAPI: PokemonsAPIProtocol,
+    //        pokemon: PokemonDetailConfig,
+    //        userLocation: Binding<Location>,
+    //        favouriteIds: Binding<Set<Int>>
+    //    ) {
+    //        self.coordinator = coordinator
+    //        self.pokemonsAPI = pokemonsAPI
+    //        self.pokemon = pokemon
+    //        _userLocation = userLocation
+    //        _favouriteIds = favouriteIds
+    //        isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
+    //        region = MKCoordinateRegion(
+    //            center: userLocation.coordinate.wrappedValue,
+    //            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+    //        )
+    //        loadPokemonSpecies()
+    //        loadNextPokemon()
+    //        loadPreviousPokemon()
+    //        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
+    //    }
 
     init(pokemonService: PokemonServiceProtocol) {
         self.pokemonService = pokemonService
     }
+}
 
-//    @objc
-//    func goBack() {
-//        coordinator?.goBack()
-//    }
-
+// MARK: - Public properties
+extension PokemonDetailViewModel {
     var dataLoaded: AnyPublisher<Result<Void, NetworkingError>, Never> {
         dataLoadedSubject.eraseToAnyPublisher()
+    }
+
+    var close: AnyPublisher<Void, Never> {
+        closeSubject.eraseToAnyPublisher()
+    }
+
+    var colorBackground: ColorType {
+        ColorType(rawValue: pokemon.types.first?.capitalized ?? "") ?? ColorType.basic
+    }
+
+    var idFormatted: String {
+        String(format: "#%03d", pokemon.id)
+    }
+}
+
+// MARK: - Public methods
+extension PokemonDetailViewModel {
+    func goBack() {
+        closeSubject.send()
     }
 
     func getFavouritePokemons() {
@@ -81,11 +92,12 @@ final class PokemonDetailViewModel: ObservableObject {
                 from: decodedData
             ) {
                 favouriteIds = decodedSet
+                isFavourite = favouriteIds.contains(pokemon.id)
+                print("🍷 all fav id from detail \(favouriteIds)")
             }
         }
     }
 
-    @objc
     func toggleFavourite() {
         if isFavourite {
             favouriteIds.remove(pokemon.id)

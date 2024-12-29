@@ -53,7 +53,6 @@ struct AllPokemonView: View {
                 viewModel.refresh()
             }
         }
-        .navigationBarHidden(true)
     }
 }
 

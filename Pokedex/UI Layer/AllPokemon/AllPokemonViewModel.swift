@@ -60,7 +60,7 @@ extension AllPokemonViewModel {
 
 // MARK: - Public methods
 extension AllPokemonViewModel {
-    func getFavouritePokemons() {
+    func getFavouritePokemonIds() {
         if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
             if let decodedSet = try? JSONDecoder().decode(
                 Set<Int>.self,
@@ -100,7 +100,9 @@ extension AllPokemonViewModel {
 
     func getFavourite() {
         showingFavourites = true
+        getFavouritePokemonIds()
         pokemons = []
+        print("🤪 id fav \(favouriteIds)")
         pokemons = favouriteIds.map { id in
             Pokemon(name: "", url: "\(id)")
         }
