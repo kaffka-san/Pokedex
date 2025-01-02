@@ -10,6 +10,10 @@ import SwiftUI
 struct CapsuleText<DataConfigurable: CapsuleTextConfigurable>: View {
     let data: DataConfigurable
 
+    init(_ data: DataConfigurable) {
+        self.data = data
+    }
+
     var body: some View {
         ZStack {
             Color.white.opacity(0.3)
@@ -25,7 +29,7 @@ struct CapsuleText<DataConfigurable: CapsuleTextConfigurable>: View {
 
 #Preview {
     CapsuleText(
-        data: CapsuleTextConfiguration(
+        CapsuleTextConfiguration(
             text: "Electric",
             font: PokedexFonts.body1
         )

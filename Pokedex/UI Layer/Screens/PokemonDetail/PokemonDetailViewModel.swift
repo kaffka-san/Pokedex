@@ -11,13 +11,13 @@ import MapKit
 import SwiftUI
 
 final class PokemonDetailViewModel: ObservableObject {
-    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this
+    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
     private var disposeBag = Set<AnyCancellable>()
     private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
     private let closeSubject = PassthroughSubject<Void, Never>()
     private var player: AVAudioPlayer?
-    // private weak var coordinator: PokemonsCoordinator?
-    var pokemon: PokemonDetailConfig!
+
+    var pokemon: PokemonDetailConfig?
     // var region: MKCoordinateRegion?
     // var pokemonsLocations = [Location]()
 
@@ -77,11 +77,11 @@ extension PokemonDetailViewModel {
     }
 
     var colorBackground: ColorType {
-        ColorType(rawValue: pokemon.types.first?.capitalized ?? "") ?? ColorType.basic
+        ColorType(rawValue: pokemon?.types.first?.capitalized ?? "") ?? ColorType.basic
     }
 
     var idFormatted: String {
-        String(format: "#%03d", pokemon.id)
+        String(format: "#%03d", pokemon?.id ?? "")
     }
 }
 
@@ -92,23 +92,24 @@ extension PokemonDetailViewModel {
     }
 
     func getFavouritePokemons() {
-        if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
+        if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite), let id = pokemon?.id {
             if let decodedSet = try? JSONDecoder().decode(
                 Set<Int>.self,
                 from: decodedData
             ) {
                 favouriteIds = decodedSet
-                isFavourite = favouriteIds.contains(pokemon.id)
+                isFavourite = favouriteIds.contains(id)
             }
         }
     }
 
     func toggleFavourite() {
+        guard let id = pokemon?.id else { return }
         if isFavourite {
-            favouriteIds.remove(pokemon.id)
+            favouriteIds.remove(id)
 
         } else {
-            favouriteIds.insert(pokemon.id)
+            favouriteIds.insert(id)
         }
         isFavourite.toggle()
 
@@ -120,11 +121,12 @@ extension PokemonDetailViewModel {
 
     @MainActor
     func loadPokemonSpecies() {
+        guard let pokemon = pokemon else { return }
         isLoading = true
         Task { [weak self] in
             guard let self else { return }
             do {
-                let pokemonDetail = try await pokemonService.getPokemonSpecies(name: pokemon.name)
+                let pokemonDetail = try await pokemonService.getPokemonSpecies(name: String(pokemon.id))
                 updateSpecies(pokemonDetail: pokemonDetail)
                 isLoading = false
             } catch let error as APIError {
@@ -142,6 +144,7 @@ extension PokemonDetailViewModel {
     }
 
     func loadNextPokemon() {
+        guard let pokemon = pokemon else { return }
         Task { [weak self] in
             guard let self else { return }
             do {
@@ -156,6 +159,7 @@ extension PokemonDetailViewModel {
     }
 
     func loadPreviousPokemon() {
+        guard let pokemon = pokemon else { return }
         Task { [weak self] in
             guard let self else { return }
             do {
@@ -177,6 +181,7 @@ extension PokemonDetailViewModel {
     }
 
     func playSound() {
+        guard let pokemon = pokemon else { return }
         if pokemon.name == Constants.pikachuSound {
             guard let path = Bundle.main.path(forResource: AssetsSound.pikachu, ofType: nil) else {
                 return
@@ -201,6 +206,7 @@ extension PokemonDetailViewModel {
 
     @MainActor
     private func updateSpecies(pokemonDetail: PokemonSpecies) {
+        guard let pokemon = pokemon else { return }
         pokemonSpecies = PokemonSpeciesConfig(
             description: findLastOccurrence(
                 of: pokemon.name,

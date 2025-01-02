@@ -47,7 +47,7 @@ private extension PokemonCell {
         VStack(spacing: 6) {
             ForEach(pokemon.types, id: \.id) { type in
                 CapsuleText(
-                    data: CapsuleTextConfiguration(
+                    CapsuleTextConfiguration(
                         text: type.type.name,
                         font: PokedexFonts.body1
                     )

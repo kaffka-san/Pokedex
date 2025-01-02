@@ -13,6 +13,7 @@ struct PokemonDetailView: View {
     @ObservedObject var viewModel: PokemonDetailViewModel
     @Namespace private var animation
     @State private var isLargeTitle = true
+
     var body: some View {
         scrollView
             .onAppear {
@@ -29,7 +30,7 @@ struct PokemonDetailView: View {
 private extension PokemonDetailView {
     var typeIdLabel: some View {
         HStack {
-            pokemonTypes
+            pokemonTypes()
             Spacer()
             pokemonId
         }
@@ -39,7 +40,7 @@ private extension PokemonDetailView {
     }
 
     var titleText: some View {
-        Text(viewModel.pokemon.name.capitalized)
+        Text(viewModel.pokemon?.name.capitalized ?? "")
             .foregroundStyle(.white)
             .padding(.horizontal, 20)
     }
@@ -202,20 +203,24 @@ private extension PokemonDetailView {
         .tint(.white)
     }
 
-    var pokemonTypes: some View {
-        HStack {
-            ForEach(viewModel.pokemon.types, id: \.self) { type in
-                CapsuleText(data: CapsuleTextConfiguration(
-                    text: type,
-                    font: PokedexFonts.body2
-                )
-                )
-                .frame(width: 70)
+    @ViewBuilder
+    func pokemonTypes() -> some View {
+        if let pokemon = viewModel.pokemon {
+            HStack {
+                ForEach(pokemon.types, id: \.self) { type in
+                    CapsuleText(
+                        CapsuleTextConfiguration(
+                            text: type,
+                            font: PokedexFonts.body2
+                        )
+                    )
+                    .frame(width: 70)
+                }
+                Spacer()
             }
-            Spacer()
+            .padding(.leading, 26)
+            .padding(.leading, isLandscape() ? 46 : 0)
         }
-        .padding(.leading, 26)
-        .padding(.leading, isLandscape() ? 46 : 0)
     }
 
     var pokemonId: some View {
@@ -231,22 +236,25 @@ private extension PokemonDetailView {
             HeadLineLabel(text: L.PokemonDetail.breeding)
                 .padding(.vertical, 6)
             genderStatistic
-            HorizontalLabel(LabelConfiguration(
-                text: viewModel.pokemonSpecies.eggGroups.first ?? "",
-                description: L.PokemonDetail.eggGroups
+            HorizontalLabel(
+                LabelConfiguration(
+                    text: viewModel.pokemonSpecies.eggGroups.first ?? "",
+                    description: L.PokemonDetail.eggGroups
+                )
             )
-            )
-            HorizontalLabel(LabelConfiguration(
-                text: viewModel.pokemonSpecies.hatchCounter,
-                description: L.PokemonDetail.eggCylce
-            )
+            HorizontalLabel(
+                LabelConfiguration(
+                    text: viewModel.pokemonSpecies.hatchCounter,
+                    description: L.PokemonDetail.eggCylce
+                )
             )
             HeadLineLabel(text: L.PokemonDetail.training)
                 .padding(.vertical, 6)
-            HorizontalLabel(LabelConfiguration(
-                text: viewModel.pokemon.baseExperience,
-                description: L.PokemonDetail.experience
-            )
+            HorizontalLabel(
+                LabelConfiguration(
+                    text: viewModel.pokemon?.baseExperience ?? "",
+                    description: L.PokemonDetail.experience
+                )
             )
         }
         .frame(maxWidth: .infinity)
@@ -272,7 +280,7 @@ private extension PokemonDetailView {
             VStack(alignment: .leading, spacing: 10) {
                 HeadLineLabel(text: L.PokemonDetail.training)
                 HorizontalLabel(LabelConfiguration(
-                    text: viewModel.pokemon.baseExperience,
+                    text: viewModel.pokemon?.baseExperience ?? "",
                     description: L.PokemonDetail.experience
                 )
                 )
@@ -331,7 +339,7 @@ private extension PokemonDetailView {
         HStack {
             ShadowPokemonImage(url: viewModel.previousImageUrl)
                 .frame(width: 80, height: 100)
-            pokemonImage
+            pokemonImage()
                 .onTapGesture {
                     viewModel.playSound()
                 }
@@ -345,37 +353,40 @@ private extension PokemonDetailView {
         .offset(y: isLandscape() ? -190 : -190)
     }
 
-    var pokemonImage: some View {
-        ZStack {
-            Image(fromImageLiteral: .pokeball)?
-                .resizable()
-                .scaledToFill()
-                .opacity(0.3)
-                .frame(width: 150)
-            CacheAsyncImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
-                if let image = state.image {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } else {
-                    Color.gray.opacity(0.4)
+    @ViewBuilder
+    func pokemonImage() -> some View {
+        if let pokemon = viewModel.pokemon {
+            ZStack {
+                Image(fromImageLiteral: .pokeball)?
+                    .resizable()
+                    .scaledToFill()
+                    .opacity(0.3)
+                    .frame(width: 150)
+                CacheAsyncImage(url: URL(string: pokemon.imgUrl)) { state in
+                    if let image = state.image {
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    } else {
+                        Color.gray.opacity(0.4)
+                    }
                 }
             }
+            .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
         }
-        .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
     }
 
     var sizeCard: some View {
         HStack(spacing: 45) {
             VerticalLabel(
                 LabelConfiguration(
-                    text: viewModel.pokemon.height,
+                    text: viewModel.pokemon?.height ?? "",
                     description: L.PokemonDetail.height
                 )
             )
             VerticalLabel(
                 LabelConfiguration(
-                    text: viewModel.pokemon.weight,
+                    text: viewModel.pokemon?.weight ?? "",
                     description: L.PokemonDetail.weight
                 )
             )
@@ -434,3 +445,33 @@ private extension PokemonDetailView {
 //        )
 //    )
 // }
+
+// #Preview {
+//    PokemonDetailView(viewModel: PokemonDetailViewModel(pokemonService: PokemonService(apiManager: MockAPIManager())))
+// }
+
+struct PokemonDetailView_Previews: PreviewProvider {
+    static var viewModel = PokemonDetailViewModel(
+        pokemonService: PokemonService(
+            apiManager: MockAPIManager()
+        )
+    )
+
+    static var previews: some View {
+        PokemonDetailView(viewModel: viewModel)
+            .onAppear {
+                viewModel.pokemon = PokemonDetailConfig(
+                    id: 1,
+                    url: "https://pokeapi.co/api/v2/pokemon/1/",
+                    name: "Bulbasaur",
+                    types: ["Grass", "Poison"],
+                    imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+                    weight: "13.2 lbs (6.9 kg)",
+                    height: "1' 04 (0.70 cm)",
+                    baseExperience: "64"
+                )
+                print("✅ id pokemon: \(viewModel.pokemon?.name)")
+                viewModel.loadPokemonSpecies()
+            }
+    }
+}

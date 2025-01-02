@@ -81,11 +81,12 @@ private extension PokemonDetailViewController {
 private extension PokemonDetailViewController {
     @objc
     func toggleFavourite() {
+        guard let pokemon = viewModel.pokemon else { return }
         if viewModel.isFavourite {
-            viewModel.favouriteIds.remove(viewModel.pokemon.id)
+            viewModel.favouriteIds.remove(pokemon.id)
 
         } else {
-            viewModel.favouriteIds.insert(viewModel.pokemon.id)
+            viewModel.favouriteIds.insert(pokemon.id)
         }
         viewModel.isFavourite.toggle()
         if let encodedData = try? JSONEncoder().encode(viewModel.favouriteIds) {
