@@ -15,7 +15,7 @@ extension NSMutableAttributedString {
 
 extension NSAttributedString {
     var wholeRange: NSRange {
-        return NSMakeRange(0, length)
+        NSMakeRange(0, length)
     }
 
     /// Returns an array of (value, range) pairs for the given attributed key, where

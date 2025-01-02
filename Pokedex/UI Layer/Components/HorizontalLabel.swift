@@ -13,7 +13,7 @@ struct HorizontalLabel<DataConfigurable: LabelConfigurable>: View {
     init(_ data: DataConfigurable) {
         self.data = data
     }
-    
+
     var body: some View {
         HStack(spacing: 12) {
             Text(data.description)

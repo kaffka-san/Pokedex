@@ -40,3 +40,13 @@ extension UIImage {
         }
     }
 }
+
+extension Image {
+    init?(fromImageLiteral image: ImageName) {
+        self.init(image.rawValue)
+    }
+
+    init(sfSymbol: Symbol) {
+        self.init(systemName: sfSymbol.rawValue)
+    }
+}

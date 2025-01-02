@@ -5,16 +5,16 @@
 //  Created by Anastasia Lenina on 04.11.2023.
 //
 
-//import Foundation
+// import Foundation
 //
-//protocol PokemonsAPIProtocol {
+// protocol PokemonsAPIProtocol {
 //    func getPokemons(offset: Int) async throws -> Pokemons
 //    func getPokemonDetail(name: String) async throws -> PokemonDetail
 //    func getPokemonSpecies(name: String) async throws -> PokemonSpecies
 //    func getPokemonForGeneration(generation: Int) async throws -> PokemonsGeneration
-//}
+// }
 //
-//final class PokemonsAPI: PokemonsAPIProtocol, Service {
+// final class PokemonsAPI: PokemonsAPIProtocol, Service {
 //    typealias Route = PokemonsRoute
 //
 //    private let apiClient: APIClient
@@ -55,4 +55,4 @@
 //            for: urlConvertible(for: route)
 //        )
 //    }
-//}
+// }

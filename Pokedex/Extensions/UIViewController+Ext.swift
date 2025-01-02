@@ -49,7 +49,14 @@ extension UIViewController {
             return existedActivityIndicatorView
         }
 
-        let indicator = ActivityIndicatorView(frame: CGRect(x: UIScreen.main.bounds.midX - 50, y: UIScreen.main.bounds.minY + UIScreen.main.bounds.height / 4, width: 100, height: 100))
+        let indicator = ActivityIndicatorView(
+            frame: CGRect(
+                x: UIScreen.main.bounds.midX - 50,
+                y: UIScreen.main.bounds.minY + UIScreen.main.bounds.height / 4,
+                width: 100,
+                height: 100
+            )
+        )
         view.addSubview(indicator)
         return indicator
     }

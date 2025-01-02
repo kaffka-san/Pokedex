@@ -5,9 +5,9 @@
 //  Created by Anastasia Lenina on 03.11.2023.
 //
 //
-//import Foundation
+// import Foundation
 //
-//extension Result {
+// extension Result {
 //    var isSuccess: Bool {
 //        switch self {
 //        case .success: return true
@@ -21,9 +21,9 @@
 //        case let .failure(error): return error
 //        }
 //    }
-//}
+// }
 //
-//extension URLResponse {
+// extension URLResponse {
 //    var httpStatusCode: Int {
 //        (self as? HTTPURLResponse)?.statusCode ?? 0
 //    }
@@ -36,4 +36,4 @@
 //    var isFailure: Bool {
 //        !isSuccess
 //    }
-//}
+// }

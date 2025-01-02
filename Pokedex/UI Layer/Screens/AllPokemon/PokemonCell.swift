@@ -72,7 +72,7 @@ private extension PokemonCell {
         ZStack(alignment: .bottomTrailing) {
             RoundedRectangle(cornerRadius: 15)
                 .foregroundColor(Color(viewModel.getColorBackground(for: pokemon)))
-            AssetsImages.pokeballCard
+            Image(fromImageLiteral: .pokeballCard)
                 .opacity(0.3)
                 .frame(alignment: .bottom)
         }

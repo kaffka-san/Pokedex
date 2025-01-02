@@ -176,10 +176,10 @@ private extension PokemonDetailView {
         } label: {
             Group {
                 if viewModel.isFavourite {
-                    AssetsImages.heartFill
+                    Image(sfSymbol: .heartFill)
                         .resizable()
                 } else {
-                    AssetsImages.heart
+                    Image(sfSymbol: .heart)
                         .resizable()
                 }
             }
@@ -194,7 +194,7 @@ private extension PokemonDetailView {
         Button {
             viewModel.goBack()
         } label: {
-            Image(AssetsImagesString.backIcon)
+            Image(fromImageLiteral: .backIcon)?
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20, height: 20)
@@ -296,17 +296,17 @@ private extension PokemonDetailView {
                     .foregroundColor(PokedexColors.dark)
                     .frame(alignment: .leading)
             case .male:
-                Label(viewModel.pokemonSpecies.gender.male, image: AssetsImagesString.male)
+                Label(viewModel.pokemonSpecies.gender.male, image: .male)
                     .font(PokedexFonts.body3)
             case .female:
-                Label(viewModel.pokemonSpecies.gender.female, image: AssetsImagesString.female)
+                Label(viewModel.pokemonSpecies.gender.female, image: .female)
                     .font(PokedexFonts.body3)
                     .foregroundColor(PokedexColors.dark)
             case .maleFemale:
-                Label(viewModel.pokemonSpecies.gender.male, image: AssetsImagesString.male)
+                Label(viewModel.pokemonSpecies.gender.male, image: .male)
                     .font(PokedexFonts.body3)
                     .foregroundColor(PokedexColors.dark)
-                Label(viewModel.pokemonSpecies.gender.female, image: AssetsImagesString.female)
+                Label(viewModel.pokemonSpecies.gender.female, image: .female)
                     .font(PokedexFonts.body3)
                     .foregroundColor(PokedexColors.dark)
             }
@@ -347,7 +347,7 @@ private extension PokemonDetailView {
 
     var pokemonImage: some View {
         ZStack {
-            AssetsImages.pokeball
+            Image(fromImageLiteral: .pokeball)?
                 .resizable()
                 .scaledToFill()
                 .opacity(0.3)
@@ -367,15 +367,17 @@ private extension PokemonDetailView {
 
     var sizeCard: some View {
         HStack(spacing: 45) {
-            VerticalLabel(LabelConfiguration(
-                text: viewModel.pokemon.height,
-                description: L.PokemonDetail.height
+            VerticalLabel(
+                LabelConfiguration(
+                    text: viewModel.pokemon.height,
+                    description: L.PokemonDetail.height
+                )
             )
-            )
-            VerticalLabel(LabelConfiguration(
-                text: viewModel.pokemon.weight,
-                description: L.PokemonDetail.weight
-            )
+            VerticalLabel(
+                LabelConfiguration(
+                    text: viewModel.pokemon.weight,
+                    description: L.PokemonDetail.weight
+                )
             )
         }
         .padding(isLandscape() ? 10 : 20)

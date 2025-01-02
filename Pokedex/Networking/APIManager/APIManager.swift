@@ -9,6 +9,5 @@ import Combine
 import Foundation
 
 protocol APIManager {
-    // func request<T: Decodable>(request: APIConvertible) -> AnyPublisher<T, NetworkingError>
     func request<T: Decodable>(request: APIConvertible) async throws -> T
 }

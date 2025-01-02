@@ -48,7 +48,7 @@ private extension AllPokemonView {
         Button {
             viewModel.showSettingsMenu.toggle()
         } label: {
-            AssetsImages.settings
+            Image(fromImageLiteral: .settings)
                 .padding(.trailing, 26)
                 .shadow(radius: 20)
         }

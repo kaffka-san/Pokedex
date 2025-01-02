@@ -5,14 +5,14 @@
 //  Created by Anastasia Lenina on 03.11.2023.
 //
 
-//import Foundation
+// import Foundation
 //
-//protocol APIRouter: Router {
+// protocol APIRouter: Router {
 //    var baseURL: String { get }
 //    var apiVersion: String { get }
-//}
+// }
 //
-//extension APIRouter {
+// extension APIRouter {
 //    var baseURL: String {
 //        "https:/pokeapi.co/api"
 //    }
@@ -20,4 +20,4 @@
 //    var apiVersion: String {
 //        "v2"
 //    }
-//}
+// }

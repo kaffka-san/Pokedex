@@ -42,7 +42,7 @@ private extension SettingsView {
             } label: {
                 CapsuleButton(
                     labelText: L.Settings.favouritePokemon,
-                    icon: AssetsImages.loveFill
+                    icon: .loveFill
                 )
             }
             Button {
@@ -50,7 +50,7 @@ private extension SettingsView {
             } label: {
                 CapsuleButton(
                     labelText: L.Settings.allType,
-                    icon: AssetsImages.pokeballFill
+                    icon: .pokeballFill
                 )
             }
             Button {
@@ -58,13 +58,13 @@ private extension SettingsView {
             } label: {
                 CapsuleButton(
                     labelText: L.Settings.allGen,
-                    icon: AssetsImages.pokeballFill
+                    icon: .pokeballFill
                 )
             }
             Button {
                 config.responseHandler(.close)
             } label: {
-                AssetsImages.close
+                Image(fromImageLiteral: .close)
                     .padding(.top, 10)
             }
         }

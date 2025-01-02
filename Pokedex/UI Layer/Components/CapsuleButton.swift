@@ -9,11 +9,11 @@ import SwiftUI
 
 struct CapsuleButton: View {
     private let labelText: String
-    private let icon: Image
+    private let icon: ImageName
 
     init(
         labelText: String,
-        icon: Image
+        icon: ImageName
     ) {
         self.labelText = labelText
         self.icon = icon
@@ -25,13 +25,11 @@ struct CapsuleButton: View {
                 Text(labelText)
                     .font(PokedexFonts.label1)
                     .foregroundColor(PokedexColors.dark)
-                icon
+                Image(fromImageLiteral: icon)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background {
-                Color.white
-            }
+            .background { Color.white }
             .clipShape(Capsule())
         }
     }
@@ -40,6 +38,9 @@ struct CapsuleButton: View {
 #Preview {
     CapsuleButton(
         labelText: "All Gen",
-        icon: AssetsImages.pokeballFill
+        icon: .pokeballFill
     )
+    .padding()
+    .hAlign(.center)
+    .background(.gray)
 }

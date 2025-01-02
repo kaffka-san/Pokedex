@@ -10,9 +10,9 @@
  * All rights reserved by Applifting.
  */
 //
-//import Foundation
+// import Foundation
 //
-//final class APIClient {
+// final class APIClient {
 //    // MARK: - Private properties
 //
 //    private let session = URLSession.shared
@@ -67,4 +67,4 @@
 //            throw APIError.invalidURL
 //        }
 //    }
-//}
+// }
