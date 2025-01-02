@@ -30,7 +30,6 @@ struct PokemonDetail: Decodable {
     let types: [PokemonTypes]
     let sprites: Sprites
     let name: String
-    // var imageUrl: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -40,12 +39,10 @@ struct PokemonDetail: Decodable {
         case name
         case types
         case sprites
-        // case imageUrl
     }
 }
 
-struct PokemonTypes: Decodable, Identifiable {
-    let id = UUID()
+struct PokemonTypes: Decodable {
     let type: SpecificType
 }
 
@@ -53,14 +50,9 @@ struct SpecificType: Decodable {
     let name: String
 }
 
-class Sprites: Decodable {
+struct Sprites: Decodable {
     let frontDefault: String?
     let other: Other?
-
-    init(frontDefault: String?, other: Other?) {
-        self.frontDefault = frontDefault
-        self.other = other
-    }
 
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
@@ -122,21 +114,15 @@ extension PokemonDetail {
     }
 }
 
-extension PokemonDetail {
-    init() {
-        id = 0
-        height = 0
-        weight = 0
-        baseExperience = nil
-        types = []
-        sprites = Sprites(frontDefault: nil, other: nil)
-        name = ""
-    }
-}
-
 extension Pokemon: Identifiable {
     var id: Int {
         guard let url = URL(string: url) else { return -1 }
         return Int(url.lastPathComponent) ?? -1
+    }
+}
+
+extension PokemonTypes: Identifiable {
+    var id: UUID {
+        UUID()
     }
 }

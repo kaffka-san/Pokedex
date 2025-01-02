@@ -5,14 +5,14 @@
 //  Created by Anastasia Lenina on 04.11.2023.
 //
 
-import Foundation
-
-enum PokemonsRoute {
-    case pokemons(offset: Int)
-    case pokemonDetail(name: String)
-    case pokemonSpecies(name: String)
-    case pokemonsForGeneration(generation: Int)
-}
+//import Foundation
+//
+//enum PokemonsRoute {
+//    case pokemons(offset: Int)
+//    case pokemonDetail(name: String)
+//    case pokemonSpecies(name: String)
+//    case pokemonsForGeneration(generation: Int)
+//}
 
 // final class PokemonsRouter: Router, APIRouter {
 //    private let headers = [

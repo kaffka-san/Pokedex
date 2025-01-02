@@ -7,10 +7,16 @@
 
 import Foundation
 
-class JSONLoader {
+final class JSONLoader {
     enum TestError: Error {
         case fileNotFound
         case fileNotDecoded
+    }
+
+    /// JSON decoder for all requests
+    private var decoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        return decoder
     }
 
     func getData(fromJSON fileName: String) throws -> Data {
@@ -29,6 +35,7 @@ class JSONLoader {
     func loadJSON<T: Decodable>(fileName: String) throws -> T {
         do {
             let data = try getData(fromJSON: fileName)
+
             let decodedObject = try decoder.decode(T.self, from: data)
             return decodedObject
         } catch {

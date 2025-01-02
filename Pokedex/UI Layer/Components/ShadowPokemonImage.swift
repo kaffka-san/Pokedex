@@ -1,14 +1,13 @@
 //
-//  GrayImage.swift
+//  ShadowPokemonImage.swift
 //  Pokedex
 //
-//  Created by Anastasia Lenina on 05.11.2023.
+//  Created by Anastasia Lenina on 02.01.2025.
 //
 
-import NukeUI
 import SwiftUI
 
-struct GrayImage: View {
+struct ShadowPokemonImage: View {
     private let url: String?
 
     init(url: String?) {
@@ -16,13 +15,13 @@ struct GrayImage: View {
     }
 
     var body: some View {
-        LazyImage(url: URL(string: url ?? "")) { state in
+        AsyncImage(url: URL(string: url ?? "")) { state in
             if let image = state.image {
                 image
                     .resizable()
                     .saturation(0.3)
                     .contrast(0.0)
-                    .scaledToFill()
+                    .scaledToFit()
                     .overlay(Color.black)
                     .mask(image.resizable())
                     .opacity(0.2)
@@ -32,5 +31,5 @@ struct GrayImage: View {
 }
 
 #Preview {
-    GrayImage(url: "")
+    ShadowPokemonImage(url: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png")
 }

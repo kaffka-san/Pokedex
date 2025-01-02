@@ -7,24 +7,19 @@
 
 import SwiftUI
 
-struct VerticalLabel: View {
-    private let text: String
-    private let descriptionText: String
+struct VerticalLabel<DataConfigurable: LabelConfigurable>: View {
+    var data: DataConfigurable
 
-    init(
-        text: String,
-        descriptionText: String
-    ) {
-        self.text = text
-        self.descriptionText = descriptionText
+    init(_ data: DataConfigurable) {
+        self.data = data
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(descriptionText)
+            Text(data.description)
                 .font(PokedexFonts.label1)
                 .foregroundColor(PokedexColors.lightGray)
-            Text(text)
+            Text(data.text)
                 .font(PokedexFonts.body3)
                 .foregroundColor(PokedexColors.dark)
         }
@@ -33,7 +28,9 @@ struct VerticalLabel: View {
 
 #Preview {
     VerticalLabel(
-        text: "test text",
-        descriptionText: "description"
+        LabelConfiguration(
+            text: "Label Name",
+            description: "Label description"
+        )
     )
 }

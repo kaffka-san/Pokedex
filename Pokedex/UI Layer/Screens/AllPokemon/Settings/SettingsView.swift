@@ -1,5 +1,5 @@
 //
-//  FilterView.swift
+//  SettingsView.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 06.11.2023.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FilterView<FilterViewData: FilterViewConfigurable>: View {
+struct SettingsView<FilterViewData: FilterViewConfigurable>: View {
     var config: FilterViewData
     @State var showAllGeneration = false
 
@@ -23,7 +23,7 @@ struct FilterView<FilterViewData: FilterViewConfigurable>: View {
     }
 }
 
-private extension FilterView {
+private extension SettingsView {
     var background: some View {
         Rectangle()
             .fill(.black)
@@ -115,20 +115,7 @@ private extension FilterView {
 }
 
 #Preview {
-    FilterView(
+    SettingsView(
         config: FilterViewConfiguration(responseHandler: { _ in })
     )
-}
-
-enum FilterAction {
-    case close, favouriteSelected, showAll
-    case generationSelected(generationId : Int)
-}
-
-protocol FilterViewConfigurable {
-    var responseHandler: (FilterAction) -> Void { get set }
-}
-
-struct FilterViewConfiguration: FilterViewConfigurable {
-    var responseHandler: (FilterAction) -> Void
 }

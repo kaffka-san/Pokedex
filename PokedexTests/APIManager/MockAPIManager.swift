@@ -23,9 +23,7 @@ final class MockAPIManager: APIManager {
 
         do {
             let fileName = request.httpMethod.rawValue + "-" + request.path.replacingOccurrences(of: "/", with: "-")
-            print("🍏fileName: \(fileName)")
             let data: T = try JSONLoader().loadJSON(fileName: fileName)
-            print("data: \(data)")
 
             return data
         } catch {

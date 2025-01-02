@@ -6,9 +6,7 @@
 //
 
 import MapKit
-import NukeUI
 import SwiftUI
-import UIKit
 
 struct PokemonDetailView: View {
     private let offsetMinimum = 70.0
@@ -207,11 +205,12 @@ private extension PokemonDetailView {
     var pokemonTypes: some View {
         HStack {
             ForEach(viewModel.pokemon.types, id: \.self) { type in
-                CapsuleText(
+                CapsuleText(data: CapsuleTextConfiguration(
                     text: type,
-                    font: PokedexFonts.body2,
-                    width: 70
+                    font: PokedexFonts.body2
                 )
+                )
+                .frame(width: 70)
             }
             Spacer()
         }
@@ -232,19 +231,22 @@ private extension PokemonDetailView {
             HeadLineLabel(text: L.PokemonDetail.breeding)
                 .padding(.vertical, 6)
             genderStatistic
-            HorizontalLabel(
+            HorizontalLabel(LabelConfiguration(
                 text: viewModel.pokemonSpecies.eggGroups.first ?? "",
-                descriptionText: L.PokemonDetail.eggGroups
+                description: L.PokemonDetail.eggGroups
             )
-            HorizontalLabel(
+            )
+            HorizontalLabel(LabelConfiguration(
                 text: viewModel.pokemonSpecies.hatchCounter,
-                descriptionText: L.PokemonDetail.eggCylce
+                description: L.PokemonDetail.eggCylce
+            )
             )
             HeadLineLabel(text: L.PokemonDetail.training)
                 .padding(.vertical, 6)
-            HorizontalLabel(
+            HorizontalLabel(LabelConfiguration(
                 text: viewModel.pokemon.baseExperience,
-                descriptionText: L.PokemonDetail.experience
+                description: L.PokemonDetail.experience
+            )
             )
         }
         .frame(maxWidth: .infinity)
@@ -257,20 +259,22 @@ private extension PokemonDetailView {
             VStack(alignment: .leading, spacing: 10) {
                 HeadLineLabel(text: L.PokemonDetail.breeding)
                 genderStatistic
-                HorizontalLabel(
+                HorizontalLabel(LabelConfiguration(
                     text: viewModel.pokemonSpecies.eggGroups.first ?? "",
-                    descriptionText: L.PokemonDetail.eggGroups
-                )
-                HorizontalLabel(
+                    description: L.PokemonDetail.eggGroups
+                ))
+                HorizontalLabel(LabelConfiguration(
                     text: viewModel.pokemonSpecies.hatchCounter,
-                    descriptionText: L.PokemonDetail.eggCylce
+                    description: L.PokemonDetail.eggCylce
+                )
                 )
             }
             VStack(alignment: .leading, spacing: 10) {
                 HeadLineLabel(text: L.PokemonDetail.training)
-                HorizontalLabel(
+                HorizontalLabel(LabelConfiguration(
                     text: viewModel.pokemon.baseExperience,
-                    descriptionText: L.PokemonDetail.experience
+                    description: L.PokemonDetail.experience
+                )
                 )
             }
         }
@@ -325,13 +329,13 @@ private extension PokemonDetailView {
 
     var horizontalPokemonImages: some View {
         HStack {
-            GrayImage(url: viewModel.previousImageUrl)
+            ShadowPokemonImage(url: viewModel.previousImageUrl)
                 .frame(width: 80, height: 100)
             pokemonImage
                 .onTapGesture {
                     viewModel.playSound()
                 }
-            GrayImage(url: viewModel.nextImageUrl)
+            ShadowPokemonImage(url: viewModel.nextImageUrl)
                 .offset(y: 0)
                 .frame(width: 80, height: 100)
         }
@@ -348,7 +352,7 @@ private extension PokemonDetailView {
                 .scaledToFill()
                 .opacity(0.3)
                 .frame(width: 150)
-            LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
+            CacheAsyncImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
                 if let image = state.image {
                     image
                         .resizable()
@@ -363,13 +367,15 @@ private extension PokemonDetailView {
 
     var sizeCard: some View {
         HStack(spacing: 45) {
-            VerticalLabel(
+            VerticalLabel(LabelConfiguration(
                 text: viewModel.pokemon.height,
-                descriptionText: L.PokemonDetail.height
+                description: L.PokemonDetail.height
             )
-            VerticalLabel(
+            )
+            VerticalLabel(LabelConfiguration(
                 text: viewModel.pokemon.weight,
-                descriptionText: L.PokemonDetail.weight
+                description: L.PokemonDetail.weight
+            )
             )
         }
         .padding(isLandscape() ? 10 : 20)

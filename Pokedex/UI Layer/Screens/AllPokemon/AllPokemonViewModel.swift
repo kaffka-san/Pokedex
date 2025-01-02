@@ -168,7 +168,7 @@ extension AllPokemonViewModel {
             do {
                 let pokemonDetail = try await pokemonService.getPokemonDetail(name: String(pokemon.id))
                 print("POKEMON DETAIL: \(pokemonDetail)")
-                print("POKEMON DETAIL sprites: \(pokemonDetail.sprites)")
+                print("POKEMON DETAIL sprites: \(pokemonDetail.sprites.frontDefault)")
                 print("POKEMON DETAIL img: \(pokemonDetail.sprites.other?.officialArtwork.frontDefault)")
                 await self.update(pokemonDetail: pokemonDetail)
                 await MainActor.run {

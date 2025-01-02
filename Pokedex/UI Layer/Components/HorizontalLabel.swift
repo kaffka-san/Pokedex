@@ -7,25 +7,20 @@
 
 import SwiftUI
 
-struct HorizontalLabel: View {
-    private let text: String
-    private let descriptionText: String
+struct HorizontalLabel<DataConfigurable: LabelConfigurable>: View {
+    var data: DataConfigurable
 
-    init(
-        text: String,
-        descriptionText: String
-    ) {
-        self.text = text
-        self.descriptionText = descriptionText
+    init(_ data: DataConfigurable) {
+        self.data = data
     }
-
+    
     var body: some View {
         HStack(spacing: 12) {
-            Text(descriptionText)
+            Text(data.description)
                 .font(PokedexFonts.label1)
                 .foregroundColor(PokedexColors.lightGray)
                 .frame(width: 100, alignment: .leading)
-            Text(text.capitalized)
+            Text(data.text.capitalized)
                 .font(PokedexFonts.body3)
                 .foregroundColor(PokedexColors.dark)
                 .frame(alignment: .leading)
@@ -35,7 +30,9 @@ struct HorizontalLabel: View {
 
 #Preview {
     HorizontalLabel(
-        text: "test text",
-        descriptionText: L.PokemonDetail.eggGroups
+        LabelConfiguration(
+            text: "Label Name",
+            description: "Label description"
+        )
     )
 }

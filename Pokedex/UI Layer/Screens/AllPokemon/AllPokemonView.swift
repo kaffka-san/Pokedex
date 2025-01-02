@@ -55,7 +55,7 @@ private extension AllPokemonView {
     }
 
     var filterView: some View {
-        FilterView(
+        SettingsView(
             config: FilterViewConfiguration(
                 responseHandler: { response in
                     switch response {
@@ -91,14 +91,14 @@ private extension AllPokemonView {
 
     @ViewBuilder
     func pokemonCell(_ pokemon: Pokemon) -> some View {
-        let sasas = print("🎯 \(viewModel.pokemonsDetailed.first(where: { $0.id == pokemon.id })?.sprites.other)")
-        let saeesas = print("🎯 \(viewModel.pokemonsDetailed.first(where: { $0.id == pokemon.id })?.weight)")
-        PokemonCell(
-            pokemon: viewModel.pokemonsDetailed.first(where: { $0.id == pokemon.id }) ?? PokemonDetail() // TODO: delete !
-        )
-        .environmentObject(viewModel)
-        .onAppear {
-            viewModel.loadNextPage(for: pokemon)
+        if let data = viewModel.pokemonsDetailed.first(where: { $0.id == pokemon.id }) {
+            PokemonCell(
+                pokemon: data
+            )
+            .environmentObject(viewModel)
+            .onAppear {
+                viewModel.loadNextPage(for: pokemon)
+            }
         }
     }
 
