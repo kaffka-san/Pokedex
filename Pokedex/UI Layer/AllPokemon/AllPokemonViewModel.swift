@@ -167,11 +167,17 @@ extension AllPokemonViewModel {
             guard let self else { return }
             do {
                 let pokemonDetail = try await pokemonService.getPokemonDetail(name: String(pokemon.id))
-
+                print("POKEMON DETAIL: \(pokemonDetail)")
+                print("POKEMON DETAIL sprites: \(pokemonDetail.sprites)")
+                print("POKEMON DETAIL img: \(pokemonDetail.sprites.other?.officialArtwork.frontDefault)")
                 await self.update(pokemonDetail: pokemonDetail)
+                await MainActor.run {
+                    self.isLoading = false
+                }
             } catch let error as APIError {
                 await MainActor.run {
                     self.showAlert(for: error)
+                    self.isLoading = false
                 }
             }
         }
@@ -186,6 +192,7 @@ extension AllPokemonViewModel {
     }
 
     func goToDetailView(for pokemon: PokemonDetail) {
+        print("URL 🥦 \(pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault ?? "")")
         let pokemonConfig = PokemonDetailConfig(
             id: pokemon.id,
             url: pokemons.first(where: { $0.id == pokemon.id })?.url ?? "",
@@ -225,6 +232,8 @@ private extension AllPokemonViewModel {
 //            height: convertToFeetInchesAndCentimeters(pokemonDetail.height),
 //            baseExperience: describeValue(pokemonDetail.baseExperience)
 //        )
+        print("😈 url is officialArtwork \(pokemonDetail.sprites.other?.officialArtwork)")
+        print("😈 url is frontDeatil \(pokemonDetail.sprites.frontDefault)")
         pokemonsDetailed.append(pokemonDetail)
     }
 

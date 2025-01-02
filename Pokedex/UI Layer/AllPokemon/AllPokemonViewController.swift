@@ -27,7 +27,6 @@ extension AllPokemonViewController {
         super.viewDidLoad()
 
         prepareViewModel()
-        viewModel.loadPokemons()
     }
 
     override func viewWillAppear(_ animated: Bool) {

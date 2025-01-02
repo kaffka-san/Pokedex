@@ -13,7 +13,9 @@ extension UIView {
     }
 
     func fade(_ style: FadeStyle, duration: Double = 0.2, finished: (() -> Void)? = nil) {
-        layer.removeAllAnimations()
+        DispatchQueue.main.async {
+            self.layer.removeAllAnimations()
+        }
         switch style {
         case .in:
             isHidden = false
@@ -24,7 +26,10 @@ extension UIView {
             }
         case .out:
             UIView.animate(withDuration: duration, animations: { [weak self] in
-                self?.alpha = 0
+                DispatchQueue.main.async {
+                    self?.alpha = 0
+                }
+
             }) { [weak self] in
                 self?.isHidden = $0
                 finished?()

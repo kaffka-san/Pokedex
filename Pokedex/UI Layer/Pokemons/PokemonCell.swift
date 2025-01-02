@@ -90,7 +90,7 @@ private extension PokemonCell {
     @ViewBuilder
     func pokemonImage() -> some View {
         if let url = pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault {
-            LazyImage(url: URL(string: url)) { state in
+            AsyncImage(url: URL(string: url)) { state in
                 if let image = state.image {
                     image
                         .resizable()
@@ -119,26 +119,20 @@ private extension PokemonCell {
     }
 }
 
-// #Preview {
-//    PokemonCell(
-//        viewModel: PokemonCellViewModel(
-//            name: "",
-//            url: "",
-//            pokemonsAPI: MockPokemonsAPI(),
-//            coordinator: nil,
-//            userLocation: Binding.constant(
-//                Location(
-//                    coordinate: CLLocationCoordinate2D(
-//                        latitude: 40.7128,
-//                        longitude: -74.0060
-//                    )
-//                )
-//            ),
-//            favouriteIds: Binding.constant([1, 2, 3, 4])
-//        )
-//    )
-// }
-
-// #Preview {
-//    PokemonCell(viewModel: PokemonsViewModel(pokemonService: MocA), pokemon: <#T##PokemonDetail#>)
-// }
+#Preview {
+    PokemonCell(
+        pokemon: PokemonDetail(
+            id: 6,
+            height: 17,
+            weight: 905,
+            baseExperience: 10,
+            types: [PokemonTypes(type: SpecificType(name: "fire"))],
+            sprites: Sprites(
+                frontDefault: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+                other: nil
+            ),
+            name: "Charizard"
+        )
+    )
+    .environmentObject(AllPokemonViewModel(pokemonService: PokemonService(apiManager: APICommunication())))
+}

@@ -7,14 +7,15 @@
 
 import SwiftUI
 
-struct FilterView: View {
-    @StateObject var viewModel: FilterViewModel
+struct FilterView<FilterViewData: FilterViewConfigurable>: View {
+    var config: FilterViewData
+    @State var showAllGeneration = false
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             background
             settingButtons
-                .sheet(isPresented: $viewModel.showAllGeneration) {
+                .sheet(isPresented: $showAllGeneration) {
                     generationMenu
                 }
                 .padding(.trailing, 26)
@@ -29,15 +30,15 @@ private extension FilterView {
             .opacity(0.6)
             .ignoresSafeArea()
             .onTapGesture {
-                viewModel.close()
+                config.responseHandler(.close)
             }
     }
 
     var settingButtons: some View {
         VStack(alignment: .trailing) {
             Button {
-                viewModel.favouriteSelected()
-                viewModel.close()
+                config.responseHandler(.favouriteSelected)
+                config.responseHandler(.close)
             } label: {
                 CapsuleButton(
                     labelText: L.Settings.favouritePokemon,
@@ -45,7 +46,7 @@ private extension FilterView {
                 )
             }
             Button {
-                viewModel.showAll()
+                config.responseHandler(.showAll)
             } label: {
                 CapsuleButton(
                     labelText: L.Settings.allType,
@@ -53,7 +54,7 @@ private extension FilterView {
                 )
             }
             Button {
-                viewModel.showAllGeneration.toggle()
+                showAllGeneration.toggle()
             } label: {
                 CapsuleButton(
                     labelText: L.Settings.allGen,
@@ -61,7 +62,7 @@ private extension FilterView {
                 )
             }
             Button {
-                viewModel.close()
+                config.responseHandler(.close)
             } label: {
                 AssetsImages.close
                     .padding(.top, 10)
@@ -103,8 +104,8 @@ private extension FilterView {
                         .foregroundColor(PokedexColors.dark)
                 }
                 .onTapGesture {
-                    viewModel.showAllGeneration.toggle()
-                    viewModel.generationSelected(generation.index)
+                    showAllGeneration.toggle()
+                    config.responseHandler(.generationSelected(generationId: generation.index))
                 }
                 .shadow(radius: 20)
             }
@@ -115,11 +116,19 @@ private extension FilterView {
 
 #Preview {
     FilterView(
-        viewModel: FilterViewModel(
-            close: {},
-            generationSelected: { _ in },
-            favouriteSelected: {},
-            showAll: {}
-        )
+        config: FilterViewConfiguration(responseHandler: { _ in })
     )
+}
+
+enum FilterAction {
+    case close, favouriteSelected, showAll
+    case generationSelected(generationId : Int)
+}
+
+protocol FilterViewConfigurable {
+    var responseHandler: (FilterAction) -> Void { get set }
+}
+
+struct FilterViewConfiguration: FilterViewConfigurable {
+    var responseHandler: (FilterAction) -> Void
 }

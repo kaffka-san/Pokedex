@@ -39,7 +39,9 @@ extension ActivityIndicatorView {
 
     func stopAnimating() {
         isVisible = false
-        activityIndicator.stopAnimating()
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+        }
     }
 
     var isAnimating: Bool {

@@ -6,73 +6,17 @@
 //
 
 import Foundation
-/*
- enum RequestType: CaseIterable, Codable {
-     case test, agreements, authorization, chat, consultation, dashboard, forms, forum, knowledgebase, goals, lessons, medicalLog, myMeals, notifications, onboarding, patient, progress, recipes, therapist, tutorials, units, utilities, tips, video, consents, doctor, weeklyGoal, feedback, consent
 
-     var title: String {
-         switch self {
-         case .doctor:
-             return "Doctor"
-         case .video:
-             return "Video"
-         case .test:
-             return "Test"
-         case .agreements:
-             return "Agreements"
-         case .authorization:
-             return "Authorization"
-         case .chat:
-             return "Chat"
-         case .consultation:
-             return "Consultation"
-         case .dashboard:
-             return "Dashboard"
-         case .forms:
-             return "Forms"
-         case .forum:
-             return "Forum"
-         case .knowledgebase:
-             return "Knowledgebase"
-         case .goals:
-             return "Goals"
-         case .lessons:
-             return "Lessons"
-         case .medicalLog:
-             return "Medical log"
-         case .myMeals:
-             return "MyMeals"
-         case .notifications:
-             return "Notification"
-         case .onboarding:
-             return "Onboarding"
-         case .patient:
-             return "Patient"
-         case .progress:
-             return "Progress"
-         case .recipes:
-             return "Recipes"
-         case .therapist:
-             return "Therapist"
-         case .tutorials:
-             return "Tutorial"
-         case .units:
-             return "Units"
-         case .utilities:
-             return "Utilities"
-         case .tips:
-             return "Tips"
-         case .consents:
-             return "Consents"
-         case .weeklyGoal:
-             return "WeeklyGoals"
-         case .feedback:
-             return "Feedback"
-         case .consent:
-             return "Consent"
-         }
-     }
- }*/
+enum RequestType: CaseIterable, Codable {
+    case pokemon
+
+    var title: String {
+        switch self {
+        case .pokemon:
+            return "Pokemon"
+        }
+    }
+}
 
 protocol APIConvertible {
     var path: String { get }
@@ -82,7 +26,7 @@ protocol APIConvertible {
     var httpBody: Data? { get }
     var apiVersion: ApiVersion { get }
     var urlRequest: URLRequest? { get }
-    // var requestType: RequestType? { get }
+    var requestType: RequestType? { get }
     func createUrlRequest() throws -> URLRequest
 }
 
