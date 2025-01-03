@@ -41,7 +41,18 @@ struct PokemonDetail: Decodable {
         case sprites
     }
 
-    init(id: Int = 0, height: Int = 0, weight: Int = 0, baseExperience: Int? = nil, types: [PokemonTypes] = [], sprites: Sprites = Sprites(frontDefault: "", other: nil), name: String = "") {
+    init(
+        id: Int = 0,
+        height: Int = 0,
+        weight: Int = 0,
+        baseExperience: Int? = nil,
+        types: [PokemonTypes] = [],
+        sprites: Sprites = Sprites(
+            frontDefault: "",
+            other: nil
+        ),
+        name: String = ""
+    ) {
         self.id = id
         self.height = height
         self.weight = weight

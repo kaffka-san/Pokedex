@@ -1,11 +1,17 @@
 //
-//  Ext+CLLocationCoordinate2D.swift
+//  CLLocationCoordinate2D+Ext.swift
 //  Pokedex
 //
-//  Created by Anastasia Lenina on 10.11.2023.
+//  Created by Anastasia Lenina on 03.01.2025.
 //
 
-import CoreLocation
+import MapKit
+
+extension CLLocationCoordinate2D: @retroactive Equatable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
+}
 
 extension CLLocationCoordinate2D {
     /// Generates a random location within a specified radius of the current location.

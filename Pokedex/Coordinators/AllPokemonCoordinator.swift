@@ -21,10 +21,10 @@ extension AllPokemonCoordinator {
         let viewModel = AppDIContainer.resolveObject(AllPokemonViewModel.self)
         viewModel.coordinator = self
 
-        let vc = AllPokemonViewController()
-        vc.viewModel = viewModel
+        let viewController = AllPokemonViewController()
+        viewController.viewModel = viewModel
 
-        let navVc = UINavigationController(rootViewController: vc)
+        let navVc = UINavigationController(rootViewController: viewController)
         navigationController = navVc
         window.rootViewController = navVc
     }
@@ -34,7 +34,6 @@ extension AllPokemonCoordinator: AllPokemonFlow {
     func showDetail(pokemon: PokemonDetailConfig) {
         let coordinator = PokemonDetailCoordinator(navigationController: navigationController, pokemon: pokemon)
         coordinate(to: coordinator)
-        print("show detail coordinator")
     }
 }
 

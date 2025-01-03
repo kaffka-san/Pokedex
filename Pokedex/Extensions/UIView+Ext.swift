@@ -9,7 +9,7 @@ import UIKit
 
 extension UIView {
     enum FadeStyle {
-        case `in`, out, inOut
+        case `in`, out, inOut // swiftlint:disable:this identifier_name
     }
 
     func fade(_ style: FadeStyle, duration: Double = 0.2, finished: (() -> Void)? = nil) {

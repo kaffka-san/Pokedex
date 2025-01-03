@@ -46,25 +46,11 @@ private extension PokemonDetailViewController {
     func prepareViewModel() {
         bindCloseView()
         bindIsLoading()
-        bindDataLoaded()
     }
 
     func bindIsLoading() {
         viewModel.$isLoading
             .assign(to: \.isAnimating, on: activityIndicator)
-            .store(in: &disposeBag)
-    }
-
-    func bindDataLoaded() {
-        viewModel.dataLoaded
-            .sink { [weak self] result in
-                switch result {
-                case .success:
-                    break
-                case let .failure(error):
-                    self?.presentErrorAlert(error: error)
-                }
-            }
             .store(in: &disposeBag)
     }
 

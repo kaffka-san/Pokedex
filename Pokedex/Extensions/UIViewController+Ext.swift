@@ -17,31 +17,31 @@ extension UIViewController {
     }
 }
 
-extension UIViewController {
-    func presentErrorAlert(error _: NetworkingError) {
-        let title = LocalizedString.InternetConnection.connectionError
-        let message = LocalizedString.InternetConnection.title + " " + LocalizedString.InternetConnection.description
+// extension UIViewController {
+//    func presentErrorAlert(error _: NetworkingError) {
+//        let title = LocalizedString.InternetConnection.connectionError
+//        let message = LocalizedString.InternetConnection.title + " " + LocalizedString.InternetConnection.description
+//
+//        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//
+//        alert.alertDesign(withTitle: title, message: message)
+//
+//        alert.addAction(UIAlertAction(title: LocalizedString.cancel, style: .cancel, handler: nil))
+//
+//        DispatchQueue.main.async {
+//            self.topMostPresentingController.present(alert, animated: true)
+//        }
+//    }
+// }
 
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        alert.alertDesign(withTitle: title, message: message)
-
-        alert.addAction(UIAlertAction(title: LocalizedString.cancel, style: .cancel, handler: nil))
-
-        DispatchQueue.main.async {
-            self.topMostPresentingController.present(alert, animated: true)
-        }
-    }
-}
-
-extension UIViewController {
-    var topMostPresentingController: UIViewController {
-        var presentingController = presentedViewController ?? self
-        while presentingController.presentedViewController != nil { presentingController = presentingController.presentedViewController! }
-
-        return presentingController
-    }
-}
+// extension UIViewController {
+//    var topMostPresentingController: UIViewController {
+//        var presentingController = presentedViewController ?? self
+//        while presentingController.presentedViewController != nil { presentingController = presentingController.presentedViewController! }
+//
+//        return presentingController
+//    }
+// }
 
 extension UIViewController {
     var activityIndicator: ActivityIndicatorView {

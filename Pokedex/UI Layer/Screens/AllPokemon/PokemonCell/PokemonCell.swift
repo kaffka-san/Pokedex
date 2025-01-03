@@ -20,9 +20,6 @@ struct PokemonCell: View {
         .onTapGesture {
             viewModel.goToDetailView(for: pokemon)
         }
-        .onDisappear {
-            viewModel.onDisappear()
-        }
         .frame(height: 110)
     }
 }
@@ -116,5 +113,5 @@ private extension PokemonCell {
         )
     )
     .frame(width: 160)
-    .environmentObject(AllPokemonViewModel(pokemonService: PokemonService(apiManager: APICommunication())))
+    .environmentObject(AllPokemonViewModel(pokemonService: PokemonService(apiManager: APICommunication(reachability: ReachabilityManager()))))
 }

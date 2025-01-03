@@ -85,10 +85,10 @@ protocol PokedexAPIRepresentable {
 }
 
 enum ApiVersion: String, Codable {
-    case v1
-    case v2
+    case version1 = "v1"
+    case version2 = "v2"
 
     static var defaultVersion: ApiVersion {
-        return .v2
+        .version2
     }
 }

@@ -38,10 +38,7 @@ struct ScrollOffsetPreferenceKey: PreferenceKey {
 }
 
 extension View {
-    func trackScrollOffset(
-        coordinateSpace: String,
-        offset: Binding<CGFloat>
-    ) -> some View {
+    func trackScrollOffset(coordinateSpace: String, offset: Binding<CGFloat>) -> some View {
         modifier(ScrollOffsetModifier(coordinateSpace: coordinateSpace, offset: offset))
     }
 }

@@ -11,24 +11,29 @@ import SwiftUI
 struct PokemonDetailView: View {
     private let offsetMinimum = 0.0
     private let coordinateSpaceName = Constants.scrollName
-    
-    var isLandscape: Bool {
-        UIDevice.current.orientation.isLandscape
-    }
-    
+
     @ObservedObject var viewModel: PokemonDetailViewModel
     @State private var isLargeTitle = true
     @State private var scrollOffset: CGFloat = 0
-    
+
     var body: some View {
         scrollView
-            .coordinateSpace(name: coordinateSpaceName)
             .onAppear {
                 viewModel.getFavouritePokemons()
                 viewModel.loadPokemonSpecies()
             }
+            .onChange(of: viewModel.locationManager.location) {
+                viewModel.configureMap()
+            }
             .refreshable {
-                viewModel.refresh()
+                viewModel.loadPokemonSpecies()
+            }
+            .task {
+                try? await viewModel.locationManager.requestUserAuthorization()
+                try? await viewModel.locationManager.startCurrentLocationUpdates()
+            }
+            .alert(item: $viewModel.alertConfig) { item in
+                Alert(title: Text(item.title), message: Text(item.message))
             }
     }
 }
@@ -54,13 +59,13 @@ private extension PokemonDetailView {
             }
         }
     }
-    
+
     var titleText: some View {
         Text(viewModel.pokemon?.name.capitalized ?? "")
             .foregroundStyle(.white)
             .padding(.horizontal, 20)
     }
-    
+
     @ViewBuilder
     func largeTitle() -> some View {
         titleText
@@ -79,41 +84,40 @@ private extension PokemonDetailView {
                 }
             }
     }
-    
-    //    var mapView: some View {
-    //        VStackLayout(alignment: .leading) {
-    //            HeadLineLabel(text: L.PokemonDetail.location)
-    //                .padding(.top, 26)
-    //            Map(
-    //                coordinateRegion: $viewModel.region,
-    //                showsUserLocation: true,
-    //                annotationItems: viewModel.pokemonsLocations
-    //            ) { location in
-    //                MapAnnotation(coordinate: location.coordinate) {
-    //                    LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
-    //                        if let image = state.image {
-    //                            image
-    //                                .resizable()
-    //                                .scaledToFit()
-    //                        } else {}
-    //                    }
-    //                    .frame(width: 40, height: 40)
-    //                    .opacity(viewModel.pokemonPinsOpacity)
-    //                    .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
-    //                    .onAppear {
-    //                        viewModel.pokemonPinsOpacity = 1.0
-    //                    }
-    //                }
-    //            }
-    //            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-    //            .frame(height: 150)
-    //            .cornerRadius(20)
-    //            .padding(.vertical, 20)
-    //
-    //        }
-    //        .frame(maxWidth: .infinity)
-    //        .padding(.horizontal, isLandscape() ? 100 : 26)
-    //    }
+
+    var mapView: some View {
+        VStackLayout(alignment: .leading) {
+            Map(position: $viewModel.region) {
+                UserAnnotation()
+                ForEach(viewModel.pokemonsLocations) { location in
+                    Annotation("", coordinate: location.coordinate) {
+                        CacheAsyncImage(url: URL(string: viewModel.pokemon?.imgUrl ?? "")) { phase in
+                            switch phase {
+                            case let .success(image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                            case .failure, .empty:
+                                Color.clear
+                            }
+                        }
+                        .frame(width: 40, height: 40)
+                        .opacity(viewModel.pokemonPinsOpacity)
+                        .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
+                        .onAppear {
+                            viewModel.pokemonPinsOpacity = 1.0
+                        }
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 250)
+            .cornerRadius(20)
+            .padding(.bottom, 20)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, isLandscape ? 100 : 26)
+    }
 }
 
 // MARK: - Custom navigation Bar
@@ -130,7 +134,7 @@ private extension PokemonDetailView {
         .padding(.bottom)
         .padding(.top, isLandscape ? 16 : 0)
     }
-    
+
     @ViewBuilder
     func smallTitle() -> some View {
         titleText
@@ -139,7 +143,7 @@ private extension PokemonDetailView {
             .padding(.top, 0)
             .opacity(isLargeTitle ? 0 : 1)
     }
-    
+
     var loveButton: some View {
         Button {
             viewModel.toggleFavourite()
@@ -153,13 +157,13 @@ private extension PokemonDetailView {
                         .resizable()
                 }
             }
-            
+
             .frame(width: 20, height: 20)
             .scaledToFit()
         }
         .tint(.white)
     }
-    
+
     var backButton: some View {
         Button {
             viewModel.goBack()
@@ -183,7 +187,7 @@ private extension PokemonDetailView {
         }
         .sensoryFeedback(.impact, trigger: isLargeTitle)
     }
-    
+
     @ViewBuilder
     func pokemonTypes() -> some View {
         if let pokemon = viewModel.pokemon {
@@ -201,7 +205,7 @@ private extension PokemonDetailView {
             .padding(.leading, isLandscape ? 46 : 20)
         }
     }
-    
+
     var pokemonId: some View {
         Text(viewModel.idFormatted)
             .font(PokedexFonts.headline1)
@@ -218,10 +222,7 @@ private extension PokemonDetailView {
             ShadowPokemonImage(url: viewModel.previousImageUrl)
                 .scaleEffect(0.9)
             pokemonImage()
-                .frame(width: isLandscape ? UIScreen.main.bounds.width * 0.3 : UIScreen.main.bounds.width * 0.55)
-                .onTapGesture {
-                    viewModel.playSound()
-                }
+                .onTapGesture { viewModel.playSound() }
             ShadowPokemonImage(url: viewModel.nextImageUrl)
                 .scaleEffect(0.9)
         }
@@ -230,7 +231,7 @@ private extension PokemonDetailView {
         .offset(y: isLandscape ? 40 : 35)
         .zIndex(5)
     }
-    
+
     @ViewBuilder
     func pokemonImage() -> some View {
         if let pokemon = viewModel.pokemon {
@@ -250,6 +251,7 @@ private extension PokemonDetailView {
                     }
                 }
             }
+            .frame(width: isLandscape ? UIScreen.main.bounds.width * 0.3 : UIScreen.main.bounds.width * 0.55)
         }
     }
 }
@@ -261,20 +263,20 @@ private extension PokemonDetailView {
             description
             sizeCard
             resolveStatistics()
-            Rectangle()
-                .fill(.indigo)
-                .frame(height: 160)
-                .padding(.horizontal, 20)
-            // mapView
-            // }
+            mapView
         }
         .padding(.bottom, 40)
         .background {
-            Color(.white).cornerRadius(20)
-                .shadow(radius: 10)
+            shadowedWhiteCard()
         }
     }
-    
+
+    @ViewBuilder
+    func shadowedWhiteCard() -> some View {
+        Color(.white).cornerRadius(20)
+            .shadow(radius: 10)
+    }
+
     @ViewBuilder
     func resolveStatistics() -> some View {
         if isLandscape {
@@ -283,7 +285,7 @@ private extension PokemonDetailView {
             verticalStatistics()
         }
     }
-    
+
     var description: some View {
         Text(viewModel.pokemonSpecies.description)
             .font(PokedexFonts.body3)
@@ -294,7 +296,7 @@ private extension PokemonDetailView {
             .lineSpacing(8)
             .hAlign(.leading)
     }
-    
+
     var sizeCard: some View {
         HStack(spacing: 45) {
             VerticalLabel(
@@ -317,7 +319,7 @@ private extension PokemonDetailView {
         .padding(.top, 20)
         .padding(.horizontal, isLandscape ? 100 : 20)
     }
-    
+
     @ViewBuilder
     func verticalStatistics() -> some View {
         VStack(spacing: 10) {
@@ -329,7 +331,7 @@ private extension PokemonDetailView {
         }
         .padding(20)
     }
-    
+
     @ViewBuilder
     func sectionStatistics(for section: PokemonDetailSection) -> some View {
         ForEach(section.items, id: \.id) { item in
@@ -341,7 +343,7 @@ private extension PokemonDetailView {
             }
         }
     }
-    
+
     @ViewBuilder
     func defaultStatistics(for item: PokemonDetailItem) -> some View {
         if let pokemon = viewModel.pokemon {
@@ -357,7 +359,7 @@ private extension PokemonDetailView {
             .hAlign(.leading)
         }
     }
-    
+
     var horizontalStatics: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 250))], spacing: 10) {
             ForEach(PokemonDetailSection.allCases) { section in
@@ -400,7 +402,7 @@ private extension PokemonDetailView {
         }
         .hAlign(.leading)
     }
-    
+
     @ViewBuilder
     func genderTitle() -> some View {
         Text(L.PokemonDetail.gender)
@@ -408,7 +410,7 @@ private extension PokemonDetailView {
             .foregroundColor(PokedexColors.lightGray)
             .frame(width: 100, alignment: .leading)
     }
-    
+
     @ViewBuilder
     func genderlessView() -> some View {
         Text(viewModel.pokemonSpecies.gender.genderless)
@@ -416,20 +418,20 @@ private extension PokemonDetailView {
             .foregroundColor(PokedexColors.dark)
             .frame(alignment: .leading)
     }
-    
+
     @ViewBuilder
     func maleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.male, image: .male)
             .font(PokedexFonts.body3)
     }
-    
+
     @ViewBuilder
     func femaleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.female, image: .female)
             .font(PokedexFonts.body3)
             .foregroundColor(PokedexColors.dark)
     }
-    
+
     @ViewBuilder
     func maleFemaleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.male, image: .male)
@@ -446,15 +448,18 @@ private extension PokemonDetailView {
     enum AnimationNameSpace: String {
         case title
     }
+
+    var isLandscape: Bool {
+        UIDevice.current.orientation.isLandscape
+    }
 }
 
 struct PokemonDetailView_Previews: PreviewProvider {
     static var viewModel = PokemonDetailViewModel(
-        pokemonService: PokemonService(
-            apiManager: MockAPIManager()
-        )
+        locationManager: LocationManager(),
+        pokemonService: PokemonService(apiManager: MockAPIManager())
     )
-    
+
     static var previews: some View {
         PokemonDetailView(viewModel: viewModel)
             .onAppear {

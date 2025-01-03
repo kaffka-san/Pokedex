@@ -18,7 +18,7 @@ final class MockAPIManager: APIManager {
 
     func request<T: Decodable>(request: APIConvertible) async throws -> T {
         guard resultType == .success else {
-            throw NetworkingError.apiError
+            throw NetworkingError.invalidURL
         }
 
         do {
@@ -32,6 +32,6 @@ final class MockAPIManager: APIManager {
     }
 
     func downloadFile(from _: URL) async throws -> (file: Data, title: String) {
-        throw NetworkingError.noData
+        throw NetworkingError.invalidData
     }
 }

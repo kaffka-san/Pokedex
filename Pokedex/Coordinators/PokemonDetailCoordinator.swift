@@ -21,8 +21,8 @@ extension PokemonDetailCoordinator {
     func start() {
         let viewModel = AppDIContainer.resolveObject(PokemonDetailViewModel.self)
         viewModel.pokemon = pokemon
-        let vc = PokemonDetailViewController()
-        vc.viewModel = viewModel
-        navigationController?.show(vc, sender: nil)
+        let viewController = PokemonDetailViewController()
+        viewController.viewModel = viewModel
+        navigationController?.show(viewController, sender: nil)
     }
 }

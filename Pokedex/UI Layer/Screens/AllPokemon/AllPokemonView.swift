@@ -12,15 +12,11 @@ struct AllPokemonView: View {
 
     var body: some View {
         content
-            .onAppear {
-                viewModel.requestLocation()
-                viewModel.loadPokemons()
-            }
+            .onAppear { viewModel.loadPokemons() }
             .refreshable { viewModel.refresh() }
-            .onChange(of: viewModel.favouriteIds) {
-                if viewModel.showingFavourites {
-                    viewModel.getFavourite()
-                }
+            .onChange(of: viewModel.favouriteIds) { viewModel.getFavourite() }
+            .alert(item: $viewModel.alertConfig) { item in
+                Alert(title: Text(item.title), message: Text(item.message))
             }
     }
 }

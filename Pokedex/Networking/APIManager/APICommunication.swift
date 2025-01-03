@@ -9,11 +9,22 @@ import Foundation
 import UIKit
 
 final class APICommunication: APIManager {
+    private let reachability: ReachabilityManagerProtocol
+
+    init(reachability: ReachabilityManagerProtocol) {
+        self.reachability = reachability
+    }
+
     func request<T: Decodable>(request: APIConvertible) async throws -> T {
         // Begin background task
         let backgroundTaskID = UUID().uuidString
         let backgroundTask = await UIApplication.shared.beginBackgroundTask(withName: backgroundTaskID) {
             print("Background task expired...")
+        }
+
+        guard isNetworkAvailable else {
+            print("❌ NO CONNECTION")
+            throw NetworkingError.networkConnection
         }
 
         do {
@@ -47,4 +58,12 @@ final class APICommunication: APIManager {
         // Customize if needed
         return decoder
     }
+
+    private var isNetworkAvailable: Bool {
+        !reachability.hasNoConnection
+    }
+}
+
+protocol ReachabilityManagerProtocol {
+    var hasNoConnection: Bool { get }
 }

@@ -8,7 +8,7 @@
 import Foundation
 import Swinject
 
-final class AppDIContainer {
+final class AppDIContainer { // swiftlint:disable:this convenience_type
     static let assembler = Assembler()
 
     static func resolveObject<T>(_ type: T.Type) -> T {

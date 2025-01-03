@@ -20,8 +20,8 @@ final class DIAssembly: Assembly {
 // MARK: API Manager
 private extension DIAssembly {
     func registerAPIManager(container: Container) {
-        container.register(APIManager.self) { _ in
-            APICommunication()
+        container.register(APIManager.self) { resolver in
+            APICommunication(reachability: resolver.resolve(ReachabilityManagerProtocol.self)!)
         }
     }
 }
@@ -38,11 +38,15 @@ private extension DIAssembly {
 
 // MARK: - Managers
 private extension DIAssembly {
-    func registerManagers(container _: Container) {
-        // Notification Manager
-//        container.register(NotificationManagerProtocol.self) { resolver in
-//            NotificationManager()
-//        }
+    func registerManagers(container: Container) {
+        // LocationManager
+        container.register(LocationManagerProtocol.self) { _ in
+            LocationManager()
+        }
+
+        container.register(ReachabilityManagerProtocol.self) { _ in
+            ReachabilityManager()
+        }
     }
 }
 
@@ -56,7 +60,7 @@ private extension DIAssembly {
 
         // PokemonDetailViewModel
         container.register(PokemonDetailViewModel.self) { resolver in
-            PokemonDetailViewModel(pokemonService: resolver.resolve(PokemonServiceProtocol.self)!)
+            PokemonDetailViewModel(locationManager: resolver.resolve(LocationManagerProtocol.self)!, pokemonService: resolver.resolve(PokemonServiceProtocol.self)!)
         }
     }
 }

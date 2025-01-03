@@ -16,62 +16,34 @@ final class PokemonDetailViewModel: ObservableObject {
     private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
     private let closeSubject = PassthroughSubject<Void, Never>()
     private var player: AVAudioPlayer?
-
     var pokemon: PokemonDetailConfig?
-    // var region: MKCoordinateRegion?
-    // var pokemonsLocations = [Location]()
+
+    @Published var locationManager: LocationManagerProtocol
+    @Published var region = MapCameraPosition.region(MKCoordinateRegion())
+    @Published var pokemonsLocations = [Location]()
     @Published var pokemonInfo = [PokemonSection]()
     @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
+    @Published var isFavourite = false
+    @Published var pokemonPinsOpacity = 0.0
+    @Published var favouriteIds = Set<Int>()
+    @Published private(set) var isLoading = false
     @Published var scrollPosition: CGPoint = .zero {
         didSet {
             print(scrollPosition)
         }
     }
 
-    @Published var isFavourite = false
-    @Published var pokemonPinsOpacity = 0.0
-
-    // @Binding var userLocation: Location
-    @Published var favouriteIds = Set<Int>()
-    @Published private(set) var isLoading = false
-
-    //    init(
-    //        coordinator: PokemonsCoordinator?,
-    //        pokemonsAPI: PokemonsAPIProtocol,
-    //        pokemon: PokemonDetailConfig,
-    //        userLocation: Binding<Location>,
-    //        favouriteIds: Binding<Set<Int>>
-    //    ) {
-    //        self.coordinator = coordinator
-    //        self.pokemonsAPI = pokemonsAPI
-    //        self.pokemon = pokemon
-    //        _userLocation = userLocation
-    //        _favouriteIds = favouriteIds
-    //        isFavourite = favouriteIds.wrappedValue.contains(pokemon.id)
-    //        region = MKCoordinateRegion(
-    //            center: userLocation.coordinate.wrappedValue,
-    //            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-    //        )
-    //        loadPokemonSpecies()
-    //        loadNextPokemon()
-    //        loadPreviousPokemon()
-    //        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
-    //    }
-
-    init(pokemonService: PokemonServiceProtocol) {
+    init(locationManager: LocationManagerProtocol, pokemonService: PokemonServiceProtocol) {
+        self.locationManager = locationManager
         self.pokemonService = pokemonService
     }
 }
 
 // MARK: - Public properties
 extension PokemonDetailViewModel {
-    var dataLoaded: AnyPublisher<Result<Void, NetworkingError>, Never> {
-        dataLoadedSubject.eraseToAnyPublisher()
-    }
-
     var close: AnyPublisher<Void, Never> {
         closeSubject.eraseToAnyPublisher()
     }
@@ -87,6 +59,15 @@ extension PokemonDetailViewModel {
 
 // MARK: - Public methods
 extension PokemonDetailViewModel {
+    func configureMap() {
+        guard let coordinate = locationManager.location?.coordinate else { return }
+        region = MapCameraPosition.region(MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        ))
+        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
+    }
+
     func goBack() {
         closeSubject.send()
     }
@@ -131,55 +112,11 @@ extension PokemonDetailViewModel {
                 loadNextPokemon()
                 loadPreviousPokemon()
                 isLoading = false
-            } catch let error as APIError {
+            } catch let error as NetworkingError {
                 showAlert(for: error)
                 isLoading = false
             }
         }
-    }
-
-    @MainActor
-    func refresh() {
-        loadPokemonSpecies()
-//        loadNextPokemon()
-//        loadPreviousPokemon()
-    }
-
-    func loadNextPokemon() {
-        guard let pokemon = pokemon else { return }
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id + 1)")
-                await self.updateNext(pokemonDetail: pokemonDetail)
-            } catch let error as APIError {
-                await MainActor.run {
-                    self.showAlert(for: error)
-                }
-            }
-        }
-    }
-
-    func loadPreviousPokemon() {
-        guard let pokemon = pokemon else { return }
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id - 1)")
-                await self.updatePrevious(pokemonDetail: pokemonDetail)
-            } catch let error as APIError {
-                await MainActor.run {
-                    self.showAlert(for: error)
-                }
-            }
-        }
-    }
-
-    func showAlert(for error: APIError) {
-        alertConfig = AlertConfig(
-            title: error.localizedDescription.title,
-            message: error.localizedDescription.message
-        )
     }
 
     func playSound() {
@@ -195,19 +132,59 @@ extension PokemonDetailViewModel {
             } catch {}
         }
     }
+}
+
+// MARK: - Private methods
+private extension PokemonDetailViewModel {
+    func showAlert(for error: NetworkingError) {
+        alertConfig = AlertConfig(
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
+        )
+    }
+
+    func loadNextPokemon() {
+        guard let pokemon = pokemon else { return }
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id + 1)")
+                await self.updateNext(pokemonDetail: pokemonDetail)
+            } catch let error as NetworkingError {
+                await MainActor.run {
+                    self.showAlert(for: error)
+                }
+            }
+        }
+    }
+
+    func loadPreviousPokemon() {
+        guard let pokemon = pokemon else { return }
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id - 1)")
+                await self.updatePrevious(pokemonDetail: pokemonDetail)
+            } catch let error as NetworkingError {
+                await MainActor.run {
+                    self.showAlert(for: error)
+                }
+            }
+        }
+    }
 
     @MainActor
-    private func updatePrevious(pokemonDetail: PokemonDetail) {
+    func updatePrevious(pokemonDetail: PokemonDetail) {
         previousImageUrl = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
     }
 
     @MainActor
-    private func updateNext(pokemonDetail: PokemonDetail) {
+    func updateNext(pokemonDetail: PokemonDetail) {
         nextImageUrl = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
     }
 
     @MainActor
-    private func updateSpecies(pokemonDetail: PokemonSpecies) {
+    func updateSpecies(pokemonDetail: PokemonSpecies) {
         guard let pokemon = pokemon else { return }
         pokemonSpecies = PokemonSpeciesConfig(
             description: findLastOccurrence(
@@ -236,10 +213,7 @@ extension PokemonDetailViewModel {
         }
     }
 
-    func findLastOccurrence(
-        of name: String,
-        in array: [String]
-    ) -> String {
+    func findLastOccurrence(of name: String, in array: [String]) -> String {
         let uppercasedName = name.uppercased()
         let filteredArray = array.filter { $0.contains(uppercasedName) }
         return removeNewLines(from: filteredArray.last ?? L.PokemonDetail.defaultString)
@@ -258,138 +232,11 @@ extension PokemonDetailViewModel {
         return "\(baseSteps * (counter + 1)) \(L.PokemonDetail.steps)"
     }
 
-    //    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
-    //        // Generate a random number of locations to create
-    //        let numberOfLocations = Int.random(in: 1...4)
-    //        let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
-    //        return locations
-    //    }
-}
-
-enum PokemonDetailSection: CaseIterable, Identifiable {
-    case breeding
-    case training
-    case location
-
-    var title: String {
-        switch self {
-        case .breeding: return L.PokemonDetail.breeding
-        case .training: return L.PokemonDetail.training
-        case .location: return L.PokemonDetail.location
-        }
-    }
-
-    var id: String { title }
-
-    var items: [PokemonDetailItem] {
-        switch self {
-        case .breeding: return PokemonDetailBreeding.allCases
-        case .training: return PokemonDetailTraining.allCases
-        case .location: return PokemonDetailLocation.allCases
-        }
-    }
-}
-
-protocol PokemonDetailItem {
-    var title: String { get }
-    func description(using pokemon: PokemonDetailConfig, species: PokemonSpeciesConfig) -> String
-    var id: String { get }
-    var itemType: ItemType { get }
-}
-
-enum ItemType: Equatable {
-    case breeding(PokemonDetailBreeding)
-    case training(PokemonDetailTraining)
-    case location(PokemonDetailLocation)
-
-    static func == (lhs: ItemType, rhs: ItemType) -> Bool {
-        switch (lhs, rhs) {
-        case let (.breeding(lhsItem), .breeding(rhsItem)):
-            return lhsItem.id == rhsItem.id
-        case let (.training(lhsItem), .training(rhsItem)):
-            return lhsItem.id == rhsItem.id
-        case let (.location(lhsItem), .location(rhsItem)):
-            return lhsItem.id == rhsItem.id
-        default:
-            return false
-        }
-    }
-}
-
-enum PokemonDetailBreeding: Identifiable, CaseIterable, PokemonDetailItem {
-    case gender
-    case eggGroup
-    case eggCycle
-
-    var title: String {
-        switch self {
-        case .gender: return L.PokemonDetail.gender
-        case .eggGroup: return L.PokemonDetail.eggGroups
-        case .eggCycle: return L.PokemonDetail.eggCylce
-        }
-    }
-
-    var itemType: ItemType {
-        .breeding(self)
-    }
-
-    var id: String { title }
-
-    func description(using _: PokemonDetailConfig, species: PokemonSpeciesConfig) -> String {
-        switch self {
-        case .gender:
-            let gender = species.gender
-            switch gender.genderCase {
-            case .genderless: return "Genderless"
-            case .male: return "♂️ \(gender.male)"
-            case .female: return "♀️ \(gender.female)"
-            case .maleFemale: return "♂️ \(gender.male) ♀️ \(gender.female)"
-            }
-        case .eggGroup:
-            return species.eggGroups.first ?? ""
-        case .eggCycle:
-            return species.hatchCounter
-        }
-    }
-}
-
-enum PokemonDetailTraining: String, CaseIterable, PokemonDetailItem {
-    case baseExp
-
-    var title: String {
-        switch self {
-        case .baseExp: return L.PokemonDetail.experience
-        }
-    }
-
-    var id: String {
-        title
-    }
-
-    var itemType: ItemType {
-        .training(self)
-    }
-
-    func description(using pokemon: PokemonDetailConfig, species _: PokemonSpeciesConfig) -> String {
-        pokemon.baseExperience
-    }
-}
-
-enum PokemonDetailLocation: CaseIterable, PokemonDetailItem {
-    // Add cases for location-related details if needed
-    var title: String {
-        ""
-    }
-
-    var id: String {
-        title
-    }
-
-    var itemType: ItemType {
-        .location(self)
-    }
-
-    func description(using _: PokemonDetailConfig, species _: PokemonSpeciesConfig) -> String {
-        ""
+    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
+        guard let coordinate = locationManager.location?.coordinate else { return [] }
+        // Generate a random number of locations to create
+        let numberOfLocations = Int.random(in: 1...4)
+        let locations = (1...numberOfLocations).map { _ in Location(coordinate: coordinate.randomLocationWithin(radius: radius)) }
+        return locations
     }
 }

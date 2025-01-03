@@ -7,12 +7,13 @@
 
 import Foundation
 
-enum APIError: Error {
+enum NetworkingError: Error {
     case invalidURL
     case invalidResponse
     case invalidData
     case genericError
-    case unknown
+    case networkConnection
+    case unknown(_ error: Error)
 
     var localizedDescription: ErrorDescription {
         switch self {
@@ -24,6 +25,11 @@ enum APIError: Error {
             return ErrorDescription(L.Errors.invalidDataTile, L.Errors.invalidDataMessage)
         case .invalidResponse:
             return ErrorDescription(L.Errors.invalidResponseTile, L.Errors.invalidResponseMessage)
+        case .networkConnection:
+            return ErrorDescription(
+                LocalizedString.InternetConnection.connectionError,
+                LocalizedString.InternetConnection.title + " " + LocalizedString.InternetConnection.description
+            )
         case .unknown:
             return ErrorDescription(L.Errors.unknownTile, L.Errors.unknownMessage)
         }
@@ -37,5 +43,9 @@ enum APIError: Error {
             self.title = title
             self.message = message
         }
+    }
+
+    static func map(_ error: Error) -> NetworkingError {
+        (error as? NetworkingError) ?? .unknown(error)
     }
 }

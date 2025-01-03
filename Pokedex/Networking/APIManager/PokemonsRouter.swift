@@ -53,7 +53,7 @@ extension PokemonsRouter {
 
     func createUrlRequest() throws -> URLRequest {
         guard let urlRequest = urlRequest else {
-            throw NetworkingError.invalidUrlRequest
+            throw NetworkingError.invalidURL
         }
         return urlRequest
     }

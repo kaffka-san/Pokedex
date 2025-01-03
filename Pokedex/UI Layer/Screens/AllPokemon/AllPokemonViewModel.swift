@@ -10,10 +10,6 @@ import CoreLocation
 import Foundation
 
 final class AllPokemonViewModel: NSObject, ObservableObject {
-    // let locationManager = CLLocationManager()
-
-    private var task: Task<Void, Error>?
-    private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
     private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
     var coordinator: AllPokemonFlow?
 
@@ -26,35 +22,14 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
     @Published var showingFavourites = false
     @Published var userLocation = MockLocation.location
     @Published private var lastGenerationIndex = 0
-
     @Published var pokemons = [Pokemon]() {
         didSet {
             _ = pokemons.map { loadPokemon(for: $0) }
         }
     }
 
-    //    init(
-    //        coordinator: PokemonsCoordinator?,
-    //        pokemonsAPI: PokemonsAPIProtocol
-    //    ) {
-    //        self.coordinator = coordinator
-    //        self.pokemonsAPI = pokemonsAPI
-    //        super.init()
-    //        loadPokemons()
-    //        getFavouritePokemons()
-    //        locationManager.delegate = self
-    //        locationManager.startUpdatingLocation()
-    //    }
-
     init(pokemonService: PokemonServiceProtocol) {
         self.pokemonService = pokemonService
-    }
-}
-
-// MARK: - Public properties
-extension AllPokemonViewModel {
-    var dataLoaded: AnyPublisher<Result<Void, NetworkingError>, Never> {
-        dataLoadedSubject.eraseToAnyPublisher()
     }
 }
 
@@ -62,10 +37,7 @@ extension AllPokemonViewModel {
 extension AllPokemonViewModel {
     func getFavouritePokemonIds() {
         if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
-            if let decodedSet = try? JSONDecoder().decode(
-                Set<Int>.self,
-                from: decodedData
-            ) {
+            if let decodedSet = try? JSONDecoder().decode(Set<Int>.self, from: decodedData) {
                 favouriteIds = decodedSet
             }
         }
@@ -80,7 +52,7 @@ extension AllPokemonViewModel {
                 let pokemonsList = try await pokemonService.getPokemons(offset: 0)
                 isLoading = false
                 update(pokemonsList: pokemonsList)
-            } catch let error as APIError {
+            } catch let error as NetworkingError {
                 isLoading = false
                 showAlert(for: error)
             }
@@ -99,12 +71,13 @@ extension AllPokemonViewModel {
     }
 
     func getFavourite() {
-        showingFavourites = true
-        getFavouritePokemonIds()
-        pokemons = []
-        print("🤪 id fav \(favouriteIds)")
-        pokemons = favouriteIds.map { id in
-            Pokemon(name: "", url: "\(id)")
+        if showingFavourites {
+            showingFavourites = true
+            getFavouritePokemonIds()
+            pokemons = []
+            pokemons = favouriteIds.map { id in
+                Pokemon(name: "", url: "\(id)")
+            }
         }
     }
 
@@ -127,7 +100,7 @@ extension AllPokemonViewModel {
                 let pokemonsList = try await pokemonService.getPokemonForGeneration(generation: index)
                 self.updateGeneration(pokemonsList: pokemonsList)
                 isLoading = false
-            } catch let error as APIError {
+            } catch let error as NetworkingError {
                 isLoading = false
                 self.showAlert(for: error)
             }
@@ -147,7 +120,7 @@ extension AllPokemonViewModel {
                     self.isLoading = false
                     self.pokemons.append(contentsOf: pokemons.results)
 
-                } catch let error as APIError {
+                } catch let error as NetworkingError {
                     showAlert(for: error)
                     isLoading = false
                 }
@@ -155,26 +128,16 @@ extension AllPokemonViewModel {
         }
     }
 
-    func showAlert(for error: APIError) {
-        alertConfig = AlertConfig(
-            title: error.localizedDescription.title,
-            message: error.localizedDescription.message
-        )
-    }
-
     func loadPokemon(for pokemon: Pokemon) {
-        task = Task { [weak self] in
+        Task { [weak self] in
             guard let self else { return }
             do {
                 let pokemonDetail = try await pokemonService.getPokemonDetail(name: String(pokemon.id))
-                print("POKEMON DETAIL: \(pokemonDetail)")
-                print("POKEMON DETAIL sprites: \(pokemonDetail.sprites.frontDefault)")
-                print("POKEMON DETAIL img: \(pokemonDetail.sprites.other?.officialArtwork.frontDefault)")
                 await self.update(pokemonDetail: pokemonDetail)
                 await MainActor.run {
                     self.isLoading = false
                 }
-            } catch let error as APIError {
+            } catch let error as NetworkingError {
                 await MainActor.run {
                     self.showAlert(for: error)
                     self.isLoading = false
@@ -183,16 +146,11 @@ extension AllPokemonViewModel {
         }
     }
 
-    func onDisappear() {
-        task?.cancel()
-    }
-
     func getColorBackground(for pokemon: PokemonDetail) -> String {
         pokemon.types.first?.type.name.capitalized ?? Constants.neutralBackground
     }
 
     func goToDetailView(for pokemon: PokemonDetail) {
-        print("URL 🥦 \(pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault ?? "")")
         let pokemonConfig = PokemonDetailConfig(
             id: pokemon.id,
             url: pokemons.first(where: { $0.id == pokemon.id })?.url ?? "",
@@ -222,32 +180,21 @@ private extension AllPokemonViewModel {
 
     @MainActor
     func update(pokemonDetail: PokemonDetail) {
-//        pokemon = PokemonDetailConfig(
-//            id: pokemonDetail.id,
-//            url: pokemon.url,
-//            name: pokemonDetail.name,
-//            types: pokemonDetail.types.map { $0.type.name },
-//            imgUrl: pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault ?? "",
-//            weight: convertToPoundsAndKilograms(pokemonDetail.weight),
-//            height: convertToFeetInchesAndCentimeters(pokemonDetail.height),
-//            baseExperience: describeValue(pokemonDetail.baseExperience)
-//        )
-
         pokemonsDetailed.append(pokemonDetail)
     }
-
-//    func showAlert(for error: APIError) {
-//        alertConfig = AlertConfig(
-//            title: error.localizedDescription.title,
-//            message: error.localizedDescription.message
-//        )
-//    }
 
     func describeValue(_ value: Int?) -> String {
         guard let intValue = value else {
             return L.PokemonDetail.defaultString
         }
         return "\(intValue)"
+    }
+
+    func showAlert(for error: NetworkingError) {
+        alertConfig = AlertConfig(
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
+        )
     }
 
     func convertToPoundsAndKilograms(_ value: Int) -> String {
@@ -276,47 +223,4 @@ private extension AllPokemonViewModel {
         let formattedHeightInCentimeters = String(format: "%.0f cm", centimeters)
         return "\(formattedHeightInFeetAndInches) (\(formattedHeightInCentimeters))"
     }
-}
-
-extension Sequence where Element: Sendable & Hashable {
-    func asyncMap<T>(_ transform: (Element) async throws -> T) async rethrows -> [T] {
-        var results = [T]()
-        for element in self {
-            try results.append(await transform(element))
-        }
-        return results
-    }
-}
-
-extension AllPokemonViewModel: CLLocationManagerDelegate {
-    func requestLocation() {
-        // locationManager.requestLocation()
-    }
-
-    func locationManager(
-        _: CLLocationManager,
-        didUpdateLocations locations: [CLLocation]
-    ) {
-        if let location = locations.first?.coordinate {
-            userLocation = Location(coordinate: location)
-        }
-    }
-
-    func locationManager(
-        _: CLLocationManager,
-        didFailWithError _: Error
-    ) {}
-
-//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-//        switch manager.authorizationStatus {
-//        case .authorizedWhenInUse:
-//            break
-//        case .restricted, .denied:
-//            break
-//        case .notDetermined:
-//            locationManager.requestWhenInUseAuthorization()
-//        default:
-//            break
-//        }
-//    }
 }

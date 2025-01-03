@@ -16,7 +16,7 @@ extension UIImage {
     /// - Returns: An `AsyncImagePhase` indicating the result of the image loading process. Trying to mimic AsyncImage phase.
     static func load(from url: URL?) async -> AsyncImagePhase {
         guard let url else {
-            return .failure(NetworkingError.invalidEndpoint)
+            return .failure(NetworkingError.invalidURL)
         }
         // Return cached image if available
         if let cachedImage = imageCache.get(forKey: url.absoluteString) {
@@ -30,7 +30,7 @@ extension UIImage {
             }
 
             guard let image = UIImage(data: data) else {
-                return .failure(NetworkingError.noData)
+                return .failure(NetworkingError.invalidData)
             }
 
             imageCache.set(image, forKey: url.absoluteString)
