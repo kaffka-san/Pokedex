@@ -27,14 +27,8 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var isFavourite = false
-    @Published var pokemonPinsOpacity = 0.0
     @Published var favouriteIds = Set<Int>()
     @Published private(set) var isLoading = false
-    @Published var scrollPosition: CGPoint = .zero {
-        didSet {
-            print(scrollPosition)
-        }
-    }
 
     init(locationManager: LocationManagerProtocol, pokemonService: PokemonServiceProtocol) {
         self.locationManager = locationManager

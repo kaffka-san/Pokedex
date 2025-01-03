@@ -23,7 +23,6 @@ final class APICommunication: APIManager {
         }
 
         guard isNetworkAvailable else {
-            print("❌ NO CONNECTION")
             throw NetworkingError.networkConnection
         }
 

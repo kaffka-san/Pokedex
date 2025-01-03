@@ -15,6 +15,7 @@ struct PokemonDetailView: View {
     @ObservedObject var viewModel: PokemonDetailViewModel
     @State private var isLargeTitle = true
     @State private var scrollOffset: CGFloat = 0
+    @State private var pokemonPinsOpacity = 0.0
 
     var body: some View {
         scrollView
@@ -102,10 +103,10 @@ private extension PokemonDetailView {
                             }
                         }
                         .frame(width: 40, height: 40)
-                        .opacity(viewModel.pokemonPinsOpacity)
-                        .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
+                        .opacity(pokemonPinsOpacity)
+                        .animation(.easeIn(duration: 1.0), value: pokemonPinsOpacity)
                         .onAppear {
-                            viewModel.pokemonPinsOpacity = 1.0
+                            pokemonPinsOpacity = 1.0
                         }
                     }
                 }

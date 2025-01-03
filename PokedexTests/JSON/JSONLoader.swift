@@ -34,12 +34,10 @@ final class JSONLoader {
 
     func loadJSON<T: Decodable>(fileName: String) throws -> T {
         do {
-            print("fileName: \(fileName)")
             let data = try getData(fromJSON: fileName)
             let decodedObject = try decoder.decode(T.self, from: data)
             return decodedObject
         } catch {
-            print("❌ error \(error)")
             throw error
         }
     }
@@ -50,7 +48,6 @@ final class JSONLoader {
             let data: T = try loadJSON(fileName: fileName)
             return data
         } catch {
-            print("❌ Can't get the file \(fileName) \(error)")
             return nil
         }
     }
