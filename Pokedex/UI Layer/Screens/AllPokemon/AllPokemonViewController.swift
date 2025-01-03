@@ -72,7 +72,6 @@ private extension AllPokemonViewController {
     func bindFavouritePokemonChanged() {
         NotificationCenter.default.publisher(for: .updateFavouritePokemon)
             .sink { [weak self] _ in
-                print("⛸️ REFRESH!!")
                 self?.viewModel.refresh()
             }
             .store(in: &disposeBag)

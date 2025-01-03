@@ -91,14 +91,12 @@ private extension AllPokemonView {
 
     @ViewBuilder
     func pokemonCell(_ pokemon: Pokemon) -> some View {
-        if let data = viewModel.pokemonsDetailed.first(where: { $0.id == pokemon.id }) {
-            PokemonCell(
-                pokemon: data
-            )
-            .environmentObject(viewModel)
-            .onAppear {
-                viewModel.loadNextPage(for: pokemon)
-            }
+        PokemonCell(
+            pokemon: viewModel.pokemonsDetailed.first(where: { $0.id == pokemon.id }) ?? PokemonDetail()
+        )
+        .environmentObject(viewModel)
+        .onAppear {
+            viewModel.loadNextPage(for: pokemon)
         }
     }
 

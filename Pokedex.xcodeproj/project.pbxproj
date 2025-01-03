@@ -21,6 +21,7 @@
 		30B2FA212AF64A2D00B9D94D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30B2FA202AF64A2D00B9D94D /* Localizable.strings */; };
 		30B2FA232AF64A4D00B9D94D /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B2FA222AF64A4D00B9D94D /* Localization.swift */; };
 		30B2FA382AF692CB00B9D94D /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B2FA372AF692CB00B9D94D /* Fonts.swift */; };
+		30C43A672D27437A00B80EF4 /* OffsetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C43A662D27437A00B80EF4 /* OffsetModifier.swift */; };
 		30D0ABBE2D1EE37800AE6482 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 30D0ABBD2D1EE37800AE6482 /* Swinject */; };
 		30D0ABDA2D200E6000AE6482 /* SwiftUIRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D0ABD92D200E6000AE6482 /* SwiftUIRepresentable.swift */; };
 		30D0AC422D26B73700AE6482 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B2FA222AF64A4D00B9D94D /* Localization.swift */; };
@@ -55,6 +56,7 @@
 		30B2FA202AF64A2D00B9D94D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		30B2FA222AF64A4D00B9D94D /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		30B2FA372AF692CB00B9D94D /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		30C43A662D27437A00B80EF4 /* OffsetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetModifier.swift; sourceTree = "<group>"; };
 		30D0ABD92D200E6000AE6482 /* SwiftUIRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRepresentable.swift; sourceTree = "<group>"; };
 		30DBD81A2AF82B810069F25A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -157,6 +159,7 @@
 				3042A8942AF908B300D65D54 /* Ext+CGPoint.swift */,
 				30A230C82AFD9D0900312829 /* Ext+CLLocationCoordinate2D.swift */,
 				30B2FA372AF692CB00B9D94D /* Fonts.swift */,
+				30C43A662D27437A00B80EF4 /* OffsetModifier.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -415,6 +418,7 @@
 				30B2FA382AF692CB00B9D94D /* Fonts.swift in Sources */,
 				30DBD81B2AF82B810069F25A /* Colors.swift in Sources */,
 				30D0ABDA2D200E6000AE6482 /* SwiftUIRepresentable.swift in Sources */,
+				30C43A672D27437A00B80EF4 /* OffsetModifier.swift in Sources */,
 				3042A8952AF908B300D65D54 /* Ext+CGPoint.swift in Sources */,
 				30B2FA232AF64A4D00B9D94D /* Localization.swift in Sources */,
 				309659B12AF55DEE00B2BE78 /* AppDelegate.swift in Sources */,

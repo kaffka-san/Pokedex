@@ -69,3 +69,17 @@ enum GenderCase {
     case female
     case maleFemale
 }
+
+struct PokemonInfo {
+    let sections: [PokemonSection]
+}
+
+struct PokemonSection {
+    let sectionHeader: String
+    let items: [Item]
+}
+
+struct Item {
+    let title: String
+    let value: String
+}

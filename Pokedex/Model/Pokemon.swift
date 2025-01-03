@@ -40,6 +40,16 @@ struct PokemonDetail: Decodable {
         case types
         case sprites
     }
+
+    init(id: Int = 0, height: Int = 0, weight: Int = 0, baseExperience: Int? = nil, types: [PokemonTypes] = [], sprites: Sprites = Sprites(frontDefault: "", other: nil), name: String = "") {
+        self.id = id
+        self.height = height
+        self.weight = weight
+        self.baseExperience = baseExperience
+        self.types = types
+        self.sprites = sprites
+        self.name = name
+    }
 }
 
 struct PokemonTypes: Decodable {

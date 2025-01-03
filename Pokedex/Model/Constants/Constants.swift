@@ -17,3 +17,7 @@ enum Constants {
 enum AssetsSound {
     static let pikachu = "pikachu.mp3"
 }
+
+enum CoordinateSpaceConstants {
+    static let scrollDetail = "ScrollDetailConstant"
+}

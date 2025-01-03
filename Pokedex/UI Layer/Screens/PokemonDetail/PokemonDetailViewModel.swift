@@ -20,7 +20,7 @@ final class PokemonDetailViewModel: ObservableObject {
     var pokemon: PokemonDetailConfig?
     // var region: MKCoordinateRegion?
     // var pokemonsLocations = [Location]()
-
+    @Published var pokemonInfo = [PokemonSection]()
     @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
     @Published var alertConfig: AlertConfig?
     @Published var nextImageUrl: String?
@@ -128,6 +128,8 @@ extension PokemonDetailViewModel {
             do {
                 let pokemonDetail = try await pokemonService.getPokemonSpecies(name: String(pokemon.id))
                 updateSpecies(pokemonDetail: pokemonDetail)
+                loadNextPokemon()
+                loadPreviousPokemon()
                 isLoading = false
             } catch let error as APIError {
                 showAlert(for: error)
@@ -139,8 +141,8 @@ extension PokemonDetailViewModel {
     @MainActor
     func refresh() {
         loadPokemonSpecies()
-        loadNextPokemon()
-        loadPreviousPokemon()
+//        loadNextPokemon()
+//        loadPreviousPokemon()
     }
 
     func loadNextPokemon() {
@@ -256,10 +258,138 @@ extension PokemonDetailViewModel {
         return "\(baseSteps * (counter + 1)) \(L.PokemonDetail.steps)"
     }
 
-//    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
-//        // Generate a random number of locations to create
-//        let numberOfLocations = Int.random(in: 1...4)
-//        let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
-//        return locations
-//    }
+    //    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
+    //        // Generate a random number of locations to create
+    //        let numberOfLocations = Int.random(in: 1...4)
+    //        let locations = (1...numberOfLocations).map { _ in Location(coordinate: userLocation.coordinate.randomLocationWithin(radius: radius)) }
+    //        return locations
+    //    }
+}
+
+enum PokemonDetailSection: CaseIterable, Identifiable {
+    case breeding
+    case training
+    case location
+
+    var title: String {
+        switch self {
+        case .breeding: return L.PokemonDetail.breeding
+        case .training: return L.PokemonDetail.training
+        case .location: return L.PokemonDetail.location
+        }
+    }
+
+    var id: String { title }
+
+    var items: [PokemonDetailItem] {
+        switch self {
+        case .breeding: return PokemonDetailBreeding.allCases
+        case .training: return PokemonDetailTraining.allCases
+        case .location: return PokemonDetailLocation.allCases
+        }
+    }
+}
+
+protocol PokemonDetailItem {
+    var title: String { get }
+    func description(using pokemon: PokemonDetailConfig, species: PokemonSpeciesConfig) -> String
+    var id: String { get }
+    var itemType: ItemType { get }
+}
+
+enum ItemType: Equatable {
+    case breeding(PokemonDetailBreeding)
+    case training(PokemonDetailTraining)
+    case location(PokemonDetailLocation)
+
+    static func == (lhs: ItemType, rhs: ItemType) -> Bool {
+        switch (lhs, rhs) {
+        case let (.breeding(lhsItem), .breeding(rhsItem)):
+            return lhsItem.id == rhsItem.id
+        case let (.training(lhsItem), .training(rhsItem)):
+            return lhsItem.id == rhsItem.id
+        case let (.location(lhsItem), .location(rhsItem)):
+            return lhsItem.id == rhsItem.id
+        default:
+            return false
+        }
+    }
+}
+
+enum PokemonDetailBreeding: Identifiable, CaseIterable, PokemonDetailItem {
+    case gender
+    case eggGroup
+    case eggCycle
+
+    var title: String {
+        switch self {
+        case .gender: return L.PokemonDetail.gender
+        case .eggGroup: return L.PokemonDetail.eggGroups
+        case .eggCycle: return L.PokemonDetail.eggCylce
+        }
+    }
+
+    var itemType: ItemType {
+        .breeding(self)
+    }
+
+    var id: String { title }
+
+    func description(using _: PokemonDetailConfig, species: PokemonSpeciesConfig) -> String {
+        switch self {
+        case .gender:
+            let gender = species.gender
+            switch gender.genderCase {
+            case .genderless: return "Genderless"
+            case .male: return "♂️ \(gender.male)"
+            case .female: return "♀️ \(gender.female)"
+            case .maleFemale: return "♂️ \(gender.male) ♀️ \(gender.female)"
+            }
+        case .eggGroup:
+            return species.eggGroups.first ?? ""
+        case .eggCycle:
+            return species.hatchCounter
+        }
+    }
+}
+
+enum PokemonDetailTraining: String, CaseIterable, PokemonDetailItem {
+    case baseExp
+
+    var title: String {
+        switch self {
+        case .baseExp: return L.PokemonDetail.experience
+        }
+    }
+
+    var id: String {
+        title
+    }
+
+    var itemType: ItemType {
+        .training(self)
+    }
+
+    func description(using pokemon: PokemonDetailConfig, species _: PokemonSpeciesConfig) -> String {
+        pokemon.baseExperience
+    }
+}
+
+enum PokemonDetailLocation: CaseIterable, PokemonDetailItem {
+    // Add cases for location-related details if needed
+    var title: String {
+        ""
+    }
+
+    var id: String {
+        title
+    }
+
+    var itemType: ItemType {
+        .location(self)
+    }
+
+    func description(using _: PokemonDetailConfig, species _: PokemonSpeciesConfig) -> String {
+        ""
+    }
 }

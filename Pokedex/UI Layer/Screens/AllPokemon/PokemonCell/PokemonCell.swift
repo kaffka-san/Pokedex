@@ -81,11 +81,12 @@ private extension PokemonCell {
     @ViewBuilder
     func pokemonImage() -> some View {
         if let url = pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault {
-            CacheAsyncImage(url: URL(string: url)) { state in
-                if let image = state.image {
-                    image
-                        .resizable()
-                        .scaledToFit()
+            CacheAsyncImage(url: URL(string: url)) { phase in
+                switch phase {
+                case .empty, .failure:
+                    ProgressView()
+                case let .success(image):
+                    image.resizable().scaledToFit()
                 }
             }
         }

@@ -43,6 +43,7 @@ final class APICommunication: APIManager {
     /// JSON decoder for all requests
     private var decoder: JSONDecoder {
         let decoder = JSONDecoder()
+        // decoder.keyDecodingStrategy = .convertFromSnakeCase
         // Customize if needed
         return decoder
     }

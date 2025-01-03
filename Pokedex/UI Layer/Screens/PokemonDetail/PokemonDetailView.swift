@@ -9,168 +9,137 @@ import MapKit
 import SwiftUI
 
 struct PokemonDetailView: View {
-    private let offsetMinimum = 70.0
+    private let offsetMinimum = 0.0
+    private let coordinateSpaceName = Constants.scrollName
+    
+    var isLandscape: Bool {
+        UIDevice.current.orientation.isLandscape
+    }
+    
     @ObservedObject var viewModel: PokemonDetailViewModel
-    @Namespace private var animation
     @State private var isLargeTitle = true
-
+    @State private var scrollOffset: CGFloat = 0
+    
     var body: some View {
         scrollView
+            .coordinateSpace(name: coordinateSpaceName)
             .onAppear {
                 viewModel.getFavouritePokemons()
+                viewModel.loadPokemonSpecies()
             }
-            .onChange(of: viewModel.scrollPosition) { _, newValue in
-                withAnimation(.linear(duration: 0.1)) {
-                    isLargeTitle = newValue < CGPoint(x: 0.0, y: offsetMinimum) ? true : false
-                }
+            .refreshable {
+                viewModel.refresh()
             }
     }
 }
 
 private extension PokemonDetailView {
-    var typeIdLabel: some View {
-        HStack {
-            pokemonTypes()
-            Spacer()
-            pokemonId
+    var scrollView: some View {
+        ZStack {
+            Color(viewModel.colorBackground.rawValue)
+                .edgesIgnoringSafeArea(.all)
+            VStack(spacing: 0) {
+                customNavigationBar()
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        largeTitle()
+                        typeIdLabel
+                        horizontalPokemonImages
+                        whiteCardContent
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                    .trackScrollOffset(coordinateSpace: coordinateSpaceName, offset: $scrollOffset)
+                }
+                .coordinateSpace(name: coordinateSpaceName)
+            }
         }
-        .opacity(isLargeTitle ? 1 : 0)
-        .sensoryFeedback(.impact, trigger: isLargeTitle)
-        .animation(.easeInOut, value: viewModel.scrollPosition)
     }
-
+    
     var titleText: some View {
         Text(viewModel.pokemon?.name.capitalized ?? "")
             .foregroundStyle(.white)
             .padding(.horizontal, 20)
     }
-
-    var scrollView: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Color(viewModel.colorBackground.rawValue)
-                    .edgesIgnoringSafeArea(.all)
-            }
-            VStack(spacing: 0) {
-                HStack {
-                    backButton
-                    Spacer()
-                    if !isLargeTitle {
-                        titleText
-                            .font(.system(size: 22, weight: .black))
-                            .hAlign(.center)
-                            .padding(.top, 0)
-                            .matchedGeometryEffect(id: AnimationNameSpace.title, in: animation)
-                        Spacer()
-                    }
-                    loveButton
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom)
-                if isLargeTitle {
-                    titleText
-                        .font(.system(size: 36, weight: .black))
-                        .hAlign(.leading)
-                        .padding(.vertical, 10)
-                        .matchedGeometryEffect(id: AnimationNameSpace.title, in: animation)
-                }
-
-                ScrollView {
-                    VStack(spacing: 0) {
-                        ZStack(alignment: .top) {
-                            Color.clear.frame(height: isLandscape() ? geometry.size.height * 0.7 : geometry.size.height * 0.32)
-                            VStack(spacing: 0) {
-                                typeIdLabel
-                            }
-                        }
-                        VStack {
-                            ZStack(alignment: .top) {
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color.white)
-                                    .frame(
-                                        width: geometry.size.width,
-                                        height: isLandscape() ? geometry.size.height * 1.7 : geometry.size.height * 1.1
-                                    )
-                                    .shadow(radius: 10)
-                                horizontalPokemonImages
-                                VStack(alignment: .leading, spacing: 0) {
-                                    description
-                                    sizeCard
-                                    if isLandscape() {
-                                        horizontalStatics
-                                    } else {
-                                        verticalStatistics
-                                    }
-                                    // mapView
-                                }
-                            }
-                        }
-                    }
-
-                    // Detect scroll position
-                    .background(GeometryReader { geometry in
-                        Color.clear
-                            .preference(
-                                key: ScrollOffsetPreferenceKey.self,
-                                value: geometry.frame(
-                                    in: .named(Constants.scrollName)
-                                )
-                                .origin
-                            )
-                    })
-                    .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                        viewModel.scrollPosition = value
-                    }
-                }
-            }
+    
+    @ViewBuilder
+    func largeTitle() -> some View {
+        titleText
+            .font(.system(size: 36, weight: .black))
+            .hAlign(.leading)
+            .padding(.bottom, 10)
+            .opacity(isLargeTitle ? 1 : 0)
             .onAppear {
-                // configNavigationBar()
-                viewModel.loadPokemonSpecies()
+                withAnimation(.linear(duration: 0.1)) {
+                    isLargeTitle = true
+                }
             }
-            .edgesIgnoringSafeArea(.bottom)
-            .edgesIgnoringSafeArea(.horizontal)
-            .coordinateSpace(name: Constants.scrollName)
-        }
-        .transition(.opacity)
-        .refreshable {
-            viewModel.refresh()
-        }
+            .onDisappear {
+                withAnimation(.linear(duration: 0.1)) {
+                    isLargeTitle = false
+                }
+            }
     }
+    
+    //    var mapView: some View {
+    //        VStackLayout(alignment: .leading) {
+    //            HeadLineLabel(text: L.PokemonDetail.location)
+    //                .padding(.top, 26)
+    //            Map(
+    //                coordinateRegion: $viewModel.region,
+    //                showsUserLocation: true,
+    //                annotationItems: viewModel.pokemonsLocations
+    //            ) { location in
+    //                MapAnnotation(coordinate: location.coordinate) {
+    //                    LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
+    //                        if let image = state.image {
+    //                            image
+    //                                .resizable()
+    //                                .scaledToFit()
+    //                        } else {}
+    //                    }
+    //                    .frame(width: 40, height: 40)
+    //                    .opacity(viewModel.pokemonPinsOpacity)
+    //                    .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
+    //                    .onAppear {
+    //                        viewModel.pokemonPinsOpacity = 1.0
+    //                    }
+    //                }
+    //            }
+    //            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+    //            .frame(height: 150)
+    //            .cornerRadius(20)
+    //            .padding(.vertical, 20)
+    //
+    //        }
+    //        .frame(maxWidth: .infinity)
+    //        .padding(.horizontal, isLandscape() ? 100 : 26)
+    //    }
+}
 
-//    var mapView: some View {
-//        VStackLayout(alignment: .leading) {
-//            HeadLineLabel(text: L.PokemonDetail.location)
-//                .padding(.top, 26)
-//            Map(
-//                coordinateRegion: $viewModel.region,
-//                showsUserLocation: true,
-//                annotationItems: viewModel.pokemonsLocations
-//            ) { location in
-//                MapAnnotation(coordinate: location.coordinate) {
-//                    LazyImage(url: URL(string: viewModel.pokemon.imgUrl)) { state in
-//                        if let image = state.image {
-//                            image
-//                                .resizable()
-//                                .scaledToFit()
-//                        } else {}
-//                    }
-//                    .frame(width: 40, height: 40)
-//                    .opacity(viewModel.pokemonPinsOpacity)
-//                    .animation(.easeIn(duration: 1.0), value: viewModel.pokemonPinsOpacity)
-//                    .onAppear {
-//                        viewModel.pokemonPinsOpacity = 1.0
-//                    }
-//                }
-//            }
-//            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-//            .frame(height: 150)
-//            .cornerRadius(20)
-//            .padding(.vertical, 20)
-//        }
-//        .frame(maxWidth: .infinity)
-//        .padding(.horizontal, isLandscape() ? 100 : 26)
-//    }
-
+// MARK: - Custom navigation Bar
+private extension PokemonDetailView {
+    @ViewBuilder
+    func customNavigationBar() -> some View {
+        HStack {
+            backButton
+            Spacer()
+            smallTitle()
+            loveButton
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom)
+        .padding(.top, isLandscape ? 16 : 0)
+    }
+    
+    @ViewBuilder
+    func smallTitle() -> some View {
+        titleText
+            .font(.system(size: 22, weight: .black))
+            .hAlign(.center)
+            .padding(.top, 0)
+            .opacity(isLargeTitle ? 0 : 1)
+    }
+    
     var loveButton: some View {
         Button {
             viewModel.toggleFavourite()
@@ -184,13 +153,13 @@ private extension PokemonDetailView {
                         .resizable()
                 }
             }
-
+            
             .frame(width: 20, height: 20)
             .scaledToFit()
         }
         .tint(.white)
     }
-
+    
     var backButton: some View {
         Button {
             viewModel.goBack()
@@ -202,7 +171,19 @@ private extension PokemonDetailView {
         }
         .tint(.white)
     }
+}
 
+// MARK: - Type and Id for the pokemon
+private extension PokemonDetailView {
+    var typeIdLabel: some View {
+        HStack {
+            pokemonTypes()
+            Spacer()
+            pokemonId
+        }
+        .sensoryFeedback(.impact, trigger: isLargeTitle)
+    }
+    
     @ViewBuilder
     func pokemonTypes() -> some View {
         if let pokemon = viewModel.pokemon {
@@ -216,143 +197,40 @@ private extension PokemonDetailView {
                     )
                     .frame(width: 70)
                 }
-                Spacer()
             }
-            .padding(.leading, 26)
-            .padding(.leading, isLandscape() ? 46 : 0)
+            .padding(.leading, isLandscape ? 46 : 20)
         }
     }
-
+    
     var pokemonId: some View {
         Text(viewModel.idFormatted)
             .font(PokedexFonts.headline1)
             .foregroundColor(.white)
-            .padding(.trailing, 26)
-            .padding(.trailing, isLandscape() ? 46 : 0)
+            .padding(.trailing, 20)
+            .padding(.trailing, isLandscape ? 46 : 0)
     }
+}
 
-    var verticalStatistics: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HeadLineLabel(text: L.PokemonDetail.breeding)
-                .padding(.vertical, 6)
-            genderStatistic
-            HorizontalLabel(
-                LabelConfiguration(
-                    text: viewModel.pokemonSpecies.eggGroups.first ?? "",
-                    description: L.PokemonDetail.eggGroups
-                )
-            )
-            HorizontalLabel(
-                LabelConfiguration(
-                    text: viewModel.pokemonSpecies.hatchCounter,
-                    description: L.PokemonDetail.eggCylce
-                )
-            )
-            HeadLineLabel(text: L.PokemonDetail.training)
-                .padding(.vertical, 6)
-            HorizontalLabel(
-                LabelConfiguration(
-                    text: viewModel.pokemon?.baseExperience ?? "",
-                    description: L.PokemonDetail.experience
-                )
-            )
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, isLandscape() ? 100 : 26)
-        .padding(.top, 24)
-    }
-
-    var horizontalStatics: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 10) {
-                HeadLineLabel(text: L.PokemonDetail.breeding)
-                genderStatistic
-                HorizontalLabel(LabelConfiguration(
-                    text: viewModel.pokemonSpecies.eggGroups.first ?? "",
-                    description: L.PokemonDetail.eggGroups
-                ))
-                HorizontalLabel(LabelConfiguration(
-                    text: viewModel.pokemonSpecies.hatchCounter,
-                    description: L.PokemonDetail.eggCylce
-                )
-                )
-            }
-            VStack(alignment: .leading, spacing: 10) {
-                HeadLineLabel(text: L.PokemonDetail.training)
-                HorizontalLabel(LabelConfiguration(
-                    text: viewModel.pokemon?.baseExperience ?? "",
-                    description: L.PokemonDetail.experience
-                )
-                )
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, isLandscape() ? 100 : 26)
-        .padding(.top, 14)
-    }
-
-    var genderStatistic: some View {
-        HStack(spacing: 12) {
-            Text(L.PokemonDetail.gender)
-                .font(PokedexFonts.label1)
-                .foregroundColor(PokedexColors.lightGray)
-                .frame(width: 100, alignment: .leading)
-            switch viewModel.pokemonSpecies.gender.genderCase {
-            case .genderless:
-                Text(viewModel.pokemonSpecies.gender.genderless)
-                    .font(PokedexFonts.body3)
-                    .foregroundColor(PokedexColors.dark)
-                    .frame(alignment: .leading)
-            case .male:
-                Label(viewModel.pokemonSpecies.gender.male, image: .male)
-                    .font(PokedexFonts.body3)
-            case .female:
-                Label(viewModel.pokemonSpecies.gender.female, image: .female)
-                    .font(PokedexFonts.body3)
-                    .foregroundColor(PokedexColors.dark)
-            case .maleFemale:
-                Label(viewModel.pokemonSpecies.gender.male, image: .male)
-                    .font(PokedexFonts.body3)
-                    .foregroundColor(PokedexColors.dark)
-                Label(viewModel.pokemonSpecies.gender.female, image: .female)
-                    .font(PokedexFonts.body3)
-                    .foregroundColor(PokedexColors.dark)
-            }
-        }
-    }
-
-    var description: some View {
-        Text(viewModel.pokemonSpecies.description)
-            .font(PokedexFonts.body3)
-            .padding(.top, 50)
-            .padding(.horizontal, isLandscape() ? 100 : 26)
-            .padding(.bottom, isLandscape() ? 0 : 20)
-            .foregroundColor(PokedexColors.dark)
-            .lineSpacing(8)
-            .frame(
-                maxWidth: .infinity,
-                alignment: .leading
-            )
-    }
-
+// MARK: - Pokemon Images
+private extension PokemonDetailView {
     var horizontalPokemonImages: some View {
-        HStack {
+        HStack(spacing: 0) {
             ShadowPokemonImage(url: viewModel.previousImageUrl)
-                .frame(width: 80, height: 100)
+                .scaleEffect(0.9)
             pokemonImage()
+                .frame(width: isLandscape ? UIScreen.main.bounds.width * 0.3 : UIScreen.main.bounds.width * 0.55)
                 .onTapGesture {
                     viewModel.playSound()
                 }
             ShadowPokemonImage(url: viewModel.nextImageUrl)
-                .offset(y: 0)
-                .frame(width: 80, height: 100)
+                .scaleEffect(0.9)
         }
-        .frame(width: UIScreen.main.bounds.width)
-        .opacity(viewModel.scrollPosition < CGPoint(x: 0.0, y: -40.0) ? 1 : 0)
-        .animation(.smooth, value: viewModel.scrollPosition)
-        .offset(y: isLandscape() ? -190 : -190)
+        .opacity(scrollOffset > -190 ? 1 : 0)
+        .animation(.smooth, value: scrollOffset)
+        .offset(y: isLandscape ? 40 : 35)
+        .zIndex(5)
     }
-
+    
     @ViewBuilder
     func pokemonImage() -> some View {
         if let pokemon = viewModel.pokemon {
@@ -368,14 +246,55 @@ private extension PokemonDetailView {
                             .resizable()
                             .scaledToFit()
                     } else {
-                        Color.gray.opacity(0.4)
+                        ProgressView()
                     }
                 }
             }
-            .frame(width: UIScreen.main.bounds.width * 0.7, height: 218)
         }
     }
+}
 
+// MARK: - White Card Content
+private extension PokemonDetailView {
+    var whiteCardContent: some View {
+        VStack(spacing: 0) {
+            description
+            sizeCard
+            resolveStatistics()
+            Rectangle()
+                .fill(.indigo)
+                .frame(height: 160)
+                .padding(.horizontal, 20)
+            // mapView
+            // }
+        }
+        .padding(.bottom, 40)
+        .background {
+            Color(.white).cornerRadius(20)
+                .shadow(radius: 10)
+        }
+    }
+    
+    @ViewBuilder
+    func resolveStatistics() -> some View {
+        if isLandscape {
+            horizontalStatics
+        } else {
+            verticalStatistics()
+        }
+    }
+    
+    var description: some View {
+        Text(viewModel.pokemonSpecies.description)
+            .font(PokedexFonts.body3)
+            .padding(.top, 50)
+            .padding(.horizontal, isLandscape ? 100 : 20)
+            .padding(.bottom, isLandscape ? 0 : 20)
+            .foregroundColor(PokedexColors.dark)
+            .lineSpacing(8)
+            .hAlign(.leading)
+    }
+    
     var sizeCard: some View {
         HStack(spacing: 45) {
             VerticalLabel(
@@ -391,27 +310,134 @@ private extension PokemonDetailView {
                 )
             )
         }
-        .padding(isLandscape() ? 10 : 20)
+        .padding(isLandscape ? 10 : 20)
         .frame(maxWidth: .infinity)
-        .background {
-            Color(.white)
-                .cornerRadius(20)
-        }
+        .background { Color(.white).cornerRadius(20) }
         .shadow(radius: 10)
         .padding(.top, 20)
-        .padding(.horizontal, isLandscape() ? 100 : 26)
+        .padding(.horizontal, isLandscape ? 100 : 20)
     }
-
-    struct ScrollOffsetPreferenceKey: PreferenceKey {
-        static var defaultValue: CGPoint = .zero
-        static func reduce(
-            value _: inout CGPoint,
-            nextValue _: () -> CGPoint
-        ) {}
+    
+    @ViewBuilder
+    func verticalStatistics() -> some View {
+        VStack(spacing: 10) {
+            ForEach(PokemonDetailSection.allCases) { section in
+                HeadLineLabel(text: section.title)
+                    .padding(.vertical)
+                sectionStatistics(for: section)
+            }
+        }
+        .padding(20)
     }
+    
+    @ViewBuilder
+    func sectionStatistics(for section: PokemonDetailSection) -> some View {
+        ForEach(section.items, id: \.id) { item in
+            switch item.itemType {
+            case let .breeding(breedingItem) where breedingItem == .gender:
+                genderStatistic
+            default:
+                defaultStatistics(for: item)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func defaultStatistics(for item: PokemonDetailItem) -> some View {
+        if let pokemon = viewModel.pokemon {
+            HorizontalLabel(
+                LabelConfiguration(
+                    text: item.title,
+                    description: item.description(
+                        using: pokemon,
+                        species: viewModel.pokemonSpecies
+                    )
+                )
+            )
+            .hAlign(.leading)
+        }
+    }
+    
+    var horizontalStatics: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 250))], spacing: 10) {
+            ForEach(PokemonDetailSection.allCases) { section in
+                switch section {
+                case .breeding, .training:
+                    GridRow {
+                        VStack(alignment: .center, spacing: 10) {
+                            HeadLineLabel(text: section.title)
+                                .padding(.vertical)
+                            sectionStatistics(for: section)
+                            Spacer()
+                        }
+                    }
+                case .location:
+                    HeadLineLabel(text: section.title)
+                        .padding(.vertical)
+                }
+            }
+        }
+        .padding(.horizontal, isLandscape ? 100 : 20)
+        .padding(.vertical, 20)
+    }
+}
 
-    func isLandscape() -> Bool {
-        UIDevice.current.orientation.isLandscape
+// MARK: - Gender Statistics
+private extension PokemonDetailView {
+    var genderStatistic: some View {
+        HStack(spacing: 12) {
+            genderTitle()
+            switch viewModel.pokemonSpecies.gender.genderCase {
+            case .genderless:
+                genderlessView()
+            case .male:
+                maleView()
+            case .female:
+                femaleView()
+            case .maleFemale:
+                maleFemaleView()
+            }
+        }
+        .hAlign(.leading)
+    }
+    
+    @ViewBuilder
+    func genderTitle() -> some View {
+        Text(L.PokemonDetail.gender)
+            .font(PokedexFonts.label1)
+            .foregroundColor(PokedexColors.lightGray)
+            .frame(width: 100, alignment: .leading)
+    }
+    
+    @ViewBuilder
+    func genderlessView() -> some View {
+        Text(viewModel.pokemonSpecies.gender.genderless)
+            .font(PokedexFonts.body3)
+            .foregroundColor(PokedexColors.dark)
+            .frame(alignment: .leading)
+    }
+    
+    @ViewBuilder
+    func maleView() -> some View {
+        Label(viewModel.pokemonSpecies.gender.male, image: .male)
+            .font(PokedexFonts.body3)
+    }
+    
+    @ViewBuilder
+    func femaleView() -> some View {
+        Label(viewModel.pokemonSpecies.gender.female, image: .female)
+            .font(PokedexFonts.body3)
+            .foregroundColor(PokedexColors.dark)
+    }
+    
+    @ViewBuilder
+    func maleFemaleView() -> some View {
+        Label(viewModel.pokemonSpecies.gender.male, image: .male)
+            .font(PokedexFonts.body3)
+            .foregroundColor(PokedexColors.dark)
+        Label(viewModel.pokemonSpecies.gender.female, image: .female)
+            .font(PokedexFonts.body3)
+            .foregroundColor(PokedexColors.dark)
     }
 }
 
@@ -422,41 +448,13 @@ private extension PokemonDetailView {
     }
 }
 
-//
-// #Preview {
-//    PokemonDetailView(
-//        viewModel: PokemonDetailViewModel(
-//            coordinator: nil,
-//            pokemonsAPI: MockPokemonsAPI(),
-//            pokemon: PokemonDetailConfig(
-//                id: 1,
-//                url: "https://pokeapi.co/api/v2/pokemon/1/",
-//                name: "Bulbasaur",
-//                types: ["Grass", "Poison"],
-//                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-//                weight: "13.2 lbs (6.9 kg)",
-//                height: "1' 04 (0.70 cm)",
-//                baseExperience: "65"
-//            ),
-//            userLocation: Binding.constant(
-//                MockLocation.location
-//            ),
-//            favouriteIds: Binding.constant([1, 2, 3, 4])
-//        )
-//    )
-// }
-
-// #Preview {
-//    PokemonDetailView(viewModel: PokemonDetailViewModel(pokemonService: PokemonService(apiManager: MockAPIManager())))
-// }
-
 struct PokemonDetailView_Previews: PreviewProvider {
     static var viewModel = PokemonDetailViewModel(
         pokemonService: PokemonService(
             apiManager: MockAPIManager()
         )
     )
-
+    
     static var previews: some View {
         PokemonDetailView(viewModel: viewModel)
             .onAppear {
@@ -470,7 +468,6 @@ struct PokemonDetailView_Previews: PreviewProvider {
                     height: "1' 04 (0.70 cm)",
                     baseExperience: "64"
                 )
-                print("✅ id pokemon: \(viewModel.pokemon?.name)")
                 viewModel.loadPokemonSpecies()
             }
     }

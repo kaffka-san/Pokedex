@@ -80,7 +80,7 @@ enum AsyncImagePhase: Sendable {
 
     /// A computed property that returns the associated `Image` if the phase is `success`,
     /// otherwise returns `nil`.
-    public var image: Image? {
+    var image: Image? {
         switch self {
         case let .success(image):
             return image

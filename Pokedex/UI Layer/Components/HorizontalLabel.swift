@@ -16,11 +16,11 @@ struct HorizontalLabel<DataConfigurable: LabelConfigurable>: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(data.description)
+            Text(data.text)
                 .font(PokedexFonts.label1)
                 .foregroundColor(PokedexColors.lightGray)
                 .frame(width: 100, alignment: .leading)
-            Text(data.text.capitalized)
+            Text(data.description.capitalized)
                 .font(PokedexFonts.body3)
                 .foregroundColor(PokedexColors.dark)
                 .frame(alignment: .leading)

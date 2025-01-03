@@ -15,8 +15,9 @@ struct ShadowPokemonImage: View {
     }
 
     var body: some View {
-        AsyncImage(url: URL(string: url ?? "")) { state in
-            if let image = state.image {
+        CacheAsyncImage(url: URL(string: url ?? "")) { phase in
+            switch phase {
+            case let .success(image):
                 image
                     .resizable()
                     .saturation(0.3)
@@ -25,6 +26,8 @@ struct ShadowPokemonImage: View {
                     .overlay(Color.black)
                     .mask(image.resizable())
                     .opacity(0.2)
+            case .empty, .failure:
+                Color.clear
             }
         }
     }
@@ -32,4 +35,5 @@ struct ShadowPokemonImage: View {
 
 #Preview {
     ShadowPokemonImage(url: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png")
+        .background(.blue)
 }

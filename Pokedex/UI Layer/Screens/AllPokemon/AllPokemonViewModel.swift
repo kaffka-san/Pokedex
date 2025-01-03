@@ -232,8 +232,7 @@ private extension AllPokemonViewModel {
 //            height: convertToFeetInchesAndCentimeters(pokemonDetail.height),
 //            baseExperience: describeValue(pokemonDetail.baseExperience)
 //        )
-        print("😈 url is officialArtwork \(pokemonDetail.sprites.other?.officialArtwork)")
-        print("😈 url is frontDeatil \(pokemonDetail.sprites.frontDefault)")
+
         pokemonsDetailed.append(pokemonDetail)
     }
 
