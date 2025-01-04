@@ -35,14 +35,6 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
 
 // MARK: - Public methods
 extension AllPokemonViewModel {
-    func getFavouritePokemonIds() {
-        if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite) {
-            if let decodedSet = try? JSONDecoder().decode(Set<Int>.self, from: decodedData) {
-                favouriteIds = decodedSet
-            }
-        }
-    }
-
     @MainActor
     func loadPokemons() {
         isLoading = true
@@ -73,7 +65,7 @@ extension AllPokemonViewModel {
     func getFavourite() {
         if showingFavourites {
             showingFavourites = true
-            getFavouritePokemonIds()
+            favouriteIds = UserDefaultsValue.favouriteIds
             pokemons = []
             pokemons = favouriteIds.map { id in
                 Pokemon(name: "", url: "\(id)")
@@ -117,9 +109,8 @@ extension AllPokemonViewModel {
                 guard let self else { return }
                 do {
                     let pokemons = try await pokemonService.getPokemons(offset: self.pokemons.count)
-                    self.isLoading = false
                     self.pokemons.append(contentsOf: pokemons.results)
-
+                    self.isLoading = false
                 } catch let error as NetworkingError {
                     showAlert(for: error)
                     isLoading = false

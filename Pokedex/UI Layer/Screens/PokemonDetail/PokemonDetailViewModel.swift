@@ -12,10 +12,10 @@ import SwiftUI
 
 final class PokemonDetailViewModel: ObservableObject {
     private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
+    private let soundManager: SoundManagerProtocol
     private var disposeBag = Set<AnyCancellable>()
     private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
     private let closeSubject = PassthroughSubject<Void, Never>()
-    private var player: AVAudioPlayer?
     var pokemon: PokemonDetailConfig?
 
     @Published var locationManager: LocationManagerProtocol
@@ -30,8 +30,13 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var favouriteIds = Set<Int>()
     @Published private(set) var isLoading = false
 
-    init(locationManager: LocationManagerProtocol, pokemonService: PokemonServiceProtocol) {
+    init(
+        locationManager: LocationManagerProtocol,
+        soundManager: SoundManagerProtocol,
+        pokemonService: PokemonServiceProtocol
+    ) {
         self.locationManager = locationManager
+        self.soundManager = soundManager
         self.pokemonService = pokemonService
     }
 }
@@ -67,14 +72,9 @@ extension PokemonDetailViewModel {
     }
 
     func getFavouritePokemons() {
-        if let decodedData = UserDefaults.standard.data(forKey: Constants.favourite), let id = pokemon?.id {
-            if let decodedSet = try? JSONDecoder().decode(
-                Set<Int>.self,
-                from: decodedData
-            ) {
-                favouriteIds = decodedSet
-                isFavourite = favouriteIds.contains(id)
-            }
+        favouriteIds = UserDefaultsValue.favouriteIds
+        if let id = pokemon?.id {
+            isFavourite = favouriteIds.contains(id)
         }
     }
 
@@ -82,16 +82,14 @@ extension PokemonDetailViewModel {
         guard let id = pokemon?.id else { return }
         if isFavourite {
             favouriteIds.remove(id)
-
         } else {
             favouriteIds.insert(id)
         }
-        isFavourite.toggle()
 
-        if let encodedData = try? JSONEncoder().encode(favouriteIds) {
-            UserDefaults.standard.set(encodedData, forKey: Constants.favourite)
-            NotificationCenter.default.post(.updateFavouritePokemon)
-        }
+        isFavourite.toggle()
+        UserDefaultsValue.favouriteIds = favouriteIds
+
+        NotificationCenter.default.post(.updateFavouritePokemon)
     }
 
     @MainActor
@@ -116,14 +114,7 @@ extension PokemonDetailViewModel {
     func playSound() {
         guard let pokemon = pokemon else { return }
         if pokemon.name == Constants.pikachuSound {
-            guard let path = Bundle.main.path(forResource: AssetsSound.pikachu, ofType: nil) else {
-                return
-            }
-            let url = URL(fileURLWithPath: path)
-            do {
-                player = try AVAudioPlayer(contentsOf: url)
-                player?.play()
-            } catch {}
+            soundManager.playSound(named: AssetsSound.pikachu)
         }
     }
 }

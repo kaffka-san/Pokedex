@@ -458,6 +458,7 @@ private extension PokemonDetailView {
 struct PokemonDetailView_Previews: PreviewProvider {
     static var viewModel = PokemonDetailViewModel(
         locationManager: LocationManager(),
+        soundManager: SoundManager(),
         pokemonService: PokemonService(apiManager: MockAPIManager())
     )
 
