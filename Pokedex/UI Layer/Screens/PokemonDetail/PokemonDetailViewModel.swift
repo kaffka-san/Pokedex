@@ -124,11 +124,7 @@ extension PokemonDetailViewModel {
             do {
                 let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id + 1)")
                 await self.updateNext(pokemonDetail: pokemonDetail)
-            } catch let error as NetworkingError {
-                await MainActor.run {
-                    self.showAlert(for: error)
-                }
-            }
+            } catch {}
         }
     }
 
@@ -139,11 +135,7 @@ extension PokemonDetailViewModel {
             do {
                 let pokemonDetail = try await pokemonService.getPokemonDetail(name: "\(pokemon.id - 1)")
                 await self.updatePrevious(pokemonDetail: pokemonDetail)
-            } catch let error as NetworkingError {
-                await MainActor.run {
-                    self.showAlert(for: error)
-                }
-            }
+            } catch {}
         }
     }
 
