@@ -48,8 +48,6 @@
 			membershipExceptions = (
 				Networking/APIManager/ApiConvertible.swift,
 				Networking/APIManager/APIManager.swift,
-				Networking/APIManager/NetworkingError.swift,
-				Networking/Errors/URLRequestBuilding.swift,
 				Resourses/Localization/Localization.swift,
 			);
 			target = 305FB3492AFBD72B003804B8 /* PokedexTests */;
