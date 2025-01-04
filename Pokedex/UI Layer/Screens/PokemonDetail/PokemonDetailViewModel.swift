@@ -23,7 +23,7 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var pokemonsLocations = [Location]()
     @Published var pokemonInfo = [PokemonSection]()
     @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
-    @Published var alertConfig: AlertConfig?
+    @Published var alertConfig: AlertConfiguration?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?
     @Published var isFavourite = false
@@ -131,7 +131,7 @@ extension PokemonDetailViewModel {
 // MARK: - Private methods
 private extension PokemonDetailViewModel {
     func showAlert(for error: NetworkingError) {
-        alertConfig = AlertConfig(
+        alertConfig = AlertConfiguration(
             title: error.localizedDescription.title,
             message: error.localizedDescription.message
         )
@@ -210,7 +210,7 @@ private extension PokemonDetailViewModel {
     func findLastOccurrence(of name: String, in array: [String]) -> String {
         let uppercasedName = name.uppercased()
         let filteredArray = array.filter { $0.contains(uppercasedName) }
-        return removeNewLines(from: filteredArray.last ?? L.PokemonDetail.defaultString)
+        return removeNewLines(from: filteredArray.last ?? LocalizedString.PokemonDetail.defaultString)
     }
 
     func removeNewLines(from string: String) -> String {
@@ -220,10 +220,10 @@ private extension PokemonDetailViewModel {
     // Initial hatch counter: one must walk 255 × (hatch_counter + 1) steps before this Pokemon's egg hatches
     func calculateHatchingSteps(initialHatchCounter: Int?) -> String {
         guard let counter = initialHatchCounter else {
-            return L.PokemonDetail.defaultString
+            return LocalizedString.PokemonDetail.defaultString
         }
         let baseSteps = 255
-        return "\(baseSteps * (counter + 1)) \(L.PokemonDetail.steps)"
+        return "\(baseSteps * (counter + 1)) \(LocalizedString.PokemonDetail.steps)"
     }
 
     func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {

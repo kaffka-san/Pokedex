@@ -1,5 +1,5 @@
 //
-//  AlertConfig.swift
+//  AlertConfiguration.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 04.11.2023.
@@ -12,7 +12,7 @@ struct AlertAction {
     let action: () -> Void
 }
 
-struct AlertConfig: Identifiable {
+struct AlertConfiguration: Identifiable {
     let id = UUID()
     let title: String
     let message: String

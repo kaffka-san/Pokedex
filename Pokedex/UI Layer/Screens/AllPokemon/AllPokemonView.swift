@@ -34,7 +34,7 @@ private extension AllPokemonView {
     }
 
     var title: some View {
-        Text(L.Pokemons.pokemonsTitle)
+        Text(LocalizedString.Pokemons.pokemonsTitle)
             .font(.system(size: 30).weight(.black))
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, 26)

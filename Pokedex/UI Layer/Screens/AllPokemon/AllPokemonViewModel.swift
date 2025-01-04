@@ -14,7 +14,7 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
     var coordinator: AllPokemonFlow?
 
     @Published var pokemonsDetailed = [PokemonDetail]()
-    @Published var alertConfig: AlertConfig?
+    @Published var alertConfig: AlertConfiguration?
     @Published var isLoading = false
     @Published var showSettingsMenu = false
     @Published var disablePagination = false
@@ -185,13 +185,13 @@ private extension AllPokemonViewModel {
 
     func describeValue(_ value: Int?) -> String {
         guard let intValue = value else {
-            return L.PokemonDetail.defaultString
+            return LocalizedString.PokemonDetail.defaultString
         }
         return "\(intValue)"
     }
 
     func showAlert(for error: NetworkingError) {
-        alertConfig = AlertConfig(
+        alertConfig = AlertConfiguration(
             title: error.localizedDescription.title,
             message: error.localizedDescription.message
         )

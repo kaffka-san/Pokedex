@@ -18,20 +18,20 @@ enum NetworkingError: Error {
     var localizedDescription: ErrorDescription {
         switch self {
         case .genericError:
-            return ErrorDescription(L.Errors.genericTitle, L.Errors.genericMessage)
+            return ErrorDescription(LocalizedString.Errors.genericTitle, LocalizedString.Errors.genericMessage)
         case .invalidURL:
-            return ErrorDescription(L.Errors.invalidUrlTile, L.Errors.invalidUrlMessage)
+            return ErrorDescription(LocalizedString.Errors.invalidUrlTile, LocalizedString.Errors.invalidUrlMessage)
         case .invalidData:
-            return ErrorDescription(L.Errors.invalidDataTile, L.Errors.invalidDataMessage)
+            return ErrorDescription(LocalizedString.Errors.invalidDataTile, LocalizedString.Errors.invalidDataMessage)
         case .invalidResponse:
-            return ErrorDescription(L.Errors.invalidResponseTile, L.Errors.invalidResponseMessage)
+            return ErrorDescription(LocalizedString.Errors.invalidResponseTile, LocalizedString.Errors.invalidResponseMessage)
         case .networkConnection:
             return ErrorDescription(
                 LocalizedString.InternetConnection.connectionError,
                 LocalizedString.InternetConnection.title + " " + LocalizedString.InternetConnection.description
             )
         case .unknown:
-            return ErrorDescription(L.Errors.unknownTile, L.Errors.unknownMessage)
+            return ErrorDescription(LocalizedString.Errors.unknownTile, LocalizedString.Errors.unknownMessage)
         }
     }
 

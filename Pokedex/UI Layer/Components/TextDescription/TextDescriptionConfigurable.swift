@@ -1,5 +1,5 @@
 //
-//  LabelConfigurable.swift
+//  TextDescriptionConfigurable.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 02.01.2025.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-protocol LabelConfigurable {
+protocol TextDescriptionConfigurable {
     var text: String { get }
     var description: String { get }
 }
 
-struct LabelConfiguration: LabelConfigurable {
+struct TextDescriptionConfiguration: TextDescriptionConfigurable {
     let text: String
     let description: String
 }

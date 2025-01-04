@@ -1,5 +1,5 @@
 //
-//  VerticalLabel.swift
+//  HorizontalTextDescription.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 05.11.2023.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct VerticalLabel<DataConfigurable: LabelConfigurable>: View {
+struct HorizontalTextDescription<DataConfigurable: TextDescriptionConfigurable>: View {
     var data: DataConfigurable
 
     init(_ data: DataConfigurable) {
@@ -15,20 +15,22 @@ struct VerticalLabel<DataConfigurable: LabelConfigurable>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(data.description)
+        HStack(spacing: 12) {
+            Text(data.text)
                 .font(PokedexFonts.label1)
                 .foregroundColor(PokedexColors.lightGray)
-            Text(data.text)
+                .frame(width: 100, alignment: .leading)
+            Text(data.description.capitalized)
                 .font(PokedexFonts.body3)
                 .foregroundColor(PokedexColors.dark)
+                .frame(alignment: .leading)
         }
     }
 }
 
 #Preview {
-    VerticalLabel(
-        LabelConfiguration(
+    HorizontalTextDescription(
+        TextDescriptionConfiguration(
             text: "Label Name",
             description: "Label description"
         )

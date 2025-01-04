@@ -1,5 +1,5 @@
 //
-//  HeadLineLabel.swift
+//  HeadLineText.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 06.11.2023.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HeadLineLabel: View {
+struct HeadLineText: View {
     private let text: String
 
     init(text: String) {
@@ -23,5 +23,5 @@ struct HeadLineLabel: View {
 }
 
 #Preview {
-    HeadLineLabel(text: "Location")
+    HeadLineText(text: "Location")
 }

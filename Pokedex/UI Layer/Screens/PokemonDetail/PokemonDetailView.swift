@@ -300,16 +300,16 @@ private extension PokemonDetailView {
 
     var sizeCard: some View {
         HStack(spacing: 45) {
-            VerticalLabel(
-                LabelConfiguration(
+            VerticalTextDescription(
+                TextDescriptionConfiguration(
                     text: viewModel.pokemon?.height ?? "",
-                    description: L.PokemonDetail.height
+                    description: LocalizedString.PokemonDetail.height
                 )
             )
-            VerticalLabel(
-                LabelConfiguration(
+            VerticalTextDescription(
+                TextDescriptionConfiguration(
                     text: viewModel.pokemon?.weight ?? "",
-                    description: L.PokemonDetail.weight
+                    description: LocalizedString.PokemonDetail.weight
                 )
             )
         }
@@ -325,7 +325,7 @@ private extension PokemonDetailView {
     func verticalStatistics() -> some View {
         VStack(spacing: 10) {
             ForEach(PokemonDetailSection.allCases) { section in
-                HeadLineLabel(text: section.title)
+                HeadLineText(text: section.title)
                     .padding(.vertical)
                 sectionStatistics(for: section)
             }
@@ -348,8 +348,8 @@ private extension PokemonDetailView {
     @ViewBuilder
     func defaultStatistics(for item: PokemonDetailItem) -> some View {
         if let pokemon = viewModel.pokemon {
-            HorizontalLabel(
-                LabelConfiguration(
+            HorizontalTextDescription(
+                TextDescriptionConfiguration(
                     text: item.title,
                     description: item.description(
                         using: pokemon,
@@ -368,14 +368,14 @@ private extension PokemonDetailView {
                 case .breeding, .training:
                     GridRow {
                         VStack(alignment: .center, spacing: 10) {
-                            HeadLineLabel(text: section.title)
+                            HeadLineText(text: section.title)
                                 .padding(.vertical)
                             sectionStatistics(for: section)
                             Spacer()
                         }
                     }
                 case .location:
-                    HeadLineLabel(text: section.title)
+                    HeadLineText(text: section.title)
                         .padding(.vertical)
                 }
             }
@@ -406,7 +406,7 @@ private extension PokemonDetailView {
 
     @ViewBuilder
     func genderTitle() -> some View {
-        Text(L.PokemonDetail.gender)
+        Text(LocalizedString.PokemonDetail.gender)
             .font(PokedexFonts.label1)
             .foregroundColor(PokedexColors.lightGray)
             .frame(width: 100, alignment: .leading)

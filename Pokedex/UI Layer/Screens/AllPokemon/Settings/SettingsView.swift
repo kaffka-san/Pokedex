@@ -36,38 +36,26 @@ private extension SettingsView {
 
     var settingButtons: some View {
         VStack(alignment: .trailing) {
-            Button {
-                config.responseHandler(.favouriteSelected)
-                config.responseHandler(.close)
-            } label: {
-                CapsuleButton(
-                    labelText: L.Settings.favouritePokemon,
-                    icon: .loveFill
-                )
+            ForEach(SettingsOption.allCases, id: \.self) { option in
+                CapsuleLabel(data: CapsuleLabelConfiguration(
+                    text: option.text,
+                    image: option.image
+                ))
+                .onTapGesture {
+                    handleTap(for: option)
+                }
             }
-            Button {
-                config.responseHandler(.showAll)
-            } label: {
-                CapsuleButton(
-                    labelText: L.Settings.allType,
-                    icon: .pokeballFill
-                )
-            }
-            Button {
-                showAllGeneration.toggle()
-            } label: {
-                CapsuleButton(
-                    labelText: L.Settings.allGen,
-                    icon: .pokeballFill
-                )
-            }
-            Button {
-                config.responseHandler(.close)
-            } label: {
-                Image(fromImageLiteral: .close)
-                    .padding(.top, 10)
-            }
+            closeButton()
         }
+    }
+
+    @ViewBuilder
+    func closeButton() -> some View {
+        Image(fromImageLiteral: .close)
+            .padding(.top, 10)
+            .onTapGesture {
+                config.responseHandler(.close)
+            }
     }
 
     var generationMenu: some View {
@@ -79,7 +67,7 @@ private extension SettingsView {
     }
 
     var titleLabel: some View {
-        Text(L.Settings.generationTitle)
+        Text(LocalizedString.Settings.generationTitle)
             .font(PokedexFonts.title2)
             .padding(.top, 18)
             .padding(.bottom, 24)
@@ -87,30 +75,80 @@ private extension SettingsView {
     }
 
     var generationButtons: some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.adaptive(minimum: 150))
-            ]
-        ) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))]) {
             ForEach(PokemonGeneration.allCases, id: \.self) { generation in
-                ZStack(alignment: .top) {
-                    Image("\(generation.index)")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 155)
-                    Text("\(L.Settings.generationTitle) \(generation.rawValue)")
-                        .font(PokedexFonts.label1)
-                        .padding(.top, 16)
-                        .foregroundColor(PokedexColors.dark)
-                }
-                .onTapGesture {
-                    showAllGeneration.toggle()
-                    config.responseHandler(.generationSelected(generationId: generation.index))
-                }
-                .shadow(radius: 20)
+                generationView(generation)
             }
         }
         .padding(.horizontal, 26)
+    }
+
+    @ViewBuilder
+    func generationView(_ generation: PokemonGeneration) -> some View {
+        ZStack(alignment: .top) {
+            generationImage(generation)
+            generationText(generation)
+        }
+        .onTapGesture {
+            showAllGeneration.toggle()
+            config.responseHandler(.generationSelected(generationId: generation.index))
+        }
+        .shadow(radius: 20)
+    }
+
+    @ViewBuilder
+    func generationImage(_ generation: PokemonGeneration) -> some View {
+        Image("\(generation.index)")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 155)
+    }
+
+    @ViewBuilder
+    func generationText(_ generation: PokemonGeneration) -> some View {
+        Text("\(LocalizedString.Settings.generationTitle) \(generation.rawValue)")
+            .font(PokedexFonts.label1)
+            .padding(.top, 16)
+            .foregroundColor(PokedexColors.dark)
+    }
+}
+
+// MARK: - Utilities
+private extension SettingsView {
+    func handleTap(for option: SettingsOption) {
+        switch option {
+        case .favourite:
+            config.responseHandler(.favouriteSelected)
+            config.responseHandler(.close)
+        case .allTypes:
+            config.responseHandler(.showAll)
+        case .allGenerations:
+            showAllGeneration.toggle()
+        }
+    }
+}
+
+// MARK: - Setting view configuration
+private extension SettingsView {
+    enum SettingsOption: Hashable, CaseIterable {
+        case favourite
+        case allTypes
+        case allGenerations
+
+        var text: String {
+            switch self {
+            case .favourite: return LocalizedString.Settings.favouritePokemon
+            case .allTypes: return LocalizedString.Settings.allType
+            case .allGenerations: return LocalizedString.Settings.allGen
+            }
+        }
+
+        var image: ImageName {
+            switch self {
+            case .favourite: return .loveFill
+            case .allTypes, .allGenerations: return .pokeballFill
+            }
+        }
     }
 }
 

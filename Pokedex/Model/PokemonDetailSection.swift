@@ -14,9 +14,9 @@ enum PokemonDetailSection: CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .breeding: return L.PokemonDetail.breeding
-        case .training: return L.PokemonDetail.training
-        case .location: return L.PokemonDetail.location
+        case .breeding: return LocalizedString.PokemonDetail.breeding
+        case .training: return LocalizedString.PokemonDetail.training
+        case .location: return LocalizedString.PokemonDetail.location
         }
     }
 
@@ -64,9 +64,9 @@ enum PokemonDetailBreeding: Identifiable, CaseIterable, PokemonDetailItem {
 
     var title: String {
         switch self {
-        case .gender: return L.PokemonDetail.gender
-        case .eggGroup: return L.PokemonDetail.eggGroups
-        case .eggCycle: return L.PokemonDetail.eggCylce
+        case .gender: return LocalizedString.PokemonDetail.gender
+        case .eggGroup: return LocalizedString.PokemonDetail.eggGroups
+        case .eggCycle: return LocalizedString.PokemonDetail.eggCylce
         }
     }
 
@@ -93,7 +93,7 @@ enum PokemonDetailTraining: String, CaseIterable, PokemonDetailItem {
 
     var title: String {
         switch self {
-        case .baseExp: return L.PokemonDetail.experience
+        case .baseExp: return LocalizedString.PokemonDetail.experience
         }
     }
 

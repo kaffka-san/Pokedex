@@ -11,7 +11,7 @@ import SwiftUI
 import XCTest
 final class PokemonCellViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
-    private let genericErrorConfig = AlertConfig(
+    private let genericErrorConfig = AlertConfiguration(
         title: L.Errors.genericTitle,
         message: L.Errors.genericMessage
     )
