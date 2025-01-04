@@ -49,7 +49,7 @@ private extension PokemonCell {
                         font: PokedexFonts.body1
                     )
                 )
-                .frame(width: 43)
+                .frame(width: 48)
                 .padding(.leading, 16)
             }
         }

@@ -16,22 +16,3 @@ extension UIViewController {
         swiftUIController.didMove(toParent: self)
     }
 }
-
-extension UIViewController {
-    var activityIndicator: ActivityIndicatorView {
-        if let existedActivityIndicatorView = view.subviews.first(where: { $0 is ActivityIndicatorView }) as? ActivityIndicatorView {
-            return existedActivityIndicatorView
-        }
-
-        let indicator = ActivityIndicatorView(
-            frame: CGRect(
-                x: UIScreen.main.bounds.midX - 50,
-                y: UIScreen.main.bounds.minY + UIScreen.main.bounds.height / 4,
-                width: 100,
-                height: 100
-            )
-        )
-        view.addSubview(indicator)
-        return indicator
-    }
-}

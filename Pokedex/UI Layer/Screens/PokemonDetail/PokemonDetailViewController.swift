@@ -45,13 +45,6 @@ extension PokemonDetailViewController {
 private extension PokemonDetailViewController {
     func prepareViewModel() {
         bindCloseView()
-        bindIsLoading()
-    }
-
-    func bindIsLoading() {
-        viewModel.$isLoading
-            .assign(to: \.isAnimating, on: activityIndicator)
-            .store(in: &disposeBag)
     }
 
     func bindCloseView() {

@@ -45,14 +45,7 @@ extension AllPokemonViewController {
 // MARK: - Prepare methods for View model
 private extension AllPokemonViewController {
     func prepareViewModel() {
-        bindIsLoading()
         bindFavouritePokemonChanged()
-    }
-
-    func bindIsLoading() {
-        viewModel.$isLoading
-            .assign(to: \.isAnimating, on: activityIndicator)
-            .store(in: &disposeBag)
     }
 
     func bindFavouritePokemonChanged() {
