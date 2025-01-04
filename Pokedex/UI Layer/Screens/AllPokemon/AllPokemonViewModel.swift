@@ -6,7 +6,6 @@
 //
 
 import Combine
-import CoreLocation
 import Foundation
 
 final class AllPokemonViewModel: NSObject, ObservableObject {
@@ -20,7 +19,6 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
     @Published var disablePagination = false
     @Published var favouriteIds = Set<Int>()
     @Published var showingFavourites = false
-    @Published var userLocation = MockLocation.location
     @Published private var lastGenerationIndex = 0
     @Published var pokemons = [Pokemon]() {
         didSet {
@@ -63,13 +61,11 @@ extension AllPokemonViewModel {
     }
 
     func getFavourite() {
-        if showingFavourites {
-            showingFavourites = true
-            favouriteIds = UserDefaultsValue.favouriteIds
-            pokemons = []
-            pokemons = favouriteIds.map { id in
-                Pokemon(name: "", url: "\(id)")
-            }
+        showingFavourites = true
+        favouriteIds = UserDefaultsValue.favouriteIds
+        pokemons = []
+        pokemons = favouriteIds.map { id in
+            Pokemon(name: "", url: "\(id)")
         }
     }
 
@@ -148,8 +144,8 @@ extension AllPokemonViewModel {
             name: pokemon.name,
             types: pokemon.types.map { $0.type.name },
             imgUrl: pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault ?? "",
-            weight: convertToPoundsAndKilograms(pokemon.weight),
-            height: convertToFeetInchesAndCentimeters(pokemon.height),
+            weight: PokemonConversionUtils.convertToPoundsAndKilograms(pokemon.weight),
+            height: PokemonConversionUtils.convertToFeetInchesAndCentimeters(pokemon.height),
             baseExperience: describeValue(pokemon.baseExperience)
         )
 
@@ -186,32 +182,5 @@ private extension AllPokemonViewModel {
             title: error.localizedDescription.title,
             message: error.localizedDescription.message
         )
-    }
-
-    func convertToPoundsAndKilograms(_ value: Int) -> String {
-        let weightInKilograms = Double(value) / 10.0
-        let weightInPounds = weightInKilograms * 2.20462 // Convert kg to lbs
-        let formattedWeightInKilograms = String(format: "%.1f kg", weightInKilograms)
-        let formattedWeightInPounds = String(format: "%.1f lbs", weightInPounds)
-
-        return "\(formattedWeightInPounds) (\(formattedWeightInKilograms))"
-    }
-
-    func convertToFeetInchesAndCentimeters(_ decimeters: Int) -> String {
-        let centimetersPerDecimeter = 10.0
-        let centimetersPerInch = 2.54
-        let inchesPerFoot = 12.0
-        // Convert decimeters to centimeters
-        let centimeters = Double(decimeters) * centimetersPerDecimeter
-        // Convert centimeters to inches
-        let totalInches = centimeters / centimetersPerInch
-        // Calculate feet and the remaining inches
-        let feet = Int(totalInches / inchesPerFoot)
-        let inches = totalInches.truncatingRemainder(dividingBy: inchesPerFoot)
-        // Format the height in feet and inches
-        let formattedHeightInFeetAndInches = "\(feet)'\(String(format: "%.1f", inches))\""
-        // Format the height in centimeters
-        let formattedHeightInCentimeters = String(format: "%.0f cm", centimeters)
-        return "\(formattedHeightInFeetAndInches) (\(formattedHeightInCentimeters))"
     }
 }

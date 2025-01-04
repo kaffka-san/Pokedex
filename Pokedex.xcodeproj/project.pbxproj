@@ -30,9 +30,9 @@
 		30F6D0132D28682A0091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				PokemonCellViewModelTests.swift,
-				PokemonDetailViewModelTests.swift,
-				PokemonsViewModelTests.swift,
+				ViewModels/PokemonConversionUtilsTests.swift,
+				ViewModels/PokemonDetailViewModelTests.swift,
+				ViewModels/PokemonsViewModelTests.swift,
 			);
 			target = 309659AC2AF55DEE00B2BE78 /* Pokedex */;
 		};
@@ -46,16 +46,47 @@
 		30F6D0CA2D28688C0091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Coordinators/AllPokemonFlow.swift,
+				Coordinators/Coordinator.swift,
+				"Extensions/Array+Ext.swift",
+				"Extensions/CLLocationCoordinate2D+Ext.swift",
+				"Extensions/Notification+Ext.swift",
+				"Extensions/String+Ext.swift",
+				Helpers/Conversations/PokemonConversationUtilities.swift,
+				Helpers/UserDefaults/UserDefaults.swift,
+				Managers/LocationManager.swift,
+				Managers/LocationManagerProtocol.swift,
+				Managers/SoundManager.swift,
+				Model/Alert/AlertConfiguration.swift,
+				Model/Constants/Constants.swift,
+				Model/Location.swift,
+				Model/Pokemon.swift,
+				Model/PokemonConfig.swift,
+				Networking/APIManager/APICommunication.swift,
 				Networking/APIManager/ApiConvertible.swift,
 				Networking/APIManager/APIManager.swift,
+				Networking/APIManager/HTTPMethod.swift,
+				Networking/APIManager/NetworkingError.swift,
+				Networking/APIManager/PokemonsRouter.swift,
+				Networking/APIManager/PokemonsService.swift,
+				Resourses/Colors.swift,
 				Resourses/Localization/Localization.swift,
+				"UI Layer/Screens/AllPokemon/AllPokemonViewModel.swift",
+				"UI Layer/Screens/PokemonDetail/PokemonDetailViewModel.swift",
+			);
+			target = 305FB3492AFBD72B003804B8 /* PokedexTests */;
+		};
+		30F6D39B2D29B2C20091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Mocks/MockLocation.swift,
 			);
 			target = 305FB3492AFBD72B003804B8 /* PokedexTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		30F6CFF42D28682A0091E842 /* PokedexTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (30F6D0132D28682A0091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PokedexTests; sourceTree = "<group>"; };
+		30F6CFF42D28682A0091E842 /* PokedexTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (30F6D0132D28682A0091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 30F6D39B2D29B2C20091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PokedexTests; sourceTree = "<group>"; };
 		30F6D0792D28688C0091E842 /* Pokedex */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (30F6D0C92D28688C0091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 30F6D0CA2D28688C0091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Pokedex; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 

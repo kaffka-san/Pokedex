@@ -36,7 +36,3 @@ extension AllPokemonCoordinator: AllPokemonFlow {
         coordinate(to: coordinator)
     }
 }
-
-protocol AllPokemonFlow {
-    func showDetail(pokemon: PokemonDetailConfig)
-}

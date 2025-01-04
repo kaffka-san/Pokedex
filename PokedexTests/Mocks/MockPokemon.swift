@@ -22,6 +22,20 @@ enum MockPokemon {
         baseExperience: "64"
     )
 
+    static let pokemonDetailConfig2 = PokemonDetailConfig(
+        id: 2,
+        url: "https://pokeapi.co/api/v2/pokemon-form/2/",
+        name: "ivysaur",
+        types: [
+            "Grass",
+            "Poison"
+        ],
+        imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+        weight: "130",
+        height: "10",
+        baseExperience: "142"
+    )
+
     static let emptyPokemonSpecies = PokemonSpeciesConfig(
         description: "",
         eggGroups: [],
@@ -32,4 +46,6 @@ enum MockPokemon {
         ),
         hatchCounter: ""
     )
+
+    static let pokemon = Pokemon(name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/1/")
 }

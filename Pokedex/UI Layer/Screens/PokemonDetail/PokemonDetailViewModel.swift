@@ -5,10 +5,9 @@
 //  Created by Anastasia Lenina on 05.11.2023.
 //
 
-import AVFoundation
 import Combine
 import MapKit
-import SwiftUI
+import SwiftUI // TODO: delete and change region placement
 
 final class PokemonDetailViewModel: ObservableObject {
     private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
@@ -64,7 +63,7 @@ extension PokemonDetailViewModel {
             center: coordinate,
             span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
         ))
-        pokemonsLocations = getRandomLocationsNearUser(radius: 500)
+        pokemonsLocations = locationManager.getRandomLocationsNearUser(radius: 500)
     }
 
     func goBack() {
@@ -117,16 +116,6 @@ extension PokemonDetailViewModel {
             soundManager.playSound(named: AssetsSound.pikachu)
         }
     }
-}
-
-// MARK: - Private methods
-private extension PokemonDetailViewModel {
-    func showAlert(for error: NetworkingError) {
-        alertConfig = AlertConfiguration(
-            title: error.localizedDescription.title,
-            message: error.localizedDescription.message
-        )
-    }
 
     func loadNextPokemon() {
         guard let pokemon = pokemon else { return }
@@ -158,30 +147,6 @@ private extension PokemonDetailViewModel {
         }
     }
 
-    @MainActor
-    func updatePrevious(pokemonDetail: PokemonDetail) {
-        previousImageUrl = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
-    }
-
-    @MainActor
-    func updateNext(pokemonDetail: PokemonDetail) {
-        nextImageUrl = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
-    }
-
-    @MainActor
-    func updateSpecies(pokemonDetail: PokemonSpecies) {
-        guard let pokemon = pokemon else { return }
-        pokemonSpecies = PokemonSpeciesConfig(
-            description: findLastOccurrence(
-                of: pokemon.name,
-                in: pokemonDetail.flavorTextEntries.map { $0.flavorText }
-            ),
-            eggGroups: pokemonDetail.eggGroups.map { $0.name },
-            gender: getPokemonGenderChance(femaleEighths: pokemonDetail.genderRate),
-            hatchCounter: calculateHatchingSteps(initialHatchCounter: pokemonDetail.hatchCounter)
-        )
-    }
-
     // The chance of this Pokemon being female, in eighths; or -1 for genderless
     func getPokemonGenderChance(femaleEighths: Int) -> Gender {
         switch femaleEighths {
@@ -197,31 +162,35 @@ private extension PokemonDetailViewModel {
             return Gender(male: "\(malePercentage)%", female: "\(femalePercentage)%", genderCase: .maleFemale)
         }
     }
+}
 
-    func findLastOccurrence(of name: String, in array: [String]) -> String {
-        let uppercasedName = name.uppercased()
-        let filteredArray = array.filter { $0.contains(uppercasedName) }
-        return removeNewLines(from: filteredArray.last ?? LocalizedString.PokemonDetail.defaultString)
+// MARK: - Private methods
+private extension PokemonDetailViewModel {
+    func showAlert(for error: NetworkingError) {
+        alertConfig = AlertConfiguration(
+            title: error.localizedDescription.title,
+            message: error.localizedDescription.message
+        )
     }
 
-    func removeNewLines(from string: String) -> String {
-        string.replacingOccurrences(of: "\n", with: "")
+    @MainActor
+    func updatePrevious(pokemonDetail: PokemonDetail) {
+        previousImageUrl = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
     }
 
-    // Initial hatch counter: one must walk 255 × (hatch_counter + 1) steps before this Pokemon's egg hatches
-    func calculateHatchingSteps(initialHatchCounter: Int?) -> String {
-        guard let counter = initialHatchCounter else {
-            return LocalizedString.PokemonDetail.defaultString
-        }
-        let baseSteps = 255
-        return "\(baseSteps * (counter + 1)) \(LocalizedString.PokemonDetail.steps)"
+    @MainActor
+    func updateNext(pokemonDetail: PokemonDetail) {
+        nextImageUrl = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? pokemonDetail.sprites.frontDefault
     }
 
-    func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
-        guard let coordinate = locationManager.location?.coordinate else { return [] }
-        // Generate a random number of locations to create
-        let numberOfLocations = Int.random(in: 1...4)
-        let locations = (1...numberOfLocations).map { _ in Location(coordinate: coordinate.randomLocationWithin(radius: radius)) }
-        return locations
+    @MainActor
+    func updateSpecies(pokemonDetail: PokemonSpecies) {
+        guard let pokemon = pokemon else { return }
+        pokemonSpecies = PokemonSpeciesConfig(
+            description: pokemonDetail.flavorTextEntries.map { $0.flavorText }.findLastOccurrence(of: pokemon.name),
+            eggGroups: pokemonDetail.eggGroups.map { $0.name },
+            gender: getPokemonGenderChance(femaleEighths: pokemonDetail.genderRate),
+            hatchCounter: PokemonConversionUtils.calculateHatchingSteps(initialHatchCounter: pokemonDetail.hatchCounter)
+        )
     }
 }
