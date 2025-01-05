@@ -16,7 +16,7 @@ struct HeadLineText: View {
 
     var body: some View {
         Text(text)
-            .font(PokedexFonts.headline2)
+            .font(.headlineSmall)
             .foregroundColor(PokedexColors.dark)
             .frame(maxWidth: .infinity, alignment: .leading)
     }

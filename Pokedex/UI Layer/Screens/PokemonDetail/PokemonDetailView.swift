@@ -70,7 +70,7 @@ private extension PokemonDetailView {
     @ViewBuilder
     func largeTitle() -> some View {
         titleText
-            .font(.system(size: 36, weight: .black))
+            .font(.largeTitle)
             .hAlign(.leading)
             .padding(.bottom, 10)
             .opacity(isLargeTitle ? 1 : 0)
@@ -92,22 +92,7 @@ private extension PokemonDetailView {
                 UserAnnotation()
                 ForEach(viewModel.pokemonsLocations) { location in
                     Annotation("", coordinate: location.coordinate) {
-                        CacheAsyncImage(url: URL(string: viewModel.pokemon?.imgUrl ?? "")) { phase in
-                            switch phase {
-                            case let .success(image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                            case .failure, .empty:
-                                Color.clear
-                            }
-                        }
-                        .frame(width: 40, height: 40)
-                        .opacity(pokemonPinsOpacity)
-                        .animation(.easeIn(duration: 1.0), value: pokemonPinsOpacity)
-                        .onAppear {
-                            pokemonPinsOpacity = 1.0
-                        }
+                        annotationView()
                     }
                 }
             }
@@ -118,6 +103,26 @@ private extension PokemonDetailView {
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, isLandscape ? 100 : 26)
+    }
+
+    @ViewBuilder
+    func annotationView() -> some View {
+        CacheAsyncImage(url: URL(string: viewModel.pokemon?.imgUrl ?? "")) { phase in
+            switch phase {
+            case let .success(image):
+                image
+                    .resizable()
+                    .scaledToFit()
+            case .failure, .empty:
+                Color.clear
+            }
+        }
+        .frame(width: 40, height: 40)
+        .opacity(pokemonPinsOpacity)
+        .animation(.easeIn(duration: 1.0), value: pokemonPinsOpacity)
+        .onAppear {
+            pokemonPinsOpacity = 1.0
+        }
     }
 }
 
@@ -139,7 +144,7 @@ private extension PokemonDetailView {
     @ViewBuilder
     func smallTitle() -> some View {
         titleText
-            .font(.system(size: 22, weight: .black))
+            .font(.smallTitle)
             .hAlign(.center)
             .padding(.top, 0)
             .opacity(isLargeTitle ? 0 : 1)
@@ -197,7 +202,7 @@ private extension PokemonDetailView {
                     CapsuleText(
                         CapsuleTextConfiguration(
                             text: type,
-                            font: PokedexFonts.body2
+                            font: .bodySmall
                         )
                     )
                     .frame(width: 70)
@@ -209,7 +214,7 @@ private extension PokemonDetailView {
 
     var pokemonId: some View {
         Text(viewModel.idFormatted)
-            .font(PokedexFonts.headline1)
+            .font(.headlineLarge)
             .foregroundColor(.white)
             .padding(.trailing, 20)
             .padding(.trailing, isLandscape ? 46 : 0)
@@ -289,7 +294,7 @@ private extension PokemonDetailView {
 
     var description: some View {
         Text(viewModel.pokemonSpecies.description)
-            .font(PokedexFonts.body3)
+            .font(.bodyRegular)
             .padding(.top, 50)
             .padding(.horizontal, isLandscape ? 100 : 20)
             .padding(.bottom, isLandscape ? 0 : 20)
@@ -407,7 +412,7 @@ private extension PokemonDetailView {
     @ViewBuilder
     func genderTitle() -> some View {
         Text(LocalizedString.PokemonDetail.gender)
-            .font(PokedexFonts.label1)
+            .font(.labelRegular)
             .foregroundColor(PokedexColors.lightGray)
             .frame(width: 100, alignment: .leading)
     }
@@ -415,7 +420,7 @@ private extension PokemonDetailView {
     @ViewBuilder
     func genderlessView() -> some View {
         Text(viewModel.pokemonSpecies.gender.genderless)
-            .font(PokedexFonts.body3)
+            .font(.bodyRegular)
             .foregroundColor(PokedexColors.dark)
             .frame(alignment: .leading)
     }
@@ -423,23 +428,23 @@ private extension PokemonDetailView {
     @ViewBuilder
     func maleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.male, image: .male)
-            .font(PokedexFonts.body3)
+            .font(.bodyRegular)
     }
 
     @ViewBuilder
     func femaleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.female, image: .female)
-            .font(PokedexFonts.body3)
+            .font(.bodyRegular)
             .foregroundColor(PokedexColors.dark)
     }
 
     @ViewBuilder
     func maleFemaleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.male, image: .male)
-            .font(PokedexFonts.body3)
+            .font(.bodyRegular)
             .foregroundColor(PokedexColors.dark)
         Label(viewModel.pokemonSpecies.gender.female, image: .female)
-            .font(PokedexFonts.body3)
+            .font(.bodyRegular)
             .foregroundColor(PokedexColors.dark)
     }
 }

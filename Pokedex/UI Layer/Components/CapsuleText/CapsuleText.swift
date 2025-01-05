@@ -31,7 +31,7 @@ struct CapsuleText<DataConfigurable: CapsuleTextConfigurable>: View {
     CapsuleText(
         CapsuleTextConfiguration(
             text: "Electric",
-            font: PokedexFonts.body1
+            font: .labelSmall
         )
     )
     .frame(width: 100)

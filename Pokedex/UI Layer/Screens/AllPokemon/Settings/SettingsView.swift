@@ -68,7 +68,7 @@ private extension SettingsView {
 
     var titleLabel: some View {
         Text(LocalizedString.Settings.generationTitle)
-            .font(PokedexFonts.title2)
+            .font(.title)
             .padding(.top, 18)
             .padding(.bottom, 24)
             .foregroundColor(PokedexColors.dark)
@@ -107,7 +107,7 @@ private extension SettingsView {
     @ViewBuilder
     func generationText(_ generation: PokemonGeneration) -> some View {
         Text("\(LocalizedString.Settings.generationTitle) \(generation.rawValue)")
-            .font(PokedexFonts.label1)
+            .font(.labelRegular)
             .padding(.top, 16)
             .foregroundColor(PokedexColors.dark)
     }

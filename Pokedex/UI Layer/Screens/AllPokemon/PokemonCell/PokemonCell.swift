@@ -46,7 +46,7 @@ private extension PokemonCell {
                 CapsuleText(
                     CapsuleTextConfiguration(
                         text: type.type.name,
-                        font: PokedexFonts.body1
+                        font: .labelSmall
                     )
                 )
                 .frame(width: 48)
@@ -57,7 +57,7 @@ private extension PokemonCell {
 
     var pokemonName: some View {
         Text(pokemon.name.capitalized)
-            .font(PokedexFonts.label1)
+            .font(.labelRegular)
             .frame(width: 90, alignment: .leading)
             .foregroundStyle(.white)
             .padding(.leading, 16)
@@ -91,7 +91,7 @@ private extension PokemonCell {
 
     var idLabel: some View {
         Text(pokemon.idFormatted)
-            .font(PokedexFonts.label1)
+            .font(.labelRegular)
             .foregroundStyle(.black.opacity(0.2))
             .multilineTextAlignment(.trailing)
     }
