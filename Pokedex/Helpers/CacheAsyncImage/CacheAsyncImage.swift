@@ -35,7 +35,7 @@ import SwiftUI
 struct CacheAsyncImage<Content: View>: View {
     let url: URL?
     var content: (AsyncImagePhase) -> Content
-    @State private var phase: AsyncImagePhase = .empty
+    @State private var phase: AsyncImagePhase
 
     /// - Parameters:
     ///   - url: The URL of the image to load. If this is `nil`, the loading process will not begin.
@@ -44,7 +44,10 @@ struct CacheAsyncImage<Content: View>: View {
     init(url: URL?, @ViewBuilder content: @escaping (AsyncImagePhase) -> Content) {
         self.url = url
         self.content = content
-        guard let image = UIImage.getImageFromCache(from: url) else { return }
+        guard let image = UIImage.getImageFromCache(from: url) else {
+            phase = .empty
+            return
+        }
         phase = .success(image)
     }
 

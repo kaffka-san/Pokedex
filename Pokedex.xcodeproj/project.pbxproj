@@ -31,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		300341062D2B321300709B04 /* Pokedex.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pokedex.xctestplan; sourceTree = "<group>"; };
 		305FB34A2AFBD72B003804B8 /* PokedexTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokedexTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		309659AD2AF55DEE00B2BE78 /* Pokedex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pokedex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30F6D5E62D2B0F5E0091E842 /* PokedexSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokedexSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +145,7 @@
 		309659A42AF55DEE00B2BE78 = {
 			isa = PBXGroup;
 			children = (
+				300341062D2B321300709B04 /* Pokedex.xctestplan */,
 				30F6D0792D28688C0091E842 /* Pokedex */,
 				30F6CFF42D28682A0091E842 /* PokedexTests */,
 				30F6D5E72D2B0F5E0091E842 /* PokedexSnapshotTests */,
