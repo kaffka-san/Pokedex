@@ -24,3 +24,22 @@ final class MockFailingPokemonsAPI: PokemonServiceProtocol {
         throw NetworkingError.genericError
     }
 }
+
+final class MockPokemonsAPI: PokemonServiceProtocol {
+    func getPokemons(offset _: Int) async throws -> Pokemons {
+        Pokemons(count: 100, next: "", results: [MockPokemon.pokemon])
+    }
+
+    func getPokemonDetail(name _: String) async throws -> PokemonDetail {
+        MockPokemon.pokemonDetail
+    }
+
+    func getPokemonSpecies(name _: String) async throws -> PokemonSpecies {
+        print("🦄 getting species")
+        return MockPokemon.pokemonSpecies
+    }
+
+    func getPokemonForGeneration(generation _: Int) async throws -> PokemonsGeneration {
+        MockPokemon.mockGeneration
+    }
+}

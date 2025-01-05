@@ -104,10 +104,12 @@ private extension AllPokemonView {
     }
 }
 
-#Preview {
-    AllPokemonView(
-        viewModel: AllPokemonViewModel(
-            pokemonService: PokemonService(apiManager: MockAPIManager())
+struct AllPokemonView_Previews: PreviewProvider {
+    static var previews: some View {
+        AllPokemonView(
+            viewModel: AllPokemonViewModel(
+                pokemonService: PokemonService(apiManager: MockAPIManager())
+            )
         )
-    )
+    }
 }

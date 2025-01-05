@@ -247,13 +247,14 @@ private extension PokemonDetailView {
                     .scaledToFill()
                     .opacity(0.3)
                     .frame(width: 150)
-                CacheAsyncImage(url: URL(string: pokemon.imgUrl)) { state in
-                    if let image = state.image {
+                CacheAsyncImage(url: URL(string: pokemon.imgUrl)) { phase in
+                    switch phase {
+                    case .empty, .failure:
+                        ProgressView()
+                    case let .success(image):
                         image
                             .resizable()
                             .scaledToFit()
-                    } else {
-                        ProgressView()
                     }
                 }
             }
@@ -460,13 +461,40 @@ private extension PokemonDetailView {
     }
 }
 
+// struct PokemonDetailView_Previews: PreviewProvider {
+//    static var viewModel = PokemonDetailViewModel(
+//        locationManager: LocationManager(),
+//        soundManager: SoundManager(),
+//        pokemonService: PokemonService(apiManager: MockAPIManager())
+//    )
+//
+//    static let imageURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+//    static var previews: some View {
+//        PokemonDetailView(viewModel: viewModel)
+//            .onAppear {
+//                viewModel.pokemon = PokemonDetailConfig(
+//                    id: 1,
+//                    url: "https://pokeapi.co/api/v2/pokemon/1/",
+//                    name: "Bulbasaur",
+//                    types: ["Grass", "Poison"],
+//                    imgUrl: imageURL,
+//                    weight: "13.2 lbs (6.9 kg)",
+//                    height: "1' 04 (0.70 cm)",
+//                    baseExperience: "64"
+//                )
+//                viewModel.loadPokemonSpecies()
+//            }
+//    }
+// }
+
 struct PokemonDetailView_Previews: PreviewProvider {
     static var viewModel = PokemonDetailViewModel(
         locationManager: LocationManager(),
         soundManager: SoundManager(),
-        pokemonService: PokemonService(apiManager: MockAPIManager())
+        pokemonService: MockPokemonsAPI()
     )
 
+    static let imageURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
     static var previews: some View {
         PokemonDetailView(viewModel: viewModel)
             .onAppear {
@@ -475,7 +503,7 @@ struct PokemonDetailView_Previews: PreviewProvider {
                     url: "https://pokeapi.co/api/v2/pokemon/1/",
                     name: "Bulbasaur",
                     types: ["Grass", "Poison"],
-                    imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+                    imgUrl: imageURL,
                     weight: "13.2 lbs (6.9 kg)",
                     height: "1' 04 (0.70 cm)",
                     baseExperience: "64"
