@@ -52,33 +52,3 @@ final class HostingController<Content: View>: UIHostingController<Content> {
         view.setNeedsUpdateConstraints()
     }
 }
-
-class SwiftUIRepresentableView<SwiftUIChild: SwiftUI.View>: UIView {
-    var hostingController: HostingController<SwiftUIChild>!
-
-    init(_ child: SwiftUIChild) {
-        super.init(frame: .zero)
-        hostingController = HostingController(rootView: child)
-        layout()
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-// MARK: - Auto layout
-private extension SwiftUIRepresentableView {
-    func layout() {
-        addSubview(hostingController.view)
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            hostingController.view.leadingAnchor.constraint(equalTo: leadingAnchor),
-            hostingController.view.topAnchor.constraint(equalTo: topAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: trailingAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
-}

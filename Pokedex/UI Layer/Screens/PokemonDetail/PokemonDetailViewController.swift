@@ -56,24 +56,6 @@ private extension PokemonDetailViewController {
     }
 }
 
-// MARK: - Actions
-private extension PokemonDetailViewController {
-    @objc
-    func toggleFavourite() {
-        guard let pokemon = viewModel.pokemon else { return }
-        if viewModel.isFavourite {
-            viewModel.favouriteIds.remove(pokemon.id)
-
-        } else {
-            viewModel.favouriteIds.insert(pokemon.id)
-        }
-        viewModel.isFavourite.toggle()
-        if let encodedData = try? JSONEncoder().encode(viewModel.favouriteIds) {
-            UserDefaults.standard.set(encodedData, forKey: Constants.favourite)
-        }
-    }
-}
-
 // MARK: - Auto Layout
 private extension PokemonDetailViewController {
     func layout() {

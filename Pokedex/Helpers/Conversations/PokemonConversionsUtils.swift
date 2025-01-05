@@ -1,5 +1,5 @@
 //
-//  PokemonConversationUtilities.swift
+//  PokemonConversionsUtils.swift
 //  Pokedex
 //
 //  Created by Anastasia Lenina on 04.01.2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PokemonConversionUtils {
+enum PokemonConversionsUtils {
     static func convertToPoundsAndKilograms(_ value: Int) -> String {
         let weightInKilograms = Double(value) / 10.0
         let weightInPounds = weightInKilograms * 2.20462 // Convert kg to lbs
@@ -42,5 +42,22 @@ enum PokemonConversionUtils {
         }
         let baseSteps = 255
         return "\(baseSteps * (counter + 1)) \(LocalizedString.PokemonDetail.steps)"
+    }
+
+    // The chance of this Pokemon being female, in eighths; or -1 for genderless
+
+    static func getPokemonGenderChance(index: Int) -> Gender {
+        switch index {
+        case -1:
+            return Gender(male: "", female: "", genderCase: .genderless)
+        case 0:
+            return Gender(male: "100%", female: "", genderCase: .male)
+        case 8:
+            return Gender(male: "", female: "100%", genderCase: .female)
+        default:
+            let femalePercentage = (index * 100) / 8
+            let malePercentage = 100 - femalePercentage
+            return Gender(male: "\(malePercentage)%", female: "\(femalePercentage)%", genderCase: .maleFemale)
+        }
     }
 }
