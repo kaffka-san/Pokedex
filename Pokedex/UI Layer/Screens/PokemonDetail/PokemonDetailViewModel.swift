@@ -10,7 +10,7 @@ import MapKit
 import SwiftUI // TODO: delete and change region placement
 
 final class PokemonDetailViewModel: ObservableObject {
-    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
+    private let pokemonService: PokemonServiceProtocol
     private let soundManager: SoundManagerProtocol
     private var disposeBag = Set<AnyCancellable>()
     private let dataLoadedSubject = PassthroughSubject<Result<Void, NetworkingError>, Never>()
@@ -138,22 +138,6 @@ extension PokemonDetailViewModel {
             } catch {}
         }
     }
-
-    // The chance of this Pokemon being female, in eighths; or -1 for genderless
-    func getPokemonGenderChance(femaleEighths: Int) -> Gender {
-        switch femaleEighths {
-        case -1:
-            return Gender(male: "", female: "", genderCase: .genderless)
-        case 0:
-            return Gender(male: "100%", female: "", genderCase: .male)
-        case 8:
-            return Gender(male: "", female: "100%", genderCase: .female)
-        default:
-            let femalePercentage = (femaleEighths * 100) / 8
-            let malePercentage = 100 - femalePercentage
-            return Gender(male: "\(malePercentage)%", female: "\(femalePercentage)%", genderCase: .maleFemale)
-        }
-    }
 }
 
 // MARK: - Private methods
@@ -179,10 +163,7 @@ private extension PokemonDetailViewModel {
     func updateSpecies(pokemonDetail: PokemonSpecies) {
         guard let pokemon = pokemon else { return }
         pokemonSpecies = PokemonSpeciesConfig(
-            description: pokemonDetail.flavorTextEntries.map { $0.flavorText }.findLastOccurrence(of: pokemon.name),
-            eggGroups: pokemonDetail.eggGroups.map { $0.name },
-            gender: getPokemonGenderChance(femaleEighths: pokemonDetail.genderRate),
-            hatchCounter: PokemonConversionUtils.calculateHatchingSteps(initialHatchCounter: pokemonDetail.hatchCounter)
+            pokemonSpecies: pokemonDetail, pokemonName: pokemon.name
         )
     }
 }

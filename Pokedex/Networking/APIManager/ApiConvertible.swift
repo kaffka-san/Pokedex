@@ -44,8 +44,6 @@ extension APIConvertible {
     }
 }
 
-// typealias RequestImageData = [String: Data]
-
 extension APIConvertible {
     var baseURLComponents: URLComponents {
         var components = URLComponents()
@@ -66,29 +64,5 @@ extension APIConvertible {
         request.url?.appendPathComponent("\(apiVersion.rawValue)/\(path)")
         request.httpMethod = httpMethod.rawValue
         return request
-    }
-}
-
-struct PokedexAPI: PokedexAPIRepresentable {
-    let urlScheme = "https"
-    var urlHost: String {
-        "pokeapi.co"
-    }
-
-    let urlPath = "/api"
-}
-
-protocol PokedexAPIRepresentable {
-    var urlScheme: String { get }
-    var urlHost: String { get }
-    var urlPath: String { get }
-}
-
-enum ApiVersion: String, Codable {
-    case version1 = "v1"
-    case version2 = "v2"
-
-    static var defaultVersion: ApiVersion {
-        .version2
     }
 }

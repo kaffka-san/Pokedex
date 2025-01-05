@@ -16,7 +16,7 @@ protocol PokemonServiceProtocol {
 }
 
 final class PokemonService {
-    private let apiManager: APIManager!
+    private let apiManager: APIManager
 
     init(apiManager: APIManager) {
         self.apiManager = apiManager

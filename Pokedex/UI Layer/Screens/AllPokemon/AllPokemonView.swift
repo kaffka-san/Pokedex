@@ -9,10 +9,10 @@ import SwiftUI
 
 struct AllPokemonView: View {
     @ObservedObject var viewModel: AllPokemonViewModel
-
+    @State var showSettingsMenu = false
     var body: some View {
         content
-            .onAppear { viewModel.loadPokemons() }
+            .onAppear { viewModel.loadPokemons(isInitialLoad: true) }
             .refreshable { viewModel.refresh() }
             .onChange(of: viewModel.favouriteIds) { viewModel.getFavourite() }
             .alert(item: $viewModel.alertConfig) { item in
@@ -42,7 +42,7 @@ private extension AllPokemonView {
 
     var settingsMenu: some View {
         Button {
-            viewModel.showSettingsMenu.toggle()
+            showSettingsMenu.toggle()
         } label: {
             Image(fromImageLiteral: .settings)
                 .padding(.trailing, 26)
@@ -56,21 +56,21 @@ private extension AllPokemonView {
                 responseHandler: { response in
                     switch response {
                     case .close:
-                        viewModel.showSettingsMenu.toggle()
+                        showSettingsMenu.toggle()
                     case .favouriteSelected:
                         viewModel.getFavourite()
                     case .showAll:
-                        viewModel.showSettingsMenu.toggle()
+                        showSettingsMenu.toggle()
                         viewModel.showAllPokemons()
                     case let .generationSelected(generationId):
-                        viewModel.showSettingsMenu.toggle()
+                        showSettingsMenu.toggle()
                         viewModel.loadGeneration(index: generationId)
                     }
                 }
             )
         )
-        .opacity(viewModel.showSettingsMenu ? 1 : 0)
-        .animation(.easeInOut, value: viewModel.showSettingsMenu)
+        .opacity(showSettingsMenu ? 1 : 0)
+        .animation(.easeInOut, value: showSettingsMenu)
     }
 
     var pokemonList: some View {
@@ -92,7 +92,7 @@ private extension AllPokemonView {
         )
         .environmentObject(viewModel)
         .onAppear {
-            viewModel.loadNextPage(for: pokemon)
+            viewModel.loadPokemons(triggerPokemon: pokemon)
         }
     }
 

@@ -9,20 +9,19 @@ import Combine
 import Foundation
 
 final class AllPokemonViewModel: NSObject, ObservableObject {
-    private let pokemonService: PokemonServiceProtocol! // swiftlint:disable:this implicitly_unwrapped_optional
+    private let pokemonService: PokemonServiceProtocol
     var coordinator: AllPokemonFlow?
 
     @Published var pokemonsDetailed = [PokemonDetail]()
     @Published var alertConfig: AlertConfiguration?
     @Published var isLoading = false
-    @Published var showSettingsMenu = false
     @Published var disablePagination = false
     @Published var favouriteIds = Set<Int>()
     @Published var showingFavourites = false
     @Published private var lastGenerationIndex = 0
     @Published var pokemons = [Pokemon]() {
         didSet {
-            _ = pokemons.map { loadPokemon(for: $0) }
+            _ = pokemons.map { loadPokemonDetail(for: $0) }
         }
     }
 
@@ -33,18 +32,36 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
 
 // MARK: - Public methods
 extension AllPokemonViewModel {
+//    @MainActor
+//    func loadPokemons() {
+//        isLoading = true
+//        Task { [weak self] in
+//            guard let self else { return }
+//            do {
+//                let pokemonsList = try await pokemonService.getPokemons(offset: 0)
+//                isLoading = false
+//                update(pokemonsList: pokemonsList)
+//            } catch let error as NetworkingError {
+//                isLoading = false
+//                showAlert(for: error)
+//            }
+//        }
+//    }
+
     @MainActor
-    func loadPokemons() {
+    func loadPokemons(isInitialLoad: Bool = false, triggerPokemon: Pokemon? = nil) {
+        guard canLoadPokemons(isInitialLoad: isInitialLoad, triggerPokemon: triggerPokemon) else { return }
         isLoading = true
+
         Task { [weak self] in
+            defer { self?.isLoading = false }
             guard let self else { return }
             do {
-                let pokemonsList = try await pokemonService.getPokemons(offset: 0)
-                isLoading = false
-                update(pokemonsList: pokemonsList)
+                let offset = isInitialLoad ? 0 : pokemons.count
+                let pokemonsList = try await pokemonService.getPokemons(offset: offset)
+                self.handleFetchedPokemons(pokemonsList, isInitialLoad: isInitialLoad)
             } catch let error as NetworkingError {
-                isLoading = false
-                showAlert(for: error)
+                self.showAlert(for: error)
             }
         }
     }
@@ -56,7 +73,7 @@ extension AllPokemonViewModel {
         } else if disablePagination {
             loadGeneration(index: lastGenerationIndex)
         } else {
-            loadPokemons()
+            loadPokemons(isInitialLoad: true)
         }
     }
 
@@ -71,7 +88,7 @@ extension AllPokemonViewModel {
 
     @MainActor
     func showAllPokemons() {
-        loadPokemons()
+        loadPokemons(isInitialLoad: true)
         showingFavourites = false
         disablePagination = false
         lastGenerationIndex = 0
@@ -95,27 +112,7 @@ extension AllPokemonViewModel {
         }
     }
 
-    @MainActor
-    func loadNextPage(for pokemon: Pokemon) {
-        guard !isLoading, !disablePagination, !showingFavourites else { return }
-        let isLastPost = pokemons.last?.id == pokemon.id
-        if isLastPost {
-            isLoading = true
-            Task { [weak self] in
-                guard let self else { return }
-                do {
-                    let pokemons = try await pokemonService.getPokemons(offset: self.pokemons.count)
-                    self.pokemons.append(contentsOf: pokemons.results)
-                    self.isLoading = false
-                } catch let error as NetworkingError {
-                    showAlert(for: error)
-                    isLoading = false
-                }
-            }
-        }
-    }
-
-    func loadPokemon(for pokemon: Pokemon) {
+    func loadPokemonDetail(for pokemon: Pokemon) {
         Task { [weak self] in
             guard let self else { return }
             do {
@@ -139,13 +136,8 @@ extension AllPokemonViewModel {
 
     func goToDetailView(for pokemon: PokemonDetail) {
         let pokemonConfig = PokemonDetailConfig(
-            id: pokemon.id,
+            pokemonDetail: pokemon,
             url: pokemons.first(where: { $0.id == pokemon.id })?.url ?? "",
-            name: pokemon.name,
-            types: pokemon.types.map { $0.type.name },
-            imgUrl: pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault ?? "",
-            weight: PokemonConversionUtils.convertToPoundsAndKilograms(pokemon.weight),
-            height: PokemonConversionUtils.convertToFeetInchesAndCentimeters(pokemon.height),
             baseExperience: describeValue(pokemon.baseExperience)
         )
 
@@ -155,6 +147,30 @@ extension AllPokemonViewModel {
 
 // MARK: - Private methods
 private extension AllPokemonViewModel {
+    @MainActor
+    func canLoadPokemons(isInitialLoad: Bool, triggerPokemon: Pokemon?) -> Bool {
+        guard !isLoading else { return false }
+        if !isInitialLoad {
+            guard let triggerPokemon,
+                  pokemons.last?.id == triggerPokemon.id,
+                  !disablePagination,
+                  !showingFavourites
+            else {
+                return false
+            }
+        }
+        return true
+    }
+
+    @MainActor
+    func handleFetchedPokemons(_ pokemonsList: Pokemons, isInitialLoad: Bool) {
+        if isInitialLoad {
+            update(pokemonsList: pokemonsList)
+        } else {
+            pokemons.append(contentsOf: pokemonsList.results)
+        }
+    }
+
     @MainActor
     func updateGeneration(pokemonsList: PokemonsGeneration) {
         pokemons = pokemonsList.pokemonSpecies
