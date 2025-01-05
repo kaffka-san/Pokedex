@@ -8,6 +8,9 @@
 import Foundation
 
 extension String {
+    /// Removes all newline characters (`\n`) from the string.
+    ///
+    /// - Returns: A new string with all newline characters replaced by an empty string.
     func removingNewLines() -> String {
         replacingOccurrences(of: "\n", with: "")
     }
