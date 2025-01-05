@@ -97,21 +97,27 @@ private extension PokemonCell {
     }
 }
 
-#Preview {
-    PokemonCell(
-        pokemon: PokemonDetail(
-            id: 6,
-            height: 17,
-            weight: 905,
-            baseExperience: 10,
-            types: [PokemonTypes(type: SpecificType(name: "fire")), PokemonTypes(type: SpecificType(name: "flying"))],
-            sprites: Sprites(
-                frontDefault: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
-                other: Other(officialArtwork: OfficialArtwork(frontDefault: nil))
-            ),
-            name: "Charizard"
+struct PokemonCell_Previews: PreviewProvider {
+    static let imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+    static var previews: some View {
+        PokemonCell(
+            pokemon: PokemonDetail(
+                id: 6,
+                height: 17,
+                weight: 905,
+                baseExperience: 10,
+                types: [
+                    PokemonTypes(type: SpecificType(name: "fire")),
+                    PokemonTypes(type: SpecificType(name: "flying"))
+                ],
+                sprites: Sprites(
+                    frontDefault: imageUrl,
+                    other: Other(officialArtwork: OfficialArtwork(frontDefault: nil))
+                ),
+                name: "Charizard"
+            )
         )
-    )
-    .frame(width: 160)
-    .environmentObject(AllPokemonViewModel(pokemonService: PokemonService(apiManager: APICommunication(reachability: ReachabilityManager()))))
+        .frame(width: 160)
+        .environmentObject(AllPokemonViewModel(pokemonService: PokemonService(apiManager: APICommunication(reachability: ReachabilityManager()))))
+    }
 }

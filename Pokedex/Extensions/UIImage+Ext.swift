@@ -39,6 +39,16 @@ extension UIImage {
             return .failure(error)
         }
     }
+
+    static func getImageFromCache(from url: URL?) -> Image? {
+        guard let url else {
+            return nil
+        }
+        if let cachedImage = imageCache.get(forKey: url.absoluteString) {
+            return Image(uiImage: cachedImage)
+        }
+        return nil
+    }
 }
 
 extension Image {

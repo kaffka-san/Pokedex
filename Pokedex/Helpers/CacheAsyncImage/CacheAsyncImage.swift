@@ -44,6 +44,8 @@ struct CacheAsyncImage<Content: View>: View {
     init(url: URL?, @ViewBuilder content: @escaping (AsyncImagePhase) -> Content) {
         self.url = url
         self.content = content
+        guard let image = UIImage.getImageFromCache(from: url) else { return }
+        phase = .success(image)
     }
 
     var body: some View {

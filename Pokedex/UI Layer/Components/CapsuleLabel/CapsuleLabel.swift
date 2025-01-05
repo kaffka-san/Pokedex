@@ -26,9 +26,11 @@ struct CapsuleLabel<DataConfigurable: CapsuleLabelConfigurable>: View {
     }
 }
 
-#Preview {
-    CapsuleLabel(data: CapsuleLabelConfiguration(text: "All Gen", image: .loveFill))
-        .padding()
-        .hAlign(.center)
-        .background(.gray)
+struct CapsuleLabel_Previews: PreviewProvider {
+    static var previews: some View {
+        CapsuleLabel(data: CapsuleLabelConfiguration(text: "All Gen", image: .loveFill))
+            .padding()
+            .hAlign(.center)
+            .background(Color.gray)
+    }
 }

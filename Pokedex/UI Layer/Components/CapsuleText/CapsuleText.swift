@@ -27,15 +27,17 @@ struct CapsuleText<DataConfigurable: CapsuleTextConfigurable>: View {
     }
 }
 
-#Preview {
-    CapsuleText(
-        CapsuleTextConfiguration(
-            text: "Electric",
-            font: .labelSmall
+struct CapsuleText_Previews: PreviewProvider {
+    static var previews: some View {
+        CapsuleText(
+            CapsuleTextConfiguration(
+                text: "Electric",
+                font: .labelSmall
+            )
         )
-    )
-    .frame(width: 100)
-    .padding()
-    .background(.blue)
-    .cornerRadius(8)
+        .frame(width: 100)
+        .padding()
+        .background(Color.blue)
+        .cornerRadius(8)
+    }
 }
