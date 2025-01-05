@@ -66,7 +66,7 @@ enum PokemonDetailBreeding: Identifiable, CaseIterable, PokemonDetailItem {
         switch self {
         case .gender: return LocalizedString.PokemonDetail.gender
         case .eggGroup: return LocalizedString.PokemonDetail.eggGroups
-        case .eggCycle: return LocalizedString.PokemonDetail.eggCylce
+        case .eggCycle: return LocalizedString.PokemonDetail.eggCycle
         }
     }
 
@@ -93,7 +93,7 @@ enum PokemonDetailTraining: String, CaseIterable, PokemonDetailItem {
 
     var title: String {
         switch self {
-        case .baseExp: return LocalizedString.PokemonDetail.experience
+        case .baseExp: return LocalizedString.PokemonDetail.baseExperience
         }
     }
 

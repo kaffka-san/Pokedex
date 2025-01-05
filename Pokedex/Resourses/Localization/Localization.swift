@@ -7,71 +7,53 @@
 
 import Foundation
 
-extension String {
-    func localized(withStringValue stringValue: String) -> String {
-        String(format: localized, stringValue)
-    }
-
-    func localized(withStringValues stringValues: [String]) -> String {
-        String(format: localized, arguments: stringValues)
-    }
-
-    func localized(withComment comment: String = "") -> String {
-        NSLocalizedString(self, comment: comment)
-    }
-
-    var localized: String {
-        localized()
-    }
-}
-
 enum LocalizedString {
-    static let cancel = "cancel".localized
+    static let cancel = R.string.localizable.cancel()
 
     enum Pokemons {
-        static let pokemonsTitle = "pokemons_title".localized
+        static let title = R.string.localizable.pokemons_title()
     }
 
     enum PokemonDetail {
-        static let height = "pokemon_detail_height".localized
-        static let weight = "pokemon_detail_weight".localized
-        static let breeding = "pokemon_detail_breeding".localized
-        static let gender = "pokemon_detail_gender".localized
-        static let eggGroups = "pokemon_detail_egg_groups".localized
-        static let eggCylce = "pokemon_detail_egg_cycle".localized
-        static let location = "pokemon_detail_location".localized
-        static let training = "pokemon_detail_training".localized
-        static let experience = "pokemon_detail_base_experience".localized
-        static let steps = "pokemon_detail_steps".localized
-        static let defaultString = "pokemon_detail_default_string".localized
+        static let height = R.string.localizable.pokemon_detail_height()
+        static let weight = R.string.localizable.pokemon_detail_weight()
+        static let breeding = R.string.localizable.pokemon_detail_breeding()
+        static let gender = R.string.localizable.pokemon_detail_gender()
+        static let eggGroups = R.string.localizable.pokemon_detail_egg_groups()
+        static let eggCycle = R.string.localizable.pokemon_detail_egg_cycle()
+        static let location = R.string.localizable.pokemon_detail_location()
+        static let training = R.string.localizable.pokemon_detail_training()
+        static let baseExperience = R.string.localizable.pokemon_detail_base_experience()
+        static let steps = R.string.localizable.pokemon_detail_steps()
+        static let defaultString = R.string.localizable.pokemon_detail_default_string()
     }
 
     enum Settings {
-        static let favouritePokemon = "pokemon_settings_favourite".localized
-        static let allType = "pokemon_settings_all_type".localized
-        static let allGen = "pokemon_settings_all_gen".localized
-        static let generationTitle = "pokemon_settings_generation_title".localized
+        static let favouritePokemon = R.string.localizable.pokemon_settings_favourite()
+        static let allType = R.string.localizable.pokemon_settings_all_type()
+        static let allGen = R.string.localizable.pokemon_settings_all_gen()
+        static let generationTitle = R.string.localizable.pokemon_settings_generation_title()
     }
 
     enum Errors {
-        static let genericTitle = "error_generic_title".localized
-        static let genericMessage = "error_generic_message".localized
-        static let invalidUrlTile = "invalid_url_title".localized
-        static let invalidUrlMessage = "invalid_url_message".localized
-        static let invalidDataTile = "invalid_data_title".localized
-        static let invalidDataMessage = "invalid_data_message".localized
-        static let invalidResponseTile = "invalid_response_title".localized
-        static let invalidResponseMessage = "invalid_response_message".localized
-        static let unknownTile = "unknown_title".localized
-        static let unknownMessage = "unknown_message".localized
-        static let unexpectedErrorOccurred = "an_unexpected_error_occurred_please_try_again_later".localized
+        static let genericTitle = R.string.localizable.error_generic_title()
+        static let genericMessage = R.string.localizable.error_generic_message()
+        static let invalidUrlTitle = R.string.localizable.invalid_url_title()
+        static let invalidUrlMessage = R.string.localizable.invalid_url_message()
+        static let invalidDataTitle = R.string.localizable.invalid_data_title()
+        static let invalidDataMessage = R.string.localizable.invalid_data_message()
+        static let invalidResponseTitle = R.string.localizable.invalid_response_title()
+        static let invalidResponseMessage = R.string.localizable.invalid_response_message()
+        static let unknownTitle = R.string.localizable.unknown_title()
+        static let unknownMessage = R.string.localizable.unknown_message()
+        static let unexpectedErrorOccurred = R.string.localizable.an_unexpected_error_occurred_please_try_again_later()
     }
 
     enum InternetConnection {
-        static let connectionError = "connect_error".localized
-        static let title = "connection_title".localized
-        static let description = "connection_description".localized
-        static let tryAgain = "try_again".localized
-        static let statusDescription = "status_description".localized
+        static let connectionError = R.string.localizable.connect_error()
+        static let title = R.string.localizable.connection_title()
+        static let description = R.string.localizable.connection_description()
+        static let tryAgain = R.string.localizable.try_again()
+        static let statusDescription = R.string.localizable.status_description()
     }
 }
