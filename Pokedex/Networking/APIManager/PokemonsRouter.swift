@@ -40,10 +40,6 @@ extension PokemonsRouter {
         }
     }
 
-    var requestType: RequestType? {
-        .pokemon
-    }
-
     var httpMethod: HTTPMethod {
         switch self {
         case .getPokemonDetail, .getPokemons, .getPokemonSpecies, .getPokemonForGeneration:

@@ -5,8 +5,8 @@
 //  Created by Anastasia Lenina on 28.12.2024.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
 extension UIViewController {
     /// Presents a SwiftUI-based view controller within the current `UIViewController`.
@@ -33,10 +33,10 @@ extension UIViewController {
     func present<Content: View>(swiftUIController: SwiftUIRepresentableController<Content>) {
         // Add the SwiftUI controller as a child view controller
         addChild(swiftUIController)
-        
+
         // Add the SwiftUI controller's view to the current view hierarchy
         view.addSubview(swiftUIController.view)
-        
+
         // Notify the SwiftUI controller that it has moved to the current parent
         swiftUIController.didMove(toParent: self)
     }

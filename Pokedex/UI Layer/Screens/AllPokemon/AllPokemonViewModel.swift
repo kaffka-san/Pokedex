@@ -32,22 +32,6 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
 
 // MARK: - Public methods
 extension AllPokemonViewModel {
-//    @MainActor
-//    func loadPokemons() {
-//        isLoading = true
-//        Task { [weak self] in
-//            guard let self else { return }
-//            do {
-//                let pokemonsList = try await pokemonService.getPokemons(offset: 0)
-//                isLoading = false
-//                update(pokemonsList: pokemonsList)
-//            } catch let error as NetworkingError {
-//                isLoading = false
-//                showAlert(for: error)
-//            }
-//        }
-//    }
-
     @MainActor
     func loadPokemons(isInitialLoad: Bool = false, triggerPokemon: Pokemon? = nil) {
         guard canLoadPokemons(isInitialLoad: isInitialLoad, triggerPokemon: triggerPokemon) else { return }

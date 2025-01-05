@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		30D0ABBE2D1EE37800AE6482 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 30D0ABBD2D1EE37800AE6482 /* Swinject */; };
 		30F6D1BA2D2875940091E842 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 30F6D1B92D2875940091E842 /* Reachability */; };
-		30F6D5512D2AE3A40091E842 /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 30F6D5502D2AE3A40091E842 /* RswiftLibrary */; };
+		30F6D5BB2D2B00180091E842 /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 30F6D5BA2D2B00180091E842 /* RswiftLibrary */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,9 +31,9 @@
 		30F6D0132D28682A0091E842 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				ViewModels/AllPokemonViewModelTests.swift,
 				ViewModels/PokemonConversionUtilsTests.swift,
 				ViewModels/PokemonDetailViewModelTests.swift,
-				ViewModels/PokemonsViewModelTests.swift,
 			);
 			target = 309659AC2AF55DEE00B2BE78 /* Pokedex */;
 		};
@@ -73,6 +73,7 @@
 				Networking/APIManager/PokedexAPIRepresentable.swift,
 				Networking/APIManager/PokemonsRouter.swift,
 				Networking/APIManager/PokemonsService.swift,
+				Resourses/Localization/Localizable.strings,
 				Resourses/Localization/Localization.swift,
 				"UI Layer/Screens/AllPokemon/AllPokemonViewModel.swift",
 				"UI Layer/Screens/PokemonDetail/PokemonDetailViewModel.swift",
@@ -107,7 +108,7 @@
 			files = (
 				30D0ABBE2D1EE37800AE6482 /* Swinject in Frameworks */,
 				30F6D1BA2D2875940091E842 /* Reachability in Frameworks */,
-				30F6D5512D2AE3A40091E842 /* RswiftLibrary in Frameworks */,
+				30F6D5BB2D2B00180091E842 /* RswiftLibrary in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,7 +178,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				30F6D5542D2AE5C20091E842 /* PBXTargetDependency */,
+				30F6D5BD2D2B00270091E842 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				30F6CFF42D28682A0091E842 /* PokedexTests */,
@@ -187,7 +188,7 @@
 			packageProductDependencies = (
 				30D0ABBD2D1EE37800AE6482 /* Swinject */,
 				30F6D1B92D2875940091E842 /* Reachability */,
-				30F6D5502D2AE3A40091E842 /* RswiftLibrary */,
+				30F6D5BA2D2B00180091E842 /* RswiftLibrary */,
 			);
 			productName = Pokedex;
 			productReference = 309659AD2AF55DEE00B2BE78 /* Pokedex.app */;
@@ -224,7 +225,7 @@
 			packageReferences = (
 				30D0ABB92D1EE29A00AE6482 /* XCRemoteSwiftPackageReference "Swinject" */,
 				30F6D1B82D2875680091E842 /* XCRemoteSwiftPackageReference "Reachability.swift" */,
-				30F6D54F2D2AE39C0091E842 /* XCRemoteSwiftPackageReference "R.swift" */,
+				30F6D5B92D2B00180091E842 /* XCRemoteSwiftPackageReference "R.swift" */,
 			);
 			productRefGroup = 309659AE2AF55DEE00B2BE78 /* Products */;
 			projectDirPath = "";
@@ -317,9 +318,9 @@
 			target = 309659AC2AF55DEE00B2BE78 /* Pokedex */;
 			targetProxy = 305FB34E2AFBD72B003804B8 /* PBXContainerItemProxy */;
 		};
-		30F6D5542D2AE5C20091E842 /* PBXTargetDependency */ = {
+		30F6D5BD2D2B00270091E842 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 30F6D5532D2AE5C20091E842 /* RswiftGenerateInternalResources */;
+			productRef = 30F6D5BC2D2B00270091E842 /* RswiftGenerateInternalResources */;
 		};
 /* End PBXTargetDependency section */
 
@@ -594,7 +595,7 @@
 				kind = branch;
 			};
 		};
-		30F6D54F2D2AE39C0091E842 /* XCRemoteSwiftPackageReference "R.swift" */ = {
+		30F6D5B92D2B00180091E842 /* XCRemoteSwiftPackageReference "R.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mac-cain13/R.swift.git";
 			requirement = {
@@ -615,14 +616,14 @@
 			package = 30F6D1B82D2875680091E842 /* XCRemoteSwiftPackageReference "Reachability.swift" */;
 			productName = Reachability;
 		};
-		30F6D5502D2AE3A40091E842 /* RswiftLibrary */ = {
+		30F6D5BA2D2B00180091E842 /* RswiftLibrary */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 30F6D54F2D2AE39C0091E842 /* XCRemoteSwiftPackageReference "R.swift" */;
+			package = 30F6D5B92D2B00180091E842 /* XCRemoteSwiftPackageReference "R.swift" */;
 			productName = RswiftLibrary;
 		};
-		30F6D5532D2AE5C20091E842 /* RswiftGenerateInternalResources */ = {
+		30F6D5BC2D2B00270091E842 /* RswiftGenerateInternalResources */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 30F6D54F2D2AE39C0091E842 /* XCRemoteSwiftPackageReference "R.swift" */;
+			package = 30F6D5B92D2B00180091E842 /* XCRemoteSwiftPackageReference "R.swift" */;
 			productName = "plugin:RswiftGenerateInternalResources";
 		};
 /* End XCSwiftPackageProductDependency section */

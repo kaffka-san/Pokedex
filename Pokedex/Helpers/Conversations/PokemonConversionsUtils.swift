@@ -45,7 +45,6 @@ enum PokemonConversionsUtils {
     }
 
     // The chance of this Pokemon being female, in eighths; or -1 for genderless
-
     static func getPokemonGenderChance(index: Int) -> Gender {
         switch index {
         case -1:

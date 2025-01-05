@@ -112,37 +112,4 @@ final class PokemonDetailViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
         XCTAssertNil(viewModel.alertConfig)
     }
-
-    func testGenderlessPokemon() {
-        let viewModel = PokemonDetailViewModel(
-            locationManager: LocationManager(),
-            soundManager: SoundManager(),
-            pokemonService: PokemonService(apiManager: MockAPIManager())
-        )
-        let gender = viewModel.getPokemonGenderChance(femaleEighths: -1)
-
-        XCTAssertEqual(gender.genderCase, .genderless, "Genderless Pokemon should have empty male and female properties.")
-    }
-
-    func testMaleOnlyPokemon() {
-        let viewModel = PokemonDetailViewModel(
-            locationManager: LocationManager(),
-            soundManager: SoundManager(),
-            pokemonService: PokemonService(apiManager: MockAPIManager())
-        )
-        let gender = viewModel.getPokemonGenderChance(femaleEighths: 0)
-
-        XCTAssertEqual(gender.genderCase, .male, "Male-only Pokemon should have 100% male property.")
-    }
-
-    func testFemaleOnlyPokemon() {
-        let viewModel = PokemonDetailViewModel(
-            locationManager: LocationManager(),
-            soundManager: SoundManager(),
-            pokemonService: PokemonService(apiManager: MockAPIManager())
-        )
-        let gender = viewModel.getPokemonGenderChance(femaleEighths: 8)
-
-        XCTAssertEqual(gender.genderCase, .female, "Female-only Pokemon should have 100% female property.")
-    }
 }

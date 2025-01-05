@@ -1,5 +1,5 @@
 //
-//  PokemonsViewModelTests.swift
+//  AllPokemonViewModelTests.swift
 //  PokedexTests
 //
 //  Created by Anastasia Lenina on 08.11.2023.
@@ -8,7 +8,7 @@
 import Combine
 import XCTest
 
-final class PokedexTests: XCTestCase {
+final class AllPokemonViewModelTests: XCTestCase {
     var disposeBag: Set<AnyCancellable>!
     private let genericErrorConfig = AlertConfiguration(
         title: LocalizedString.Errors.genericTitle,
@@ -37,7 +37,7 @@ final class PokedexTests: XCTestCase {
                 expectation.fulfill()
             }
             .store(in: &disposeBag)
-        viewModel.loadPokemons()
+        viewModel.loadPokemons(isInitialLoad: true)
         wait(for: [expectation], timeout: 1)
         XCTAssertNil(viewModel.alertConfig)
     }
@@ -53,7 +53,7 @@ final class PokedexTests: XCTestCase {
                 expectation.fulfill()
             }
             .store(in: &disposeBag)
-        viewModel.loadPokemon(for: MockPokemon.pokemon)
+        viewModel.loadPokemonDetail(for: MockPokemon.pokemon)
         wait(for: [expectation], timeout: 1)
         XCTAssertNil(viewModel.alertConfig)
     }
@@ -71,7 +71,7 @@ final class PokedexTests: XCTestCase {
                 expectation.fulfill()
             }
             .store(in: &disposeBag)
-        viewModel.loadPokemons()
+        viewModel.loadPokemons(isInitialLoad: true)
         wait(for: [expectation], timeout: 1)
         XCTAssertTrue(viewModel.pokemons.isEmpty)
     }
@@ -89,7 +89,7 @@ final class PokedexTests: XCTestCase {
                 expectation.fulfill()
             }
             .store(in: &disposeBag)
-        viewModel.loadPokemon(for: MockPokemon.pokemon)
+        viewModel.loadPokemonDetail(for: MockPokemon.pokemon)
         wait(for: [expectation], timeout: 1)
         XCTAssertTrue(viewModel.pokemons.isEmpty)
     }

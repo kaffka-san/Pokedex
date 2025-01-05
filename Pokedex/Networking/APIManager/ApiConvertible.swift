@@ -7,17 +7,6 @@
 
 import Foundation
 
-enum RequestType: CaseIterable, Codable {
-    case pokemon
-
-    var title: String {
-        switch self {
-        case .pokemon:
-            return "Pokemon"
-        }
-    }
-}
-
 protocol APIConvertible {
     var path: String { get }
     var baseURLComponents: URLComponents { get }
@@ -26,7 +15,6 @@ protocol APIConvertible {
     var httpBody: Data? { get }
     var apiVersion: ApiVersion { get }
     var urlRequest: URLRequest? { get }
-    var requestType: RequestType? { get }
     func createUrlRequest() throws -> URLRequest
 }
 
