@@ -15,7 +15,7 @@ struct CapsuleLabel<DataConfigurable: CapsuleLabelConfigurable>: View {
             HStack {
                 Text(data.text)
                     .font(.labelRegular)
-                    .foregroundColor(PokedexColors.dark)
+                    .foregroundColor(.darkGray)
                 Image(fromImageLiteral: data.image)
             }
             .padding(.horizontal, 16)

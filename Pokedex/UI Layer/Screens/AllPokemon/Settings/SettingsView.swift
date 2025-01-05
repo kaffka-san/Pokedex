@@ -71,7 +71,7 @@ private extension SettingsView {
             .font(.title)
             .padding(.top, 18)
             .padding(.bottom, 24)
-            .foregroundColor(PokedexColors.dark)
+            .foregroundColor(.darkGray)
     }
 
     var generationButtons: some View {
@@ -109,7 +109,7 @@ private extension SettingsView {
         Text("\(LocalizedString.Settings.generationTitle) \(generation.rawValue)")
             .font(.labelRegular)
             .padding(.top, 16)
-            .foregroundColor(PokedexColors.dark)
+            .foregroundColor(.darkGray)
     }
 }
 

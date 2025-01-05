@@ -18,11 +18,11 @@ struct HorizontalTextDescription<DataConfigurable: TextDescriptionConfigurable>:
         HStack(spacing: 12) {
             Text(data.text)
                 .font(.labelRegular)
-                .foregroundColor(PokedexColors.lightGray)
+                .foregroundColor(.lightGray)
                 .frame(width: 100, alignment: .leading)
             Text(data.description.capitalized)
                 .font(.bodyRegular)
-                .foregroundColor(PokedexColors.dark)
+                .foregroundColor(.darkGray)
                 .frame(alignment: .leading)
         }
     }

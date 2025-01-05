@@ -298,7 +298,7 @@ private extension PokemonDetailView {
             .padding(.top, 50)
             .padding(.horizontal, isLandscape ? 100 : 20)
             .padding(.bottom, isLandscape ? 0 : 20)
-            .foregroundColor(PokedexColors.dark)
+            .foregroundColor(.darkGray)
             .lineSpacing(8)
             .hAlign(.leading)
     }
@@ -413,7 +413,7 @@ private extension PokemonDetailView {
     func genderTitle() -> some View {
         Text(LocalizedString.PokemonDetail.gender)
             .font(.labelRegular)
-            .foregroundColor(PokedexColors.lightGray)
+            .foregroundColor(.lightGray)
             .frame(width: 100, alignment: .leading)
     }
 
@@ -421,7 +421,7 @@ private extension PokemonDetailView {
     func genderlessView() -> some View {
         Text(viewModel.pokemonSpecies.gender.genderless)
             .font(.bodyRegular)
-            .foregroundColor(PokedexColors.dark)
+            .foregroundColor(.darkGray)
             .frame(alignment: .leading)
     }
 
@@ -435,17 +435,17 @@ private extension PokemonDetailView {
     func femaleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.female, image: .female)
             .font(.bodyRegular)
-            .foregroundColor(PokedexColors.dark)
+            .foregroundColor(.darkGray)
     }
 
     @ViewBuilder
     func maleFemaleView() -> some View {
         Label(viewModel.pokemonSpecies.gender.male, image: .male)
             .font(.bodyRegular)
-            .foregroundColor(PokedexColors.dark)
+            .foregroundColor(.darkGray)
         Label(viewModel.pokemonSpecies.gender.female, image: .female)
             .font(.bodyRegular)
-            .foregroundColor(PokedexColors.dark)
+            .foregroundColor(.darkGray)
     }
 }
 

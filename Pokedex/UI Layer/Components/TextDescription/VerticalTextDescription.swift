@@ -18,10 +18,10 @@ struct VerticalTextDescription<DataConfigurable: TextDescriptionConfigurable>: V
         VStack(alignment: .leading, spacing: 12) {
             Text(data.description)
                 .font(.labelRegular)
-                .foregroundColor(PokedexColors.lightGray)
+                .foregroundColor(.lightGray)
             Text(data.text)
                 .font(.bodyRegular)
-                .foregroundColor(PokedexColors.dark)
+                .foregroundColor(.darkGray)
         }
     }
 }
