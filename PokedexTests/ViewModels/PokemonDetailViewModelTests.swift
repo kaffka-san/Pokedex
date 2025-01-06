@@ -26,7 +26,8 @@ final class PokemonDetailViewModelTests: XCTestCase {
         viewModel = PokemonDetailViewModel(
             locationManager: LocationManager(),
             soundManager: SoundManager(),
-            pokemonService: pokemonService
+            pokemonService: pokemonService,
+            mapManager: MapManager()
         )
         disposeBag = []
     }

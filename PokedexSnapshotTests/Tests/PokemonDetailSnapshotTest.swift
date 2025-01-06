@@ -16,7 +16,8 @@ final class PokemonDetailSnapshotTest: XCTestCase {
         let viewModel = PokemonDetailViewModel(
             locationManager: LocationManager(),
             soundManager: SoundManager(),
-            pokemonService: PokemonService(apiManager: MockAPIManager())
+            pokemonService: PokemonService(apiManager: MockAPIManager()),
+            mapManager: MapManager()
         )
 
         // Trigger data loading
