@@ -67,6 +67,7 @@
 				Helpers/UserDefaults/UserDefaults.swift,
 				Managers/LocationManager.swift,
 				Managers/LocationManagerProtocol.swift,
+				Managers/MapManager.swift,
 				Managers/SoundManager.swift,
 				Model/Alert/AlertConfiguration.swift,
 				Model/ColorType.swift,

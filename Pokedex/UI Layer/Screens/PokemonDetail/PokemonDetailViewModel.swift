@@ -6,8 +6,7 @@
 //
 
 import Combine
-import MapKit
-import SwiftUI // TODO: delete and change region placement
+import Foundation
 
 final class PokemonDetailViewModel: ObservableObject {
     private let pokemonService: PokemonServiceProtocol
@@ -18,7 +17,7 @@ final class PokemonDetailViewModel: ObservableObject {
     var pokemon: PokemonDetailConfig?
 
     @Published var locationManager: LocationManagerProtocol
-    @Published var region = MapCameraPosition.region(MKCoordinateRegion())
+    @Published var mapManager: MapManagerProtocol
     @Published var pokemonsLocations = [Location]()
     @Published var pokemonInfo = [PokemonSection]()
     @Published var pokemonSpecies = MockPokemon.emptyPokemonSpeciesConfig
@@ -32,11 +31,13 @@ final class PokemonDetailViewModel: ObservableObject {
     init(
         locationManager: LocationManagerProtocol,
         soundManager: SoundManagerProtocol,
-        pokemonService: PokemonServiceProtocol
+        pokemonService: PokemonServiceProtocol,
+        mapManager: MapManagerProtocol
     ) {
         self.locationManager = locationManager
         self.soundManager = soundManager
         self.pokemonService = pokemonService
+        self.mapManager = mapManager
     }
 }
 
@@ -57,15 +58,6 @@ extension PokemonDetailViewModel {
 
 // MARK: - Public methods
 extension PokemonDetailViewModel {
-    func configureMap() {
-        guard let coordinate = locationManager.location?.coordinate else { return }
-        region = MapCameraPosition.region(MKCoordinateRegion(
-            center: coordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-        ))
-        pokemonsLocations = locationManager.getRandomLocationsNearUser(radius: 500)
-    }
-
     func goBack() {
         closeSubject.send()
     }
@@ -138,6 +130,16 @@ extension PokemonDetailViewModel {
             } catch {}
         }
     }
+
+    func configureMap() {
+        mapManager.configureInitialRegion(coordinate: locationManager.location?.coordinate)
+        getRandomLocations()
+    }
+
+    func requestAndGetLocation() async throws {
+        try? await locationManager.requestUserAuthorization()
+        try? await locationManager.startCurrentLocationUpdates()
+    }
 }
 
 // MARK: - Private methods
@@ -165,5 +167,9 @@ private extension PokemonDetailViewModel {
         pokemonSpecies = PokemonSpeciesConfig(
             pokemonSpecies: pokemonDetail, pokemonName: pokemon.name
         )
+    }
+
+    func getRandomLocations() {
+        pokemonsLocations = locationManager.getRandomLocationsNearUser(radius: 500)
     }
 }

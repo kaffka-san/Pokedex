@@ -45,7 +45,7 @@ final class LocationManager: LocationManagerProtocol {
     func getRandomLocationsNearUser(radius: CLLocationDistance) -> [Location] {
         guard let coordinate = locationManager.location?.coordinate else { return [] }
         // Generate a random number of locations to create
-        let numberOfLocations = Int.random(in: 1...4)
+        let numberOfLocations = Int.random(in: 1...6)
         let locations = (1...numberOfLocations).map { _ in Location(coordinate: coordinate.randomLocationWithin(radius: radius)) }
         return locations
     }

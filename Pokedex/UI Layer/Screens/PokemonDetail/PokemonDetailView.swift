@@ -11,7 +11,6 @@ import SwiftUI
 struct PokemonDetailView: View {
     private let offsetMinimum = 0.0
     private let coordinateSpaceName = Constants.scrollName
-
     @ObservedObject var viewModel: PokemonDetailViewModel
     @State private var isLargeTitle = true
     @State private var scrollOffset: CGFloat = 0
@@ -30,8 +29,7 @@ struct PokemonDetailView: View {
                 viewModel.loadPokemonSpecies()
             }
             .task {
-                try? await viewModel.locationManager.requestUserAuthorization()
-                try? await viewModel.locationManager.startCurrentLocationUpdates()
+                try? await viewModel.requestAndGetLocation()
             }
             .alert(item: $viewModel.alertConfig) { item in
                 Alert(title: Text(item.title), message: Text(item.message))
@@ -88,7 +86,7 @@ private extension PokemonDetailView {
 
     var mapView: some View {
         VStackLayout(alignment: .leading) {
-            Map(position: $viewModel.region) {
+            Map(position: $viewModel.mapManager.region) {
                 UserAnnotation()
                 ForEach(viewModel.pokemonsLocations) { location in
                     Annotation("", coordinate: location.coordinate) {
@@ -465,7 +463,8 @@ struct PokemonDetailView_Previews: PreviewProvider {
     static var viewModel = PokemonDetailViewModel(
         locationManager: LocationManager(),
         soundManager: SoundManager(),
-        pokemonService: PokemonService(apiManager: MockAPIManager())
+        pokemonService: PokemonService(apiManager: MockAPIManager()),
+        mapManager: MapManager()
     )
 
     static let imageURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"

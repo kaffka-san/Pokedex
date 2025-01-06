@@ -44,6 +44,11 @@ private extension DIAssembly {
             LocationManager()
         }
 
+        // MapManager
+        container.register(MapManagerProtocol.self) { _ in
+            MapManager()
+        }
+
         // ReachabilityManager
         container.register(ReachabilityManagerProtocol.self) { _ in
             ReachabilityManager()
@@ -69,7 +74,7 @@ private extension DIAssembly {
             PokemonDetailViewModel(
                 locationManager: resolver.resolve(LocationManagerProtocol.self)!,
                 soundManager: resolver.resolve(SoundManagerProtocol.self)!,
-                pokemonService: resolver.resolve(PokemonServiceProtocol.self)!
+                pokemonService: resolver.resolve(PokemonServiceProtocol.self)!, mapManager: resolver.resolve(MapManagerProtocol.self)!
             )
         }
     }
