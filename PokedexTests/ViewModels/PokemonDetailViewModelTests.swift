@@ -10,6 +10,10 @@ import XCTest
 
 final class PokemonDetailViewModelTests: XCTestCase {
     var disposeBag: Set<AnyCancellable>!
+    var viewModel: PokemonDetailViewModel!
+    var mockAPIManager: MockAPIManager!
+    var pokemonService: PokemonService!
+
     private let genericErrorConfig = AlertConfiguration(
         title: LocalizedString.Errors.genericTitle,
         message: LocalizedString.Errors.genericMessage
@@ -17,7 +21,13 @@ final class PokemonDetailViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
+        mockAPIManager = MockAPIManager()
+        pokemonService = PokemonService(apiManager: mockAPIManager)
+        viewModel = PokemonDetailViewModel(
+            locationManager: LocationManager(),
+            soundManager: SoundManager(),
+            pokemonService: pokemonService
+        )
         disposeBag = []
     }
 
@@ -29,11 +39,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
     @MainActor
     func testLoadPokemonSpeciesWithSuccess() {
         let expectation = XCTestExpectation(description: "Pokemon species should be loaded successfully.")
-        let viewModel = PokemonDetailViewModel(
-            locationManager: LocationManager(),
-            soundManager: SoundManager(),
-            pokemonService: PokemonService(apiManager: MockAPIManager())
-        )
+        mockAPIManager.resultType = .success
         viewModel.pokemon = MockPokemon.pokemonDetailConfig
 
         viewModel.$pokemonSpecies
@@ -51,11 +57,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
     @MainActor
     func testLoadPokemonSpeciesWithError() {
         let expectation = XCTestExpectation(description: "Error is thrown")
-        let viewModel = PokemonDetailViewModel(
-            locationManager: LocationManager(),
-            soundManager: SoundManager(),
-            pokemonService: MockFailingPokemonsAPI()
-        )
+        mockAPIManager.resultType = .error
         viewModel.pokemon = MockPokemon.pokemonDetailConfig
         viewModel.$alertConfig
             .dropFirst()
@@ -73,11 +75,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
     @MainActor
     func testLoadNextPokemonWithSuccess() {
         let expectation = XCTestExpectation(description: "Next Pokemon should be loaded successfully.")
-        let viewModel = PokemonDetailViewModel(
-            locationManager: LocationManager(),
-            soundManager: SoundManager(),
-            pokemonService: PokemonService(apiManager: MockAPIManager())
-        )
+        mockAPIManager.resultType = .success
         viewModel.pokemon = MockPokemon.pokemonDetailConfig
 
         viewModel.$nextImageUrl
@@ -95,11 +93,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
     @MainActor
     func testLoadPreviousPokemonWithSuccess() {
         let expectation = XCTestExpectation(description: "Previous Pokemon should be loaded successfully.")
-        let viewModel = PokemonDetailViewModel(
-            locationManager: LocationManager(),
-            soundManager: SoundManager(),
-            pokemonService: PokemonService(apiManager: MockAPIManager())
-        )
+        mockAPIManager.resultType = .success
         viewModel.pokemon = MockPokemon.pokemonDetailConfig2
         viewModel.$previousImageUrl
             .dropFirst()

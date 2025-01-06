@@ -10,6 +10,10 @@ import XCTest
 
 final class AllPokemonViewModelTests: XCTestCase {
     var disposeBag: Set<AnyCancellable>!
+    var viewModel: AllPokemonViewModel!
+    var mockAPIManager: MockAPIManager!
+    var pokemonService: PokemonService!
+
     private let genericErrorConfig = AlertConfiguration(
         title: LocalizedString.Errors.genericTitle,
         message: LocalizedString.Errors.genericMessage
@@ -17,6 +21,9 @@ final class AllPokemonViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        mockAPIManager = MockAPIManager()
+        pokemonService = PokemonService(apiManager: mockAPIManager)
+        viewModel = AllPokemonViewModel(pokemonService: pokemonService)
 
         disposeBag = []
     }
@@ -29,7 +36,7 @@ final class AllPokemonViewModelTests: XCTestCase {
     @MainActor
     func testLoadAllPokemonWithSuccess() {
         let expectation = XCTestExpectation(description: "Pokemons should be loaded successfully.")
-        let viewModel = AllPokemonViewModel(pokemonService: PokemonService(apiManager: MockAPIManager()))
+        mockAPIManager.resultType = .success
         viewModel.$pokemons
             .dropFirst()
             .sink { data in
@@ -45,7 +52,7 @@ final class AllPokemonViewModelTests: XCTestCase {
     @MainActor
     func testLoadPokemonWithSuccess() {
         let expectation = XCTestExpectation(description: "Pokemon detail should be loaded successfully.")
-        let viewModel = AllPokemonViewModel(pokemonService: PokemonService(apiManager: MockAPIManager()))
+        mockAPIManager.resultType = .success
         viewModel.$pokemonsDetailed
             .dropFirst()
             .sink { data in
@@ -61,7 +68,7 @@ final class AllPokemonViewModelTests: XCTestCase {
     @MainActor
     func testLoadPokemonsWithError() {
         let expectation = XCTestExpectation(description: "Error is thrown")
-        let viewModel = AllPokemonViewModel(pokemonService: MockFailingPokemonsAPI())
+        mockAPIManager.resultType = .error
 
         viewModel.$alertConfig
             .dropFirst()
@@ -79,7 +86,7 @@ final class AllPokemonViewModelTests: XCTestCase {
     @MainActor
     func testLoadPokemonWithError() {
         let expectation = XCTestExpectation(description: "Error is thrown")
-        let viewModel = AllPokemonViewModel(pokemonService: MockFailingPokemonsAPI())
+        mockAPIManager.resultType = .error
 
         viewModel.$alertConfig
             .dropFirst()
@@ -96,7 +103,7 @@ final class AllPokemonViewModelTests: XCTestCase {
 
     @MainActor
     func testGetFavourite() {
-        let viewModel = AllPokemonViewModel(pokemonService: PokemonService(apiManager: MockAPIManager()))
+        mockAPIManager.resultType = .success
         viewModel.favouriteIds = Set([1, 2, 3])
         viewModel.getFavourite()
 
@@ -107,7 +114,7 @@ final class AllPokemonViewModelTests: XCTestCase {
     @MainActor
     func testLoadGenerationsWithSuccess() {
         let expectation = XCTestExpectation(description: "Pokemons for a certain generation should load successfully.")
-        let viewModel = AllPokemonViewModel(pokemonService: PokemonService(apiManager: MockAPIManager()))
+        mockAPIManager.resultType = .success
 
         viewModel.$pokemons
             .dropFirst()
@@ -128,7 +135,7 @@ final class AllPokemonViewModelTests: XCTestCase {
     @MainActor
     func testLoadGenerationsWithError() {
         let expectation = XCTestExpectation(description: "Error should be triggered when loading a generation.")
-        let viewModel = AllPokemonViewModel(pokemonService: MockFailingPokemonsAPI())
+        mockAPIManager.resultType = .error
 
         viewModel.$alertConfig
             .dropFirst()
@@ -147,7 +154,7 @@ final class AllPokemonViewModelTests: XCTestCase {
 
     @MainActor
     func testShowAllPokemons() {
-        let viewModel = AllPokemonViewModel(pokemonService: PokemonService(apiManager: MockAPIManager()))
+        mockAPIManager.resultType = .success
 
         viewModel.showAllPokemons()
 

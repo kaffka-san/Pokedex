@@ -18,7 +18,7 @@ final class MockAPIManager: APIManager {
 
     func request<T: Decodable>(request: APIConvertible) async throws -> T {
         guard resultType == .success else {
-            throw NetworkingError.invalidURL
+            throw NetworkingError.genericError
         }
 
         do {
