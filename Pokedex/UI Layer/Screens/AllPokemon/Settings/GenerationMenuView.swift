@@ -51,7 +51,7 @@ private extension GenerationMenuView {
 
     @ViewBuilder
     func generationImage(for generation: PokemonGeneration) -> some View {
-        Image("\(generation.index)")
+        Image(generation.image.rawValue)
             .resizable()
             .scaledToFit()
             .frame(width: 155)

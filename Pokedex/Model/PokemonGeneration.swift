@@ -37,4 +37,25 @@ enum PokemonGeneration: String, CaseIterable {
             return 8
         }
     }
+
+    var image: ImageName {
+        switch self {
+        case .one:
+            .generation1
+        case .two:
+            .generation2
+        case .three:
+            .generation3
+        case .four:
+            .generation4
+        case .five:
+            .generation5
+        case .six:
+            .generation6
+        case .seven:
+            .generation7
+        case .eight:
+            .generation8
+        }
+    }
 }

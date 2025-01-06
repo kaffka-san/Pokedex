@@ -74,7 +74,8 @@ private extension DIAssembly {
             PokemonDetailViewModel(
                 locationManager: resolver.resolve(LocationManagerProtocol.self)!,
                 soundManager: resolver.resolve(SoundManagerProtocol.self)!,
-                pokemonService: resolver.resolve(PokemonServiceProtocol.self)!, mapManager: resolver.resolve(MapManagerProtocol.self)!
+                pokemonService: resolver.resolve(PokemonServiceProtocol.self)!,
+                mapManager: resolver.resolve(MapManagerProtocol.self)!
             )
         }
     }
