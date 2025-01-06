@@ -19,7 +19,7 @@ final class APICommunication: APIManager {
         // Begin background task
         let backgroundTaskID = UUID().uuidString
         let backgroundTask = await UIApplication.shared.beginBackgroundTask(withName: backgroundTaskID) {
-            print("Background task expired...")
+            debugPrint("Background task expired...")
         }
 
         guard isNetworkAvailable else {
@@ -49,12 +49,8 @@ final class APICommunication: APIManager {
     }
 
     // MARK: - Helpers
-
-    /// JSON decoder for all requests
     private var decoder: JSONDecoder {
         let decoder = JSONDecoder()
-        // decoder.keyDecodingStrategy = .convertFromSnakeCase
-        // Customize if needed
         return decoder
     }
 

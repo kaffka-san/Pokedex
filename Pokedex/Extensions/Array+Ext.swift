@@ -15,13 +15,7 @@ extension Array where Element == String {
     ///   - name: The string to search for in the array.
     ///   - defaultString: A fallback string to return if no match is found. Defaults to an empty string.
     /// - Returns: The last occurrence of a string containing `name`, with newline characters removed, or `defaultString` if no match is found.
-    ///
-    /// - Example:
-    ///   ```swift
-    ///   let array = ["Hello\n", "World", "HELLO world"]
-    ///   let result = array.findLastOccurrence(of: "hello", defaultString: "Not Found")
-    ///   print(result) // Output: "HELLO world"
-    ///   ```
+
     func findLastOccurrence(of name: String, defaultString: String = "") -> String {
         // Convert the name to uppercase for case-insensitive comparison
         let uppercasedName = name.uppercased()
