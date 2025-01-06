@@ -37,7 +37,7 @@ final class AllPokemonViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
             .store(in: &disposeBag)
-        viewModel.loadPokemons(isInitialLoad: true)
+        viewModel.loadPokemons(state: .initial)
         wait(for: [expectation], timeout: 1)
         XCTAssertNil(viewModel.alertConfig)
     }
@@ -71,7 +71,7 @@ final class AllPokemonViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
             .store(in: &disposeBag)
-        viewModel.loadPokemons(isInitialLoad: true)
+        viewModel.loadPokemons(state: .initial)
         wait(for: [expectation], timeout: 1)
         XCTAssertTrue(viewModel.pokemons.isEmpty)
     }

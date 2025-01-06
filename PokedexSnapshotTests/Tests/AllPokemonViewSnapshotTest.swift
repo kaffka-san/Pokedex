@@ -15,7 +15,7 @@ final class AllPokemonViewSnapshotTest: XCTestCase {
             pokemonService: PokemonService(apiManager: MockAPIManager())
         )
 
-        viewModel.loadPokemons(isInitialLoad: true)
+        viewModel.loadPokemons(state: .initial)
         try await Task.sleep(nanoseconds: UInt64(2.0 * 1_000_000_000))
 
         let view = AllPokemonView(viewModel: viewModel)

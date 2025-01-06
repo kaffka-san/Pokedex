@@ -30,20 +30,28 @@ final class AllPokemonViewModel: NSObject, ObservableObject {
     }
 }
 
+// MARK: - Public properties
+extension AllPokemonViewModel {
+    enum LoadState {
+        case initial
+        case pagination(triggerPokemon: Pokemon?)
+    }
+}
+
 // MARK: - Public methods
 extension AllPokemonViewModel {
     @MainActor
-    func loadPokemons(isInitialLoad: Bool = false, triggerPokemon: Pokemon? = nil) {
-        guard canLoadPokemons(isInitialLoad: isInitialLoad, triggerPokemon: triggerPokemon) else { return }
+    func loadPokemons(state: LoadState) {
+        guard canLoadPokemons(for: state) else { return }
         isLoading = true
 
         Task { [weak self] in
             defer { self?.isLoading = false }
             guard let self else { return }
             do {
-                let offset = isInitialLoad ? 0 : pokemons.count
+                let offset = offsetForLoadState(state)
                 let pokemonsList = try await pokemonService.getPokemons(offset: offset)
-                self.handleFetchedPokemons(pokemonsList, isInitialLoad: isInitialLoad)
+                self.handleFetchedPokemons(pokemonsList, for: state)
             } catch let error as NetworkingError {
                 self.showAlert(for: error)
             }
@@ -57,7 +65,7 @@ extension AllPokemonViewModel {
         } else if disablePagination {
             loadGeneration(index: lastGenerationIndex)
         } else {
-            loadPokemons(isInitialLoad: true)
+            loadPokemons(state: .initial)
         }
     }
 
@@ -72,7 +80,7 @@ extension AllPokemonViewModel {
 
     @MainActor
     func showAllPokemons() {
-        loadPokemons(isInitialLoad: true)
+        loadPokemons(state: .initial)
         showingFavourites = false
         disablePagination = false
         lastGenerationIndex = 0
@@ -131,26 +139,30 @@ extension AllPokemonViewModel {
 
 // MARK: - Private methods
 private extension AllPokemonViewModel {
-    @MainActor
-    func canLoadPokemons(isInitialLoad: Bool, triggerPokemon: Pokemon?) -> Bool {
-        guard !isLoading else { return false }
-        if !isInitialLoad {
-            guard let triggerPokemon,
-                  pokemons.last?.id == triggerPokemon.id,
-                  !disablePagination,
-                  !showingFavourites
-            else {
-                return false
-            }
+    private func canLoadPokemons(for state: LoadState) -> Bool {
+        switch state {
+        case .initial:
+            return !isLoading
+        case let .pagination(triggerPokemon):
+            return !isLoading && !disablePagination && !showingFavourites && pokemons.last?.id == triggerPokemon?.id
         }
-        return true
+    }
+
+    func offsetForLoadState(_ state: LoadState) -> Int {
+        switch state {
+        case .initial:
+            return 0
+        case .pagination:
+            return pokemons.count
+        }
     }
 
     @MainActor
-    func handleFetchedPokemons(_ pokemonsList: Pokemons, isInitialLoad: Bool) {
-        if isInitialLoad {
-            update(pokemonsList: pokemonsList)
-        } else {
+    private func handleFetchedPokemons(_ pokemonsList: Pokemons, for state: LoadState) {
+        switch state {
+        case .initial:
+            pokemons = pokemonsList.results
+        case .pagination:
             pokemons.append(contentsOf: pokemonsList.results)
         }
     }

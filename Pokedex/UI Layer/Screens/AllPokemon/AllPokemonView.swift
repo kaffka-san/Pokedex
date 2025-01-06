@@ -9,10 +9,11 @@ import SwiftUI
 
 struct AllPokemonView: View {
     @ObservedObject var viewModel: AllPokemonViewModel
-    @State var showSettingsMenu = false
+    @State private var showSettingsMenu = false
+
     var body: some View {
         content
-            .onAppear { viewModel.loadPokemons(isInitialLoad: true) }
+            .onAppear { viewModel.loadPokemons(state: .initial) }
             .refreshable { viewModel.refresh() }
             .onChange(of: viewModel.favouriteIds) { viewModel.getFavourite() }
             .alert(item: $viewModel.alertConfig) { item in
@@ -92,7 +93,7 @@ private extension AllPokemonView {
         )
         .environmentObject(viewModel)
         .onAppear {
-            viewModel.loadPokemons(triggerPokemon: pokemon)
+            viewModel.loadPokemons(state: .pagination(triggerPokemon: pokemon))
         }
     }
 
