@@ -21,8 +21,7 @@ extension AllPokemonCoordinator {
         let viewModel = AppDIContainer.resolveObject(AllPokemonViewModel.self)
         viewModel.coordinator = self
 
-        let viewController = AllPokemonViewController()
-        viewController.viewModel = viewModel
+        let viewController = AllPokemonViewController(viewModel: viewModel)
 
         let navVc = UINavigationController(rootViewController: viewController)
         navigationController = navVc

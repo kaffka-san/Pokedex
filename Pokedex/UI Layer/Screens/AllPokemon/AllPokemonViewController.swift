@@ -12,7 +12,17 @@ final class AllPokemonViewController: UIViewController {
     private weak var allPokemonView: SwiftUIRepresentableController<AllPokemonView>!
     private var disposeBag = Set<AnyCancellable>()
 
-    var viewModel: AllPokemonViewModel!
+    var viewModel: AllPokemonViewModel
+
+    init(viewModel: AllPokemonViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 // MARK: - Life cycle
