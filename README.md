@@ -40,6 +40,7 @@ The POKEDEX app is a Swift-based iOS application that leverages the Open Pokémo
 ## Develop Support Tools
 - [Swinject](https://github.com/Swinject/Swinject)
 - [SwiftLint](https://github.com/realm/SwiftLint)
+- [RSwift](https://github.com/mac-cain13/R.swift)
 - [Reachability](https://github.com/ashleymills/Reachability.swift.git)
 
 ## Network
@@ -48,6 +49,7 @@ The POKEDEX app is a Swift-based iOS application that leverages the Open Pokémo
 ## Testing
 
 - [UnitTests - XCTest](https://developer.apple.com/documentation/xctest)
+- [Snaphot tests by Ackee](https://github.com/AckeeCZ/ackee-ios-snapshots)
 
 ## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
