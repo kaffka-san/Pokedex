@@ -21,7 +21,7 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var region = MapCameraPosition.region(MKCoordinateRegion())
     @Published var pokemonsLocations = [Location]()
     @Published var pokemonInfo = [PokemonSection]()
-    @Published var pokemonSpecies = MockPokemon.emptyPokemonSpecies
+    @Published var pokemonSpecies = MockPokemon.emptyPokemonSpeciesConfig
     @Published var alertConfig: AlertConfiguration?
     @Published var nextImageUrl: String?
     @Published var previousImageUrl: String?

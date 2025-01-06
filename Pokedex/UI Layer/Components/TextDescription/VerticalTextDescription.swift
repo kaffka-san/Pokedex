@@ -26,11 +26,13 @@ struct VerticalTextDescription<DataConfigurable: TextDescriptionConfigurable>: V
     }
 }
 
-#Preview {
-    VerticalTextDescription(
-        TextDescriptionConfiguration(
-            text: "Label Name",
-            description: "Label description"
+struct VerticalTextDescription_Previews: PreviewProvider {
+    static var previews: some View {
+        VerticalTextDescription(
+            TextDescriptionConfiguration(
+                text: "Label Name",
+                description: "Label description"
+            )
         )
-    )
+    }
 }

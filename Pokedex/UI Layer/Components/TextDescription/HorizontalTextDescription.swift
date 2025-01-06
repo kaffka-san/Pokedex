@@ -28,11 +28,13 @@ struct HorizontalTextDescription<DataConfigurable: TextDescriptionConfigurable>:
     }
 }
 
-#Preview {
-    HorizontalTextDescription(
-        TextDescriptionConfiguration(
-            text: "Label Name",
-            description: "Label description"
+struct HorizontalTextDescription_Previews: PreviewProvider {
+    static var previews: some View {
+        HorizontalTextDescription(
+            TextDescriptionConfiguration(
+                text: "Label Name",
+                description: "Label description"
+            )
         )
-    )
+    }
 }

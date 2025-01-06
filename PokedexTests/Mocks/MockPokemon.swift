@@ -17,8 +17,8 @@ enum MockPokemon {
             "Poison"
         ],
         imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-        weight: "69",
-        height: "7",
+        weight: "13.2 lbs (6.9 kg)",
+        height: "1' 04 (0.70 cm)",
         baseExperience: "64"
     )
 
@@ -36,7 +36,7 @@ enum MockPokemon {
         baseExperience: "142"
     )
 
-    static let emptyPokemonSpecies = PokemonSpeciesConfig(
+    static let emptyPokemonSpeciesConfig = PokemonSpeciesConfig(
         description: "",
         eggGroups: [],
         gender: Gender(
@@ -45,6 +45,17 @@ enum MockPokemon {
             genderCase: .genderless
         ),
         hatchCounter: ""
+    )
+
+    static let pokemonSpeciesConfig = PokemonSpeciesConfig(
+        description: "A strange seed was planted on its back at birth. The plant sprouts and grows with this Pokémon.",
+        eggGroups: ["Monster", "Grass"],
+        gender: Gender(
+            male: "87.5%",
+            female: "12.5%",
+            genderCase: .maleFemale
+        ),
+        hatchCounter: "20"
     )
 
     static let pokemonSpecies = PokemonSpecies(

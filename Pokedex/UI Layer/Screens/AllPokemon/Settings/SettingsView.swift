@@ -59,57 +59,10 @@ private extension SettingsView {
     }
 
     var generationMenu: some View {
-        VStack {
-            titleLabel
-            generationButtons
-        }
-        .presentationDetents([.height(580)])
-    }
-
-    var titleLabel: some View {
-        Text(LocalizedString.Settings.generationTitle)
-            .font(.title)
-            .padding(.top, 18)
-            .padding(.bottom, 24)
-            .foregroundColor(.darkGray)
-    }
-
-    var generationButtons: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))]) {
-            ForEach(PokemonGeneration.allCases, id: \.self) { generation in
-                generationView(generation)
-            }
-        }
-        .padding(.horizontal, 26)
-    }
-
-    @ViewBuilder
-    func generationView(_ generation: PokemonGeneration) -> some View {
-        ZStack(alignment: .top) {
-            generationImage(generation)
-            generationText(generation)
-        }
-        .onTapGesture {
+        GenerationMenuView { generation in
             showAllGeneration.toggle()
             config.responseHandler(.generationSelected(generationId: generation.index))
         }
-        .shadow(radius: 20)
-    }
-
-    @ViewBuilder
-    func generationImage(_ generation: PokemonGeneration) -> some View {
-        Image("\(generation.index)")
-            .resizable()
-            .scaledToFit()
-            .frame(width: 155)
-    }
-
-    @ViewBuilder
-    func generationText(_ generation: PokemonGeneration) -> some View {
-        Text("\(LocalizedString.Settings.generationTitle) \(generation.rawValue)")
-            .font(.labelRegular)
-            .padding(.top, 16)
-            .foregroundColor(.darkGray)
     }
 }
 
@@ -152,8 +105,10 @@ private extension SettingsView {
     }
 }
 
-#Preview {
-    SettingsView(
-        config: FilterViewConfiguration(responseHandler: { _ in })
-    )
+struct SettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        SettingsView(
+            config: FilterViewConfiguration(responseHandler: { _ in })
+        )
+    }
 }

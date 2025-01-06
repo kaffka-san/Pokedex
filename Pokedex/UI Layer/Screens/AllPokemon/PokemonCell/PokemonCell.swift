@@ -80,14 +80,7 @@ private extension PokemonCell {
         if let url = pokemon.sprites.other?.officialArtwork.frontDefault ?? pokemon.sprites.frontDefault {
             CacheAsyncImage(url: URL(string: url)) { phase in
                 switch phase {
-                case .empty:
-                    Rectangle()
-                        .fill(.blue)
-                        .frame(width: 100, height: 100)
-                case .failure:
-                    Rectangle()
-                        .fill(.red)
-                        .frame(width: 100, height: 100)
+                case .empty, .failure:
                     ProgressView()
                 case let .success(image):
                     image.resizable().scaledToFit()
