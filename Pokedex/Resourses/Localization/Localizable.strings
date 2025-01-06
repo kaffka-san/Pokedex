@@ -22,7 +22,6 @@
 "pokemon_detail_steps" = "steps";
 "pokemon_detail_default_string" = "not defined";
 
-
 // MARK: - Pokemon settings
 "pokemon_settings_favourite" = "Favourite Pokemon";
 "pokemon_settings_all_type" = "All Type";
@@ -40,3 +39,16 @@
 "unknown_message" = "An unknown error occurred";
 "invalid_data_message" = "The data format is incorrect or unreadable";
 "invalid_response_title" = "Invalid Response";
+"We encountered an invalid response. Please refresh or contact support if the issue persists.";
+"invalid_response_message" = "Invalid server response. Please ensure your request is correct and try again.";
+"an_unexpected_error_occurred_please_try_again_later" = "An unexpected error occurred. Please try again later.";
+
+// Mark: Internet Connection
+"connect_error" = "Connection error";
+"connection_title" = "Whoops!";
+"connection_description" = "You seem to have a bad connection. Please try checking your internet settings.";
+"try_again" = "Refresh again";
+"status_description" = "Internet connection error";
+
+// Mark: Basic
+"cancel" = "Cancel";
