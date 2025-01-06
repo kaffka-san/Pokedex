@@ -17,7 +17,7 @@ protocol PokemonServiceProtocol {
 
 final class PokemonService {
     private let apiManager: APIManager
-
+    private let defaultItemsCount = 20
     init(apiManager: APIManager) {
         self.apiManager = apiManager
     }
@@ -37,7 +37,6 @@ extension PokemonService: PokemonServiceProtocol {
     }
 
     func getPokemons(offset: Int) async throws -> Pokemons {
-        // TODO: change 20 to static somewhere
-        try await apiManager.request(request: PokemonsRouter.getPokemons(offset: offset, itemsCount: 20))
+        try await apiManager.request(request: PokemonsRouter.getPokemons(offset: offset, itemsCount: defaultItemsCount))
     }
 }

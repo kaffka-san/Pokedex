@@ -43,10 +43,10 @@ private extension PokemonDetailView {
             Color(viewModel.colorBackground.rawValue)
                 .edgesIgnoringSafeArea(.all)
             VStack(spacing: 0) {
-                customNavigationBar()
+                customNavigationBar
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        largeTitle()
+                        largeTitle
                         typeIdLabel
                         horizontalPokemonImages
                         whiteCardContent
@@ -65,8 +65,7 @@ private extension PokemonDetailView {
             .padding(.horizontal, 20)
     }
 
-    @ViewBuilder
-    func largeTitle() -> some View {
+    var largeTitle: some View {
         titleText
             .font(.largeTitle)
             .hAlign(.leading)
@@ -90,7 +89,7 @@ private extension PokemonDetailView {
                 UserAnnotation()
                 ForEach(viewModel.pokemonsLocations) { location in
                     Annotation("", coordinate: location.coordinate) {
-                        annotationView()
+                        annotationView
                     }
                 }
             }
@@ -103,8 +102,7 @@ private extension PokemonDetailView {
         .padding(.horizontal, isLandscape ? 100 : 26)
     }
 
-    @ViewBuilder
-    func annotationView() -> some View {
+    var annotationView: some View {
         CacheAsyncImage(url: URL(string: viewModel.pokemon?.imgUrl ?? "")) { phase in
             switch phase {
             case let .success(image):
@@ -126,12 +124,11 @@ private extension PokemonDetailView {
 
 // MARK: - Custom navigation Bar
 private extension PokemonDetailView {
-    @ViewBuilder
-    func customNavigationBar() -> some View {
+    var customNavigationBar: some View {
         HStack {
             backButton
             Spacer()
-            smallTitle()
+            smallTitle
             loveButton
         }
         .padding(.horizontal, 20)
@@ -139,8 +136,7 @@ private extension PokemonDetailView {
         .padding(.top, isLandscape ? 16 : 0)
     }
 
-    @ViewBuilder
-    func smallTitle() -> some View {
+    var smallTitle: some View {
         titleText
             .font(.smallTitle)
             .hAlign(.center)
@@ -272,12 +268,11 @@ private extension PokemonDetailView {
         }
         .padding(.bottom, 40)
         .background {
-            shadowedWhiteCard()
+            shadowedWhiteCard
         }
     }
 
-    @ViewBuilder
-    func shadowedWhiteCard() -> some View {
+    var shadowedWhiteCard: some View {
         Color(.white).cornerRadius(20)
             .shadow(radius: 10)
     }
@@ -287,7 +282,7 @@ private extension PokemonDetailView {
         if isLandscape {
             horizontalStatics
         } else {
-            verticalStatistics()
+            verticalStatistics
         }
     }
 
@@ -325,8 +320,7 @@ private extension PokemonDetailView {
         .padding(.horizontal, isLandscape ? 100 : 20)
     }
 
-    @ViewBuilder
-    func verticalStatistics() -> some View {
+    var verticalStatistics: some View {
         VStack(spacing: 10) {
             ForEach(PokemonDetailSection.allCases) { section in
                 HeadLineText(text: section.title)
@@ -393,58 +387,55 @@ private extension PokemonDetailView {
 private extension PokemonDetailView {
     var genderStatistic: some View {
         HStack(spacing: 12) {
-            genderTitle()
+            genderTitle
             switch viewModel.pokemonSpecies.gender.genderCase {
             case .genderless:
-                genderlessView()
+                genderlessView
             case .male:
-                maleView()
+                maleView
             case .female:
-                femaleView()
+                femaleView
             case .maleFemale:
-                maleFemaleView()
+                maleFemaleView
             }
         }
         .hAlign(.leading)
     }
 
-    @ViewBuilder
-    func genderTitle() -> some View {
+    var genderTitle: some View {
         Text(LocalizedString.PokemonDetail.gender)
             .font(.labelRegular)
             .foregroundColor(.lightGray)
             .frame(width: 100, alignment: .leading)
     }
 
-    @ViewBuilder
-    func genderlessView() -> some View {
+    var genderlessView: some View {
         Text(viewModel.pokemonSpecies.gender.genderless)
             .font(.bodyRegular)
             .foregroundColor(.darkGray)
             .frame(alignment: .leading)
     }
 
-    @ViewBuilder
-    func maleView() -> some View {
+    var maleView: some View {
         Label(viewModel.pokemonSpecies.gender.male, image: .male)
             .font(.bodyRegular)
     }
 
-    @ViewBuilder
-    func femaleView() -> some View {
+    var femaleView: some View {
         Label(viewModel.pokemonSpecies.gender.female, image: .female)
             .font(.bodyRegular)
             .foregroundColor(.darkGray)
     }
 
-    @ViewBuilder
-    func maleFemaleView() -> some View {
-        Label(viewModel.pokemonSpecies.gender.male, image: .male)
-            .font(.bodyRegular)
-            .foregroundColor(.darkGray)
-        Label(viewModel.pokemonSpecies.gender.female, image: .female)
-            .font(.bodyRegular)
-            .foregroundColor(.darkGray)
+    var maleFemaleView: some View {
+        HStack {
+            Label(viewModel.pokemonSpecies.gender.male, image: .male)
+                .font(.bodyRegular)
+                .foregroundColor(.darkGray)
+            Label(viewModel.pokemonSpecies.gender.female, image: .female)
+                .font(.bodyRegular)
+                .foregroundColor(.darkGray)
+        }
     }
 }
 
